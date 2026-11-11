@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "url": "https://gameprogrammingpatterns.com/state.html",
+      "status": "reviewed",
+      "patterns": [
+        "state-machine"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": ""
+    },
+    {
+      "url": "https://gameprogrammingpatterns.com/contents.html",
+      "status": "index_only",
+      "patterns": [
+        "command"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Catalog of chapters verified. Command full chapter not reviewed in this pass."
+    },
+    {
+      "url": "https://gameprogrammingpatterns.com/event-queue.html",
+      "status": "reviewed",
+      "patterns": [
+        "event-queue"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": ""
+    },
+    {
+      "url": "https://gameprogrammingpatterns.com/double-buffer.html",
+      "status": "reviewed",
+      "patterns": [
+        "double-buffer"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": ""
+    },
+    {
+      "url": "https://www.rossbencina.com/code/real-time-audio-programming-101-time-waits-for-nothing",
+      "status": "pending_primary_review",
+      "patterns": [
+        "realtime-callback-boundary"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Direct primary source returned 502 during review; keep provisional, re-check before formal adoption."
+    },
+    {
+      "url": "https://martinfowler.com/eaaDev/uiArchs.html",
+      "status": "reviewed",
+      "patterns": [
+        "presentation-model"
+      ],
+      "from_awesome_list": "direct",
+      "note": ""
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/",
+      "status": "reviewed",
+      "patterns": [
+        "presentation-model",
+        "wpf-mvvm"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": ""
+    },
+    {
+      "url": "https://www.sqlite.org/atomiccommit.html",
+      "status": "reviewed",
+      "patterns": [
+        "sqlite-atomic-transaction"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": ""
+    },
+    {
+      "url": "https://www.sqlite.org/wal.html",
+      "status": "reviewed",
+      "patterns": [
+        "sqlite-wal"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": ""
+    },
+    {
+      "url": "https://martinfowler.com/articles/patterns-of-distributed-systems/idempotent-receiver.html",
+      "status": "reviewed",
+      "patterns": [
+        "idempotent-receiver"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": ""
+    },
+    {
+      "url": "https://microservices.io/patterns/communication-style/idempotent-consumer.html",
+      "status": "reviewed",
+      "patterns": [
+        "idempotent-receiver"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": ""
+    },
+    {
+      "url": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html",
+      "status": "reviewed",
+      "patterns": [
+        "message-correlation"
+      ],
+      "from_awesome_list": "direct",
+      "note": ""
+    },
+    {
+      "url": "https://martinfowler.com/articles/patterns-of-distributed-systems/versioned-value.html",
+      "status": "reviewed",
+      "patterns": [
+        "versioned-value"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": ""
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/retry",
+      "status": "reviewed",
+      "patterns": [
+        "retry"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": ""
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker",
+      "status": "reviewed",
+      "patterns": [
+        "circuit-breaker"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": ""
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/bulkhead",
+      "status": "reviewed",
+      "patterns": [
+        "bulkhead"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": ""
+    },
+    {
+      "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+      "status": "reviewed",
+      "patterns": [
+        "transactional-outbox"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": ""
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/compensating-transaction",
+      "status": "reviewed",
+      "patterns": [
+        "compensating-transaction"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": ""
+    },
+    {
+      "url": "https://gameprogrammingpatterns.com/dirty-flag.html",
+      "status": "reviewed",
+      "patterns": [
+        "dirty-flag"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": ""
+    },
+    {
+      "url": "https://gameprogrammingpatterns.com/data-locality.html",
+      "status": "reviewed",
+      "patterns": [
+        "data-locality"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": ""
+    },
+    {
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Secure_Product_Design_Cheat_Sheet.html",
+      "status": "reviewed",
+      "patterns": [
+        "least-privilege",
+        "input-validation"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": ""
+    }
+  ]
+}

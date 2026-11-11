@@ -1,0 +1,455 @@
+{
+  "schema_version": 1,
+  "version": "0.1.0-preview.2",
+  "generated_on": "2026-11-11",
+  "source_root": "https://github.com/DovAmir/awesome-design-patterns",
+  "source_root_commit": "9006287f27e720000cc8763ae4cd150789b8571d",
+  "scope": "curated seed; not entire external bibliography",
+  "cards": [
+    {
+      "id": "state-machine",
+      "title": "Finite State Machine / State",
+      "domain": "behavior",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Состояние объекта влияет на допустимые команды; набор флагов допускает невозможные комбинации.",
+      "approach": "Задать именованные состояния, переходы, guards, действия входа/выхода и обработку некорректных событий.",
+      "avoid": "Для 2 простых взаимоисключающих случаев, где достаточно enum/switch; не умножать классы без необходимости.",
+      "verification": "Тест матрицы переходов, запрет недопустимых переходов, восстановление после ошибки.",
+      "source_urls": [
+        "https://gameprogrammingpatterns.com/state.html"
+      ],
+      "source_review": "reviewed",
+      "related": []
+    },
+    {
+      "id": "command",
+      "title": "Command / Explicit Intent",
+      "domain": "behavior",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Действие оператора должно быть проверяемым, повторяемым или записываемым.",
+      "approach": "Отделить намерение и данные команды от исполнителя; контракт результата и fingerprint задавать явно.",
+      "avoid": "Не превращать каждую кнопку в отдельный класс без потребности; не делать команду скрытым событием.",
+      "verification": "Тесты конфликта, повторения, сериализации, отмены и границ полномочий.",
+      "source_urls": [
+        "https://gameprogrammingpatterns.com/contents.html"
+      ],
+      "source_review": "index_only",
+      "related": [
+        "idempotent-receiver",
+        "state-machine"
+      ]
+    },
+    {
+      "id": "event-queue",
+      "title": "Event Queue / Temporal Decoupling",
+      "domain": "concurrency",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Производитель не должен ждать обработчик; события приходят в разном темпе.",
+      "approach": "Отделить отправку от обработки очередью, описать максимальный размер, порядок, coalescing и overflow.",
+      "avoid": "Не использовать неограниченную очередь для real-time; не обещать ordering между независимыми producer.",
+      "verification": "Нагрузка burst, overflow, shutdown, cancellation, ordering, отсутствие утечек.",
+      "source_urls": [
+        "https://gameprogrammingpatterns.com/event-queue.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "state-machine"
+      ]
+    },
+    {
+      "id": "double-buffer",
+      "title": "Double Buffer / Atomic Snapshot Publication",
+      "domain": "concurrency",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Потребитель должен видеть целостную версию параметров или сцены, пока другая версия готовится.",
+      "approach": "Подготавливать новое состояние вне критического пути, публиковать целую версию атомарно, безопасно управлять lifetime.",
+      "avoid": "Не считать double buffer заменой SPSC ring buffer; не передавать ссылку на изменяемый объект.",
+      "verification": "Тесты torn reads, одновременной публикации, lifetime, проверка задержки.",
+      "source_urls": [
+        "https://gameprogrammingpatterns.com/double-buffer.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "event-queue"
+      ]
+    },
+    {
+      "id": "realtime-callback-boundary",
+      "title": "Real-time Callback Boundary",
+      "domain": "audio",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Поток звука имеет жёсткий дедлайн и не должен ждать UI, сеть или файловую систему.",
+      "approach": "Подготовить данные заранее; в callback делать ограниченную работу без блокирующих операций; передавать управление через bounded buffers/snapshots.",
+      "avoid": "Не вводить lock, allocation, IO, sleep, логирование в callback без отдельного доказательства безопасности; не считать это уже проверенным текущим кодом.",
+      "verification": "Измерять worst-case callback duration, underruns, исключать lifetime race, проверять устойчивость при переподключении.",
+      "source_urls": [
+        "https://www.rossbencina.com/code/real-time-audio-programming-101-time-waits-for-nothing"
+      ],
+      "source_review": "pending_primary_review",
+      "related": [
+        "double-buffer",
+        "event-queue"
+      ]
+    },
+    {
+      "id": "presentation-model",
+      "title": "Presentation Model / Humble View",
+      "domain": "ui",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Код XAML/code-behind накапливает состояние, вычисления и логику приложения.",
+      "approach": "Хранить состояние представления и команды отдельно; view отвечает за отображение и доступность.",
+      "avoid": "Не переписывать UI на MVVM ради терминологии; сохранить существующие маршруты, DPI, контракты и эффекты.",
+      "verification": "VM unit tests, WPF binding/layout tests, DPI 100/125/150%, клавиатура и focus, 1920x1080.",
+      "source_urls": [
+        "https://martinfowler.com/eaaDev/uiArchs.html",
+        "https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "wpf-mvvm"
+      ]
+    },
+    {
+      "id": "wpf-mvvm",
+      "title": "WPF MVVM / Observable Commands",
+      "domain": "ui",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Одно и то же состояние вручную синхронизируется между несколькими WPF controls.",
+      "approach": "Явные observable properties, commands и bindings, с контролем потоков UI и жизненного цикла подписок.",
+      "avoid": "Не добавлять CommunityToolkit, если проект уже имеет эквивалентный контракт; не переносить realtime data на UI thread напрямую.",
+      "verification": "Property change tests, commands CanExecute, dispatcher ownership, focus, release build.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "presentation-model"
+      ]
+    },
+    {
+      "id": "sqlite-atomic-transaction",
+      "title": "Atomic Transaction / Crash Recovery",
+      "domain": "storage",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Изменение нескольких связанных сущностей нельзя оставить наполовину завершённым.",
+      "approach": "Объединять согласованные изменения в транзакцию; описать границу commit, последующий readback и идемпотентный retry.",
+      "avoid": "Не считать SQLite-транзакцию транзакцией для файловой системы, сети или другого процесса.",
+      "verification": "Fault injection до commit и после commit, повтор операции, crash-restart, инварианты.",
+      "source_urls": [
+        "https://www.sqlite.org/atomiccommit.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "idempotent-receiver"
+      ]
+    },
+    {
+      "id": "sqlite-wal",
+      "title": "SQLite Write-Ahead Logging",
+      "domain": "storage",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Требуются одновременные читатели и писатель без длительной блокировки чтения.",
+      "approach": "Проверить, подходит ли WAL для локального хранилища; управлять checkpoint, backup и sidecar-файлами.",
+      "avoid": "WAL не подходит для обычного общего доступа с разных машин через сетевой FS; не заменяет схему backup.",
+      "verification": "Долгие читатели, SQLITE_BUSY, checkpoint, recovery, корректность резервной копии.",
+      "source_urls": [
+        "https://www.sqlite.org/wal.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "sqlite-atomic-transaction"
+      ]
+    },
+    {
+      "id": "idempotent-receiver",
+      "title": "Idempotent Receiver / Duplicate Command Safety",
+      "domain": "integration",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN",
+        "STAYA"
+      ],
+      "signals": "Команда может быть отправлена повторно после timeout, reconnect или retry.",
+      "approach": "Назначить стабильный request ID/fingerprint, записать обработку и повторно отдавать прежний результат при идентичной команде.",
+      "avoid": "Не путать тот же ID с изменённым payload; collision должен приводить к конфликту, не к молчаливому успеху.",
+      "verification": "Повтор до ответа и после commit, duplicate same payload, conflict changed payload.",
+      "source_urls": [
+        "https://martinfowler.com/articles/patterns-of-distributed-systems/idempotent-receiver.html",
+        "https://microservices.io/patterns/communication-style/idempotent-consumer.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "sqlite-atomic-transaction",
+        "retry"
+      ]
+    },
+    {
+      "id": "message-correlation",
+      "title": "Correlation Identifier / Request-Reply",
+      "domain": "integration",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "IPC или network reply приходит поздно, не по порядку или после cancellation.",
+      "approach": "Передавать request ID через всю цепь, связывать ответ с исходным запросом; отдельно проверять поколение/lifecycle.",
+      "avoid": "Нельзя считать correlation ID достаточным для защиты от устаревшего состояния, если тот же endpoint переоткрыт.",
+      "verification": "Out-of-order replies, duplicates, late replies, cancel/reconnect, timeout.",
+      "source_urls": [
+        "https://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "idempotent-receiver",
+        "versioned-value"
+      ]
+    },
+    {
+      "id": "versioned-value",
+      "title": "Versioned Value / Optimistic State Validity",
+      "domain": "concurrency",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN",
+        "STAYA"
+      ],
+      "signals": "Долгая асинхронная операция может применить результат к уже изменившемуся объекту.",
+      "approach": "Связать результат с версией исходного состояния; принимать только при совпадении версии и владельца lifecycle.",
+      "avoid": "Не использовать только wall-clock timestamp; версия должна менятьcя на значимые события.",
+      "verification": "Late result, reconnect, dispose, race between check and commit.",
+      "source_urls": [
+        "https://martinfowler.com/articles/patterns-of-distributed-systems/versioned-value.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "message-correlation"
+      ]
+    },
+    {
+      "id": "retry",
+      "title": "Bounded Retry / Backoff",
+      "domain": "reliability",
+      "priority": "P1",
+      "projects": [
+        "STAYA",
+        "KLIDAN"
+      ],
+      "signals": "Внешний вызов иногда отказывает временно.",
+      "approach": "Классифицировать ошибки; ограничить retries и общий deadline; использовать backoff/jitter и учитывать идемпотентность.",
+      "avoid": "Не повторять необратимую операцию без ключа идемпотентности; не retry постоянно неисправную зависимость.",
+      "verification": "Повтор при transient failure, отказ при permanent failure, max attempts/deadline, jitter.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/azure/architecture/patterns/retry"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "idempotent-receiver",
+        "circuit-breaker"
+      ]
+    },
+    {
+      "id": "circuit-breaker",
+      "title": "Circuit Breaker",
+      "domain": "reliability",
+      "priority": "P1",
+      "projects": [
+        "STAYA"
+      ],
+      "signals": "Сломанный backend вызывает каскадные ошибки или чрезмерную очередь ожидания.",
+      "approach": "Ввести Closed/Open/Half-Open, критерии переходов и fallback с наблюдаемыми метриками.",
+      "avoid": "Не применять в локальном быстром обработчике, где простая обработка ошибок достаточна.",
+      "verification": "Отказ backend, recover, half-open probe, защита исправных endpoints.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "retry",
+        "bulkhead"
+      ]
+    },
+    {
+      "id": "bulkhead",
+      "title": "Bulkhead / Failure Isolation",
+      "domain": "reliability",
+      "priority": "P1",
+      "projects": [
+        "STAYA",
+        "KLIDAN"
+      ],
+      "signals": "Отказ или перегрузка одного компонента отнимает ресурсы у остальных.",
+      "approach": "Разделить ограниченные ресурсы по критичным доменам (pool, worker, queue, process).",
+      "avoid": "Не плодить процессы/пулы без измеримого риска; разделение расходует ресурсы.",
+      "verification": "Перегрузить один домен и подтвердить работу остальных, метрики saturation.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/azure/architecture/patterns/bulkhead"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "circuit-breaker"
+      ]
+    },
+    {
+      "id": "transactional-outbox",
+      "title": "Transactional Outbox",
+      "domain": "integration",
+      "priority": "P1",
+      "projects": [
+        "STAYA",
+        "KLIDAN"
+      ],
+      "signals": "Изменение БД и отправка события должны быть согласованы, а broker вне транзакции БД.",
+      "approach": "В одной транзакции писать доменные данные и запись outbox; отдельный sender доставляет запись.",
+      "avoid": "Не нужен, если нет атомарной связи БД и внешней доставки; возможны дубли доставки.",
+      "verification": "Crash до/после commit и publish, повтор relay, порядок событий, consumer idempotency.",
+      "source_urls": [
+        "https://microservices.io/patterns/data/transactional-outbox.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "idempotent-receiver"
+      ]
+    },
+    {
+      "id": "compensating-transaction",
+      "title": "Compensating Transaction",
+      "domain": "reliability",
+      "priority": "P2",
+      "projects": [
+        "STAYA"
+      ],
+      "signals": "Операция изменяет несколько внешних систем без общей ACID-транзакции.",
+      "approach": "Определить пошаговые обратные действия и устойчивый журнал прогресса, учитывать параллельные изменения.",
+      "avoid": "Это не автоматический rollback; нельзя просто переписать текущее состояние старым snapshot.",
+      "verification": "Отказ на каждом шаге, повтор компенсации, конкурентное изменение, operator recovery.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/azure/architecture/patterns/compensating-transaction"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "transactional-outbox"
+      ]
+    },
+    {
+      "id": "dirty-flag",
+      "title": "Dirty Flag / Deferred Recompute",
+      "domain": "performance",
+      "priority": "P2",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Дорогой derived state пересчитывается при каждом изменении, хотя нужен реже.",
+      "approach": "При обновлении исходных данных отмечать stale; пересчитывать только при чтении, кэшировать до следующего изменения.",
+      "avoid": "Не делать это, если дешёвый инкрементальный update уже возможен или актуальность нужна всегда.",
+      "verification": "Изменение parent/dependency, тест invalidation, benchmark, memory overhead.",
+      "source_urls": [
+        "https://gameprogrammingpatterns.com/dirty-flag.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "data-locality"
+      ]
+    },
+    {
+      "id": "data-locality",
+      "title": "Data Locality / Cache-Friendly Layout",
+      "domain": "performance",
+      "priority": "P2",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Большой hot loop упирается в память/cache misses.",
+      "approach": "После profiling рассмотреть последовательные массивы/буферы и уменьшение pointer chasing.",
+      "avoid": "Не делать premature SoA rewrite; профилировать на целевом железе и сравнивать.",
+      "verification": "Performance benchmark, correctness compare, cache/memory regression.",
+      "source_urls": [
+        "https://gameprogrammingpatterns.com/data-locality.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "realtime-callback-boundary"
+      ]
+    },
+    {
+      "id": "least-privilege",
+      "title": "Least Privilege / Secure Defaults",
+      "domain": "security",
+      "priority": "P1",
+      "projects": [
+        "STAYA",
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Инсталлятор, daemon или внешний endpoint получает больше прав, чем требуется.",
+      "approach": "Минимизировать права и поверхность атаки, fail-closed при сбое в проверке конфигурации.",
+      "avoid": "Не заменять проверку входов наличием авторизации; не хранить секреты в логах.",
+      "verification": "Негативные тесты авторизации, privilege matrix, secret scan, rollback path.",
+      "source_urls": [
+        "https://cheatsheetseries.owasp.org/cheatsheets/Secure_Product_Design_Cheat_Sheet.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "input-validation"
+      ]
+    },
+    {
+      "id": "input-validation",
+      "title": "Input Validation at Trust Boundary",
+      "domain": "security",
+      "priority": "P1",
+      "projects": [
+        "STAYA",
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Данные поступают из JSON, IPC, UI, сети, конфигурации или миграций.",
+      "approach": "На границе проверять тип, длину, значения и сочетания полей; использовать SQL parameters и bounds.",
+      "avoid": "Не считать проверку UI достаточной; SQL parameterization не заменяется string validation.",
+      "verification": "Fuzz/invalid inputs, min/max, nested data, path traversal, fail-closed error handling.",
+      "source_urls": [
+        "https://cheatsheetseries.owasp.org/cheatsheets/Secure_Product_Design_Cheat_Sheet.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "least-privilege"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1427 @@
+{
+  "schema_version": 1,
+  "upstream_repository": "https://github.com/DovAmir/awesome-design-patterns",
+  "upstream_commit": "9006287f27e720000cc8763ae4cd150789b8571d",
+  "upstream_commit_date": "2024-10-25",
+  "captured_on": "2026-11-11",
+  "description": "Full URL bibliography extracted from upstream README, not full-text reviews. Titles, domains and old URLs as found upstream; HTTP URLs are retained for provenance.",
+  "link_occurrences": 122,
+  "unique_urls": 115,
+  "items": [
+    {
+      "id": "url-95025512bc9f",
+      "url": "https://github.com/mgechev/angularjs-in-patterns",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "AngularJS",
+          "title": "design patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-ed4c1afd1390",
+      "url": "https://github.com/abishekaditya/DesignPatterns",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "C#",
+          "title": "design-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-dc98e77863df",
+      "url": "https://github.com/anupavanm/csharp-design-patterns-for-humans",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "C#",
+          "title": "design-patterns-for-human"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-cafb904310b3",
+      "url": "https://github.com/nemanjarogic/DesignPatternsLibrary",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "C#",
+          "title": "Design Patterns Library"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-989e92a2e918",
+      "url": "http://www.vincehuston.org/dp/",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "C++",
+          "title": "design-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-892f8be14997",
+      "url": "https://arturoherrero.com/closure-design-patterns/",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Closure",
+          "title": "design-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-963fa30299c9",
+      "url": "https://github.com/tmrts/go-patterns",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Go",
+          "title": "design-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-323d80d5813f",
+      "url": "https://sourcemaking.com/design_patterns",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Java",
+          "title": "sourcemaking"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-516410a544f4",
+      "url": "https://www.oodesign.com/",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Java",
+          "title": "oodesign"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-d4d420b15c5d",
+      "url": "https://github.com/iluwatar/java-design-patterns",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Java",
+          "title": "design-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-ae5d9116448d",
+      "url": "https://github.com/HugoMatilla/Effective-JAVA-Summary",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Java",
+          "title": "effective-java patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-14498c4e6bb9",
+      "url": "https://java-design-patterns.com/patterns/",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Java",
+          "title": "Design patterns implemented in Java"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-77e322394c68",
+      "url": "https://www.amazon.com/Effective-Java-3rd-Joshua-Bloch/dp/0134685997/ref=pd_sim_14_7",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Java",
+          "title": "Effective-Java-3rd-Joshua-Bloch"
+        },
+        {
+          "category": "Books",
+          "subcategory": null,
+          "title": "Effective-Java-3rd-Joshua-Bloch"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-9e59f3bee135",
+      "url": "https://github.com/ziyasal/design-patterns-and-idioms-in-es6",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "JavaScript",
+          "title": "es6 design patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-8fd9cad64be4",
+      "url": "https://github.com/sohamkamani/javascript-design-patterns-for-humans",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "JavaScript",
+          "title": "humans"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-001ce25bacf0",
+      "url": "https://github.com/nnupoor/js_designpatterns",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "JavaScript",
+          "title": "design-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-e535d05c8128",
+      "url": "https://addyosmani.com/resources/essentialjsdesignpatterns/book",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "JavaScript",
+          "title": "design patterns by addy osmani"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-30d8fd6fc936",
+      "url": "https://github.com/dbacinski/Design-Patterns-In-Kotlin",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Kotlin",
+          "title": "design-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-1242ffdb128f",
+      "url": "https://github.com/nimit95/Real-world-Design-Patterns-Node-JS",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Node",
+          "title": "Real world design patterns with Node.js"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-fa3e59b77623",
+      "url": "https://www.packtpub.com/web-development/nodejs-design-patterns-second-edition",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Node",
+          "title": "Node.js Design Patterns"
+        },
+        {
+          "category": "Books",
+          "subcategory": null,
+          "title": "Node.js Design Patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-583a88103411",
+      "url": "https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612/ref=sr_1_4?s=books&ie=UTF8&qid=1528136036&sr=1-4&keywords=design+patterns",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Object Oriented",
+          "title": "Design-Patterns-Elements-Reusable-Object-Oriented"
+        },
+        {
+          "category": "Books",
+          "subcategory": null,
+          "title": "Design-Patterns-Elements-Reusable-Object-Oriented"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-6e5f4c2c7cf6",
+      "url": "https://www.amazon.com/Head-First-Design-Patterns-Brain-Friendly/dp/0596007124/ref=pd_sim_14_4",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Object Oriented",
+          "title": "Head-First-Design-Patterns-Brain-Friendly"
+        },
+        {
+          "category": "Books",
+          "subcategory": null,
+          "title": "Head-First-Design-Patterns-Brain-Friendly"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-8db69c1cf01a",
+      "url": "https://www.manning.com/books/object-design-style-guide",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Object Oriented",
+          "title": "Object Design Style Guide"
+        },
+        {
+          "category": "Books",
+          "subcategory": null,
+          "title": "Object Design Style Guide"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-8a7c651555c3",
+      "url": "https://github.com/kamranahmedse/design-patterns-for-humans",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "PHP",
+          "title": "humans"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-952027a7ef2b",
+      "url": "https://github.com/domnikl/DesignPatternsPHP",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "PHP",
+          "title": "design-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-72617ca81d95",
+      "url": "https://github.com/faif/python-patterns",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Python",
+          "title": "design-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-d52dbd17a335",
+      "url": "https://github.com/tylerlaberge/PyPattyrn",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Python",
+          "title": "PyPattyrn"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-d8f1e6a3144f",
+      "url": "https://python-patterns.guide/",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Python",
+          "title": "Python Design Patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-6ea98623977b",
+      "url": "https://refactoring.guru/design-patterns/python",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Python",
+          "title": "Design Patterns in Python"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-2340f7727338",
+      "url": "https://arunrocks.com/static/book/django-design-patterns-best-practices-2-ed",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Python",
+          "title": "Django Design Patterns and Best Practices"
+        },
+        {
+          "category": "Books",
+          "subcategory": null,
+          "title": "Django Design Patterns and Best Practices"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-4e7554bba11f",
+      "url": "http://krasimirtsonev.com/blog/article/react-js-in-design-patterns",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "React",
+          "title": "design-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-b7becfe656d4",
+      "url": "https://github.com/vasanthk/react-bits",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "React",
+          "title": "react-bits"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-461c0b3e6e87",
+      "url": "https://reactpatterns.com",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "React",
+          "title": "reactpatterns.com"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-4abd00babdbd",
+      "url": "https://github.com/davidgf/design-patterns-in-ruby",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Ruby",
+          "title": "design-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-3f1e3b29ff27",
+      "url": "https://rust-unofficial.github.io/patterns/",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Rust",
+          "title": "design-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-d2227e8e16e2",
+      "url": "https://github.com/josephguan/scala-design-patterns",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Scala",
+          "title": "design-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-47d4632fe758",
+      "url": "https://github.com/ochococo/Design-Patterns-In-Swift",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Swift",
+          "title": "design-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-0dc69f1537bc",
+      "url": "https://github.com/torokmark/design_patterns_in_typescript",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "TypeScript",
+          "title": "design-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-4e69c3efb188",
+      "url": "http://www.mcdonaldland.info/2007/11/28/40",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "UML",
+          "title": "design-patterns quick reference"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-7793ff96c097",
+      "url": "https://www.slideshare.net/hustwj/design-patterns-cheat-sheet",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "UML",
+          "title": "design-patterns cheat-sheet"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-49d0c112b72f",
+      "url": "https://learn-vuejs.github.io/vue-patterns/",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Vue.js",
+          "title": "Vue Patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-ea7db14f5bd1",
+      "url": "https://github.com/joshnuss/design-patterns-in-elixir",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Elixir",
+          "title": "design-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-994a050ccea7",
+      "url": "https://mattpruitt.com/articles/the-pipeline",
+      "occurrences": [
+        {
+          "category": "Programming Language Design Patterns",
+          "subcategory": "Elixir",
+          "title": "the-pipeline"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-1b88602a73af",
+      "url": "https://towardsdatascience.com/10-common-software-architectural-patterns-in-a-nutshell-a0b47a1e9013",
+      "occurrences": [
+        {
+          "category": "General Architecture",
+          "subcategory": null,
+          "title": "10 common architectural patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-fa8f887a06b3",
+      "url": "https://www.reactivedesignpatterns.com/categories.html",
+      "occurrences": [
+        {
+          "category": "General Architecture",
+          "subcategory": null,
+          "title": "reactive design patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-005d2cabfd10",
+      "url": "https://dzone.com/articles/scalable-system-design",
+      "occurrences": [
+        {
+          "category": "General Architecture",
+          "subcategory": null,
+          "title": "scalable System Design Patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-d561d4738a63",
+      "url": "https://martinfowler.com/eaaCatalog",
+      "occurrences": [
+        {
+          "category": "General Architecture",
+          "subcategory": null,
+          "title": "martin fowler"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-789bde9df7e8",
+      "url": "https://github.com/donnemartin/system-design-primer",
+      "occurrences": [
+        {
+          "category": "General Architecture",
+          "subcategory": null,
+          "title": "system-design-primer"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-18e6b97f5322",
+      "url": "https://medium.com/becloudy/architecting-for-reliability-part-1-concepts-17028343089",
+      "occurrences": [
+        {
+          "category": "General Architecture",
+          "subcategory": null,
+          "title": "architecting-for-reliability"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-021740d35f1c",
+      "url": "https://patterns.innersourcecommons.org/",
+      "occurrences": [
+        {
+          "category": "General Architecture",
+          "subcategory": null,
+          "title": "InnerSource Patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-86d68171ab5b",
+      "url": "https://hackernoon.com/cloud-cost-hacking-fc35fd19985d",
+      "occurrences": [
+        {
+          "category": "Cloud Architecture",
+          "subcategory": null,
+          "title": "Cloud cost hacking"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-cb8cd29f8842",
+      "url": "http://en.clouddesignpattern.org/index.php/Main_Page",
+      "occurrences": [
+        {
+          "category": "Cloud Architecture",
+          "subcategory": null,
+          "title": "AWS cloud design patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-981faeabc556",
+      "url": "https://docs.microsoft.com/en-us/azure/architecture/patterns",
+      "occurrences": [
+        {
+          "category": "Cloud Architecture",
+          "subcategory": null,
+          "title": "Azure cloud design patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-abd19f7528f9",
+      "url": "http://www.cloudcomputingpatterns.org",
+      "occurrences": [
+        {
+          "category": "Cloud Architecture",
+          "subcategory": null,
+          "title": "cloud computing patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-5ba0ce3c0032",
+      "url": "https://gcp.solutions",
+      "occurrences": [
+        {
+          "category": "Cloud Architecture",
+          "subcategory": null,
+          "title": "Google Cloud Solutions"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-06338747a00d",
+      "url": "https://d1.awsstatic.com/whitepapers/saas-tenant-isolation-strategies.pdf",
+      "occurrences": [
+        {
+          "category": "Cloud Architecture",
+          "subcategory": null,
+          "title": "saas tenant isolation strategies"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-ea56e03cf865",
+      "url": "https://www.nagarro.com/en/blog/architectural-design-patterns-aws-multi-tenancy",
+      "occurrences": [
+        {
+          "category": "Cloud Architecture",
+          "subcategory": null,
+          "title": "design patterns for multi-tenancy"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-5aaef963e247",
+      "url": "https://thenewstack.io/serverless-architecture-five-design-patterns",
+      "occurrences": [
+        {
+          "category": "Serverless Architecture",
+          "subcategory": null,
+          "title": "serverless architecture"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-f9b5ed566741",
+      "url": "https://freecontent.manning.com/patterns-for-solving-problems-in-serverless-architectures",
+      "occurrences": [
+        {
+          "category": "Serverless Architecture",
+          "subcategory": null,
+          "title": "solving problems in serverless"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-aa9ee5f0349a",
+      "url": "https://www.jeremydaly.com/serverless-microservice-patterns-for-aws/",
+      "occurrences": [
+        {
+          "category": "Serverless Architecture",
+          "subcategory": null,
+          "title": "serverless patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-bbf746d68b60",
+      "url": "https://www.jeremydaly.com/serverless-reference-architectures//",
+      "occurrences": [
+        {
+          "category": "Serverless Architecture",
+          "subcategory": null,
+          "title": "serverless-reference-architectures"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-aaf0b66c6264",
+      "url": "https://serverlessland.com/patterns",
+      "occurrences": [
+        {
+          "category": "Serverless Architecture",
+          "subcategory": null,
+          "title": "serverless-patterns-collection"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-4b699d32fc1f",
+      "url": "https://www.packtpub.com/free-ebook/serverless-design-patterns-and-best-practices/9781788620642",
+      "occurrences": [
+        {
+          "category": "Serverless Architecture",
+          "subcategory": null,
+          "title": "serverless-design-patterns-and-best-practices"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-8bf8ca18a730",
+      "url": "http://microservices.io/patterns",
+      "occurrences": [
+        {
+          "category": "Micro services & Distributed Systems",
+          "subcategory": null,
+          "title": "microservices"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-cf490fc02c27",
+      "url": "https://www.oreilly.com/ideas/microservices-antipatterns-and-pitfalls",
+      "occurrences": [
+        {
+          "category": "Micro services & Distributed Systems",
+          "subcategory": null,
+          "title": "microservices-anti patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-0cab76d73f54",
+      "url": "https://12factor.net",
+      "occurrences": [
+        {
+          "category": "Micro services & Distributed Systems",
+          "subcategory": null,
+          "title": "12factor"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-d6c0c6a269f3",
+      "url": "https://dzone.com/articles/patterns-for-microservices-sync-vs-async",
+      "occurrences": [
+        {
+          "category": "Micro services & Distributed Systems",
+          "subcategory": null,
+          "title": "microservices-sync-vs-async"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-224a46d0d75e",
+      "url": "http://tech.forter.com/comparing-message-queue-architectures-on-aws",
+      "occurrences": [
+        {
+          "category": "Micro services & Distributed Systems",
+          "subcategory": null,
+          "title": "message-queues"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-261bc17b60d5",
+      "url": "http://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html",
+      "occurrences": [
+        {
+          "category": "Micro services & Distributed Systems",
+          "subcategory": null,
+          "title": "enterprise Integration Patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-b0d6b91a6b7b",
+      "url": "https://martinfowler.com/articles/patterns-of-distributed-systems/",
+      "occurrences": [
+        {
+          "category": "Micro services & Distributed Systems",
+          "subcategory": null,
+          "title": "martinfowler"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-191bf8f6ea1f",
+      "url": "https://dzone.com/articles/strengths-and-weaknesses-of-iot-communication-patterns",
+      "occurrences": [
+        {
+          "category": "Internet of things",
+          "subcategory": null,
+          "title": "iot-communication-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-ffad1ae57acb",
+      "url": "https://community.arm.com/iot/b/blog/posts/design-patterns-for-an-internet-of-things",
+      "occurrences": [
+        {
+          "category": "Internet of things",
+          "subcategory": null,
+          "title": "design-patterns-for-iot"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-0ee1a6937bad",
+      "url": "https://highlyscalable.wordpress.com/2012/02/01/mapreduce-patterns",
+      "occurrences": [
+        {
+          "category": "Big Data",
+          "subcategory": null,
+          "title": "mapreduce-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-f31c04e5171f",
+      "url": "https://iwringer.wordpress.com/2015/08/03/patterns-for-streaming-realtime-analytics",
+      "occurrences": [
+        {
+          "category": "Big Data",
+          "subcategory": null,
+          "title": "streaming-realtime-analytics"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-d88dabe44b54",
+      "url": "https://github.com/terrytangyuan/distributed-ml-patterns",
+      "occurrences": [
+        {
+          "category": "Machine Learning",
+          "subcategory": null,
+          "title": "distributed-ml-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-e41449c25f13",
+      "url": "https://docs.microsoft.com/en-us/azure/sql-database/saas-tenancy-app-design-patterns",
+      "occurrences": [
+        {
+          "category": "Databases and Storage",
+          "subcategory": "SQL",
+          "title": "database tenancy patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-a6ab1cf27f98",
+      "url": "http://www.databaseanswers.org/data_models",
+      "occurrences": [
+        {
+          "category": "Databases and Storage",
+          "subcategory": "SQL",
+          "title": "databaseanswers"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-ac363f07891a",
+      "url": "http://database-programmer.blogspot.com/2008/01/table-design-patterns.html",
+      "occurrences": [
+        {
+          "category": "Databases and Storage",
+          "subcategory": "SQL",
+          "title": "database-programmer"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-ac561e2db7ae",
+      "url": "https://www.red-gate.com/simple-talk/sql/database-administration/five-simple-database-design-errors-you-should-avoid",
+      "occurrences": [
+        {
+          "category": "Databases and Storage",
+          "subcategory": "SQL",
+          "title": "red-gate"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-c44b4ab06896",
+      "url": "https://www.talend.com/blog/2017/05/05/data-model-design-best-practices-part-1",
+      "occurrences": [
+        {
+          "category": "Databases and Storage",
+          "subcategory": "SQL",
+          "title": "talend"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-08babdb07c2b",
+      "url": "https://github.com/jarulraj/sqlcheck",
+      "occurrences": [
+        {
+          "category": "Databases and Storage",
+          "subcategory": "SQL",
+          "title": "sqlcheck"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-6a3b5b295a57",
+      "url": "https://aws.amazon.com/blogs/big-data/etl-and-elt-design-patterns-for-lake-house-architecture-using-amazon-redshift-part-1/",
+      "occurrences": [
+        {
+          "category": "Databases and Storage",
+          "subcategory": "SQL",
+          "title": "Data warehouse patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-8f2a45fd3709",
+      "url": "https://www.ebayinc.com/stories/blogs/tech/practical-nosql-resilience-design-pattern-for-the-enterprise",
+      "occurrences": [
+        {
+          "category": "Databases and Storage",
+          "subcategory": "NOSQL",
+          "title": "nosql resilience patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-8fed9131ff07",
+      "url": "https://dzone.com/articles/introduction-nosql-patterns",
+      "occurrences": [
+        {
+          "category": "Databases and Storage",
+          "subcategory": "NOSQL",
+          "title": "nosql-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-0ebf38419ae2",
+      "url": "https://dzone.com/articles/mongodb-design-patterns",
+      "occurrences": [
+        {
+          "category": "Databases and Storage",
+          "subcategory": "NOSQL",
+          "title": "mongodb"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-65c92ef69cd4",
+      "url": "http://shop.oreilly.com/product/0636920027041.do",
+      "occurrences": [
+        {
+          "category": "Databases and Storage",
+          "subcategory": "NOSQL",
+          "title": "MongoDB Applied Design Patterns"
+        },
+        {
+          "category": "Books",
+          "subcategory": null,
+          "title": "MongoDB Applied Design Patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-686dd37c8e9d",
+      "url": "https://amazon-dynamodb-labs.com/design-patterns.html",
+      "occurrences": [
+        {
+          "category": "Databases and Storage",
+          "subcategory": "NOSQL",
+          "title": "DynamoDB design patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-6e95fd92cffd",
+      "url": "https://redislabs.com/redis-best-practices/introduction/",
+      "occurrences": [
+        {
+          "category": "Databases and Storage",
+          "subcategory": "NOSQL",
+          "title": "Redis applied design patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-c12fc92f47f4",
+      "url": "https://aws.amazon.com/blogs/storage/comparing-your-on-premises-storage-patterns-with-aws-storage-services/",
+      "occurrences": [
+        {
+          "category": "Databases and Storage",
+          "subcategory": "Storage",
+          "title": "storage patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-9a096b66739c",
+      "url": "https://d1.awsstatic.com/whitepapers/AmazonS3BestPractices.pdf",
+      "occurrences": [
+        {
+          "category": "Databases and Storage",
+          "subcategory": "Storage",
+          "title": "S3 Design Patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-3e4f1429e55f",
+      "url": "https://l0rd.github.io/containerspatterns",
+      "occurrences": [
+        {
+          "category": "DevOps & containers",
+          "subcategory": null,
+          "title": "containerspatterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-a8908e745c38",
+      "url": "https://github.com/gravitational/workshop/blob/master/k8sprod.md",
+      "occurrences": [
+        {
+          "category": "DevOps & containers",
+          "subcategory": null,
+          "title": "kubernetes"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-44072166f4c3",
+      "url": "https://vitalflux.com/container-design-patterns-kubernetes-pods-design",
+      "occurrences": [
+        {
+          "category": "DevOps & containers",
+          "subcategory": null,
+          "title": "container-design-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-7d6cc42e48f7",
+      "url": "https://stackoverflow.com/questions/78497/design-patterns-or-best-practices-for-shell-scripts",
+      "occurrences": [
+        {
+          "category": "DevOps & containers",
+          "subcategory": null,
+          "title": "best-practices-for-shell-scripts"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-4712d8cd810f",
+      "url": "https://github.com/ro14nd-talks/kubernetes-patterns",
+      "occurrences": [
+        {
+          "category": "DevOps & containers",
+          "subcategory": null,
+          "title": "kubernetes patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-4aa54c23061a",
+      "url": "https://k8spatterns.io/",
+      "occurrences": [
+        {
+          "category": "DevOps & containers",
+          "subcategory": null,
+          "title": "kubernetes patterns book"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-d9b884e1b259",
+      "url": "https://cdkpatterns.com/",
+      "occurrences": [
+        {
+          "category": "DevOps & containers",
+          "subcategory": null,
+          "title": "cdk patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-c808c97159d9",
+      "url": "https://awscdk.io/",
+      "occurrences": [
+        {
+          "category": "DevOps & containers",
+          "subcategory": null,
+          "title": "CDK Construct Catalog"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-1ce80a6fc210",
+      "url": "https://medium.com/ios-os-x-development/ios-architecture-patterns-ecba4c38de52",
+      "occurrences": [
+        {
+          "category": "Mobile",
+          "subcategory": "IOS",
+          "title": "ios-architecture-patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-7ff5838f01ea",
+      "url": "https://www.raywenderlich.com/109843/common-design-patterns-for-android",
+      "occurrences": [
+        {
+          "category": "Mobile",
+          "subcategory": "Android",
+          "title": "design-patterns-for-android"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-1ecc7f88dd1a",
+      "url": "https://academy.realm.io/posts/eric-maxwell-mvc-mvp-and-mvvm-on-android",
+      "occurrences": [
+        {
+          "category": "Mobile",
+          "subcategory": "Android",
+          "title": "mvc-mvp-and-mvvm"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-9cde6cdd4859",
+      "url": "http://ui-patterns.com",
+      "occurrences": [
+        {
+          "category": "Front-End Development",
+          "subcategory": null,
+          "title": "user Interface"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-714a9b7bcbfc",
+      "url": "http://clubmate.fi/oocss-acss-bem-smacss-what-are-they-what-should-i-use",
+      "occurrences": [
+        {
+          "category": "Front-End Development",
+          "subcategory": null,
+          "title": "oocss-acss-bem-smacss"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-5840ad8eee6c",
+      "url": "https://github.com/AllThingsSmitty/css-protips",
+      "occurrences": [
+        {
+          "category": "Front-End Development",
+          "subcategory": null,
+          "title": "css-protips"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-97d01168247f",
+      "url": "https://bradfrost.github.io/this-is-responsive/patterns.html#layout",
+      "occurrences": [
+        {
+          "category": "Front-End Development",
+          "subcategory": null,
+          "title": "responsive design patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-e45702f7fa5d",
+      "url": "https://proandroiddev.com/mvc-mvp-mvvm-clean-viper-redux-mvi-prnsaaspfruicc-building-abstractions-for-the-sake-of-building-18459ab89386",
+      "occurrences": [
+        {
+          "category": "Front-End Development",
+          "subcategory": null,
+          "title": "mv*"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-b75c0f5926c6",
+      "url": "https://martinfowler.com/eaaDev/uiArchs.html",
+      "occurrences": [
+        {
+          "category": "Front-End Development",
+          "subcategory": null,
+          "title": "martinfowler"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-e464104d7b40",
+      "url": "http://www.opensecurityarchitecture.org/cms/library/patternlandscape",
+      "occurrences": [
+        {
+          "category": "Security",
+          "subcategory": null,
+          "title": "opensecurityarchitecture"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-89cb99770d63",
+      "url": "https://www.martinfowler.com/articles/web-security-basics.html",
+      "occurrences": [
+        {
+          "category": "Security",
+          "subcategory": null,
+          "title": "martinfowler"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-6ceed1e6f7fb",
+      "url": "https://www.infoq.com/articles/cloud-security-architecture-intro",
+      "occurrences": [
+        {
+          "category": "Security",
+          "subcategory": null,
+          "title": "cloud-security"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-b222a77c82d5",
+      "url": "https://www.owasp.org/index.php/Security_by_Design_Principles",
+      "occurrences": [
+        {
+          "category": "Security",
+          "subcategory": null,
+          "title": "owasp"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-804befe2ab88",
+      "url": "https://docs.microsoft.com/en-us/azure/security/security-best-practices-and-patterns",
+      "occurrences": [
+        {
+          "category": "Security",
+          "subcategory": null,
+          "title": "azure-security"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-8214b3068af3",
+      "url": "https://github.com/munificent/game-programming-patterns",
+      "occurrences": [
+        {
+          "category": "Books",
+          "subcategory": null,
+          "title": "Game Programming Patterns"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-9061d6a60f56",
+      "url": "https://www.manning.com/books/spring-boot-in-practice",
+      "occurrences": [
+        {
+          "category": "Books",
+          "subcategory": null,
+          "title": "Spring Boot in Practice"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    },
+    {
+      "id": "url-bd1245a32dbe",
+      "url": "https://www.manning.com/books/designing-microservices",
+      "occurrences": [
+        {
+          "category": "Books",
+          "subcategory": null,
+          "title": "Designing Microservices"
+        }
+      ],
+      "review_status": "not_reviewed_from_index"
+    }
+  ]
+}
