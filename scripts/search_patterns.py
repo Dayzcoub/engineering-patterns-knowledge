@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Local keyword search across card fields; no network and no dependencies."""
-import argparse, json, pathlib, re
+import argparse, json, pathlib, re, sys
+
+# Keep JSON and Russian descriptions intact when stdout is redirected on Windows.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 HERE=pathlib.Path(__file__).resolve().parent.parent
 
 def tokenize(s):
