@@ -129,7 +129,8 @@
       "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/retry",
       "status": "reviewed",
       "patterns": [
-        "retry"
+        "retry",
+        "staya-client-rate-limit"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": ""
@@ -138,7 +139,8 @@
       "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker",
       "status": "reviewed",
       "patterns": [
-        "circuit-breaker"
+        "circuit-breaker",
+        "staya-failover-hysteresis"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": ""
@@ -565,6 +567,240 @@
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Original SQLite or Windows API documentation reviewed 2026-11-12; not a physical power-loss or KLIDAN recovery test.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/RequestReply.html",
+      "status": "reviewed",
+      "patterns": [
+        "ipc-request-deadline",
+        "ipc-protocol-format-guard"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageExpiration.html",
+      "status": "reviewed",
+      "patterns": [
+        "ipc-request-deadline"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/CorrelationIdentifier.html",
+      "status": "reviewed",
+      "patterns": [
+        "ipc-request-deadline",
+        "ipc-generation-fence"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/FormatIndicator.html",
+      "status": "reviewed",
+      "patterns": [
+        "ipc-protocol-format-guard"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://martinfowler.com/articles/patterns-of-distributed-systems/generation-clock.html",
+      "status": "reviewed",
+      "patterns": [
+        "ipc-generation-fence"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/InvalidMessageChannel.html",
+      "status": "reviewed",
+      "patterns": [
+        "ipc-invalid-payload-quarantine"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/DeadLetterChannel.html",
+      "status": "reviewed",
+      "patterns": [
+        "ipc-invalid-payload-quarantine"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html",
+      "status": "reviewed",
+      "patterns": [
+        "ipc-invalid-payload-quarantine",
+        "security-structured-event-redaction"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/queue-based-load-leveling",
+      "status": "reviewed",
+      "patterns": [
+        "bounded-upstream-work-backpressure"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/rate-limiting-pattern",
+      "status": "reviewed",
+      "patterns": [
+        "bounded-upstream-work-backpressure",
+        "staya-client-rate-limit"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/health-endpoint-monitoring",
+      "status": "reviewed",
+      "patterns": [
+        "staya-active-path-health",
+        "staya-failover-hysteresis"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://caddyserver.com/docs/api",
+      "status": "reviewed",
+      "patterns": [
+        "staya-active-path-health",
+        "staya-public-route-contract",
+        "staya-staged-config-promotion",
+        "staya-admin-api-isolation"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://caddyserver.com/docs/caddyfile/matchers",
+      "status": "reviewed",
+      "patterns": [
+        "staya-active-path-health",
+        "staya-public-route-contract"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html",
+      "status": "reviewed",
+      "patterns": [
+        "staya-subscription-ssrf-boundary",
+        "staya-admin-api-isolation"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/Normalizer.html",
+      "status": "reviewed",
+      "patterns": [
+        "staya-subscription-normalization"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/CanonicalDataModel.html",
+      "status": "reviewed",
+      "patterns": [
+        "staya-subscription-normalization"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/ContentBasedRouter.html",
+      "status": "reviewed",
+      "patterns": [
+        "staya-subscription-normalization"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://caddyserver.com/docs/caddyfile/directives/handle_path",
+      "status": "reviewed",
+      "patterns": [
+        "staya-public-route-contract"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://github.com/XTLS/Xray-core/blob/c456141815359e1d2c00dfc673f5f26adf22fae2/main/run.go",
+      "status": "reviewed",
+      "patterns": [
+        "staya-staged-config-promotion"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html",
+      "status": "reviewed",
+      "patterns": [
+        "staya-staged-config-promotion",
+        "staya-admin-api-isolation",
+        "staya-secret-lifecycle",
+        "secure-deploy-artifact-gate"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html",
+      "status": "reviewed",
+      "patterns": [
+        "staya-secret-lifecycle",
+        "security-structured-event-redaction"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments",
+      "status": "reviewed",
+      "patterns": [
+        "secure-deploy-artifact-gate"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
       "reviewed_on": "2026-11-12"
     }
   ]

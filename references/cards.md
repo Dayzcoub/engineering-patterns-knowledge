@@ -386,3 +386,131 @@
 **Проекты:** KLIDAN, Audio Probe
 **Первоисточник:** https://www.sqlite.org/lang_savepoint.html, https://www.sqlite.org/lang_transaction.html
 
+## ipc-request-deadline | Request–Reply Deadline and Expired Reply (P1, reviewed)
+**Когда:** Поздний IPC/HTTP ответ приходит после timeout, а pending операции не освобождаются.
+**Решение:** Задать end-to-end deadline, correlation ID и явные TIMEOUT/CANCELLED; после deadline не применять ответ. Делить общий бюджет между retry/parse/apply.
+**Не применять:** Не считать cancellation остановкой remote side-effect; без idempotency повтор опасен.
+**Проверка:** Fake late reply, timeout budget, correlation mismatch, no pending leak.
+**Проекты:** KLIDAN, Audio Probe, STAYA
+**Первоисточник:** https://www.enterpriseintegrationpatterns.com/patterns/messaging/RequestReply.html, https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageExpiration.html, https://www.enterpriseintegrationpatterns.com/patterns/messaging/CorrelationIdentifier.html
+
+## ipc-protocol-format-guard | Explicit Protocol Version / Format Indicator (P1, reviewed)
+**Когда:** Worker и клиент разной версии иначе толкуют поля, а HELLO не несёт protocol.
+**Решение:** Начинать с handshake version и capability flags; обязательные поля валидировать, unknown optional трактовать по контракту; несовместимость = PROTOCOL_VERSION.
+**Не применять:** Version match не заменяет строгую проверку payload; optional полям нельзя произвольно ломать compatibility.
+**Проверка:** Missing/incorrect protocol, old/new peer, optional fields omitted, correlated ERROR.
+**Проекты:** KLIDAN, Audio Probe, STAYA
+**Первоисточник:** https://www.enterpriseintegrationpatterns.com/patterns/messaging/FormatIndicator.html, https://www.enterpriseintegrationpatterns.com/patterns/messaging/RequestReply.html
+
+## ipc-generation-fence | Generation Fence for Stale Worker Results (P1, reviewed)
+**Когда:** Старый worker или source возвращает результаты после reconnect/перезапуска.
+**Решение:** Связывать запрос с owner generation и сверять непосредственно перед apply. Для распределённого leader использовать persistent term/fencing у получателя.
+**Не применять:** Local counter не равен global consensus; wall-clock timestamp не fencing.
+**Проверка:** Old A completes after B, restart, late notify and stale leader term rejected.
+**Проекты:** KLIDAN, Audio Probe, STAYA
+**Первоисточник:** https://martinfowler.com/articles/patterns-of-distributed-systems/generation-clock.html, https://www.enterpriseintegrationpatterns.com/patterns/messaging/CorrelationIdentifier.html
+
+## ipc-invalid-payload-quarantine | Invalid Message Channel / Quarantine (P1, reviewed)
+**Когда:** Malformed subscription/IPC packet повторно запускает бесполезный обработчик.
+**Решение:** Разделить permanent schema error и transient failure; сохранять bounded redacted diagnostic с code/hash, не автоматически повторять poison payload.
+**Не применять:** Не хранить token, raw URL, body, private keys в журнале; broker не нужен для простого sync IPC.
+**Проверка:** Malformed/oversized/unknown version, no retry loop, no secret in logs.
+**Проекты:** STAYA, Audio Probe, KLIDAN
+**Первоисточник:** https://www.enterpriseintegrationpatterns.com/patterns/messaging/InvalidMessageChannel.html, https://www.enterpriseintegrationpatterns.com/patterns/messaging/DeadLetterChannel.html, https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html
+
+## bounded-upstream-work-backpressure | Bounded Work Queue and Backpressure (P1, reviewed)
+**Когда:** При burst запросов и health probes растут memory, concurrency и задержки.
+**Решение:** Задать max in-flight, bounded queue, overflow/reject/coalesce policy и fairness; контролировать queue age и cancelled work.
+**Не применять:** Не вводить message broker без потребности; не терять обязательные команды молча.
+**Проверка:** 100x burst, queue overflow, bounded memory, cancellation and shutdown.
+**Проекты:** STAYA, KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/azure/architecture/patterns/queue-based-load-leveling, https://learn.microsoft.com/en-us/azure/architecture/patterns/rate-limiting-pattern
+
+## staya-active-path-health | Process vs Public Endpoint vs End-to-End Health (P1, reviewed)
+**Когда:** systemd active или 200 не доказывает, что публичный URL и реальный egress работают.
+**Решение:** Разделить process/listener, local API, public host+path, content и end-to-end; каждому probe свой scope, timeout, права и диагностика.
+**Не применять:** 404 legacy/root не равен отказу нужного пути; HTTP 200 не доказывает VPN-транспорт.
+**Проверка:** Correct public path, active process with failed route, TLS mismatch, stale output, E2E failure.
+**Проекты:** STAYA
+**Первоисточник:** https://learn.microsoft.com/en-us/azure/architecture/patterns/health-endpoint-monitoring, https://caddyserver.com/docs/api, https://caddyserver.com/docs/caddyfile/matchers
+
+## staya-client-rate-limit | Per-Upstream Rate Limit and Retry-After Budget (P1, reviewed)
+**Когда:** Параллельный fetch подписок создаёт 429/503 и шторм повторов.
+**Решение:** Устанавливать per-upstream rate/concurrency, bounded attempts и общий deadline; учитывать допустимый Retry-After, добавлять jitter.
+**Не применять:** Не retry 400/401/403 или invalid schema; не обходить rate limit обходным host.
+**Проверка:** 429 Retry-After, 503 burst, 401 fail closed, retry budget exhaustion.
+**Проекты:** STAYA
+**Первоисточник:** https://learn.microsoft.com/en-us/azure/architecture/patterns/rate-limiting-pattern, https://learn.microsoft.com/en-us/azure/architecture/patterns/retry
+
+## staya-failover-hysteresis | Failover Hysteresis and Recovery Probe (P1, reviewed)
+**Когда:** Ноды flapping от краткого ping failure; stale health оставляет умерший upstream.
+**Решение:** Раздельно readiness/performance, пороги переходов, cooldown, half-open probes и TTL health. Проверить реальную способность текущего алгоритма Xray.
+**Не применять:** leastLoad сам по себе не доказывает health-based failover; не принимать решение по одному ping.
+**Проверка:** One transient loss, repeated failures, cooldown, recovery and all-down scenario.
+**Проекты:** STAYA
+**Первоисточник:** https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker, https://learn.microsoft.com/en-us/azure/architecture/patterns/health-endpoint-monitoring
+
+## staya-subscription-ssrf-boundary | Untrusted Subscription URL / SSRF Boundary (P1, reviewed)
+**Когда:** Панель загружает URL внешней подписки, способный вести на loopback, LAN или metadata endpoint.
+**Решение:** Разрешать policy schemes/hosts, запрещать private/link-local/metadata targets, контролировать DNS resolution, redirects и egress. Проверять адрес на каждом redirect.
+**Не применять:** Строковый prefix или https не доказывают безопасность; не давать fetch доступ к admin socket.
+**Проверка:** 127.0.0.1, ::1, link-local, RFC1918, redirect, DNS rebinding, URL userinfo.
+**Проекты:** STAYA
+**Первоисточник:** https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html
+
+## staya-subscription-normalization | Canonical Subscription Merge with Provenance (P1, reviewed)
+**Когда:** Внешние и локальные ноды конфликтуют по name/tag/id; результат зависит от порядка.
+**Решение:** Нормализовать в каноническую схему с source namespace; задать deterministic collision policy/sorting, validate output. Сохранить отдельные direct fixed-IP и GLOBAL AUTO entries.
+**Не применять:** Не отправлять secret URI в logs; не помещать direct nodes в AUTO по умолчанию.
+**Проверка:** Source reorder, duplicate ID, malformed tag, empty source, direct retained, client parsing.
+**Проекты:** STAYA
+**Первоисточник:** https://www.enterpriseintegrationpatterns.com/patterns/messaging/Normalizer.html, https://www.enterpriseintegrationpatterns.com/patterns/messaging/CanonicalDataModel.html, https://www.enterpriseintegrationpatterns.com/patterns/messaging/ContentBasedRouter.html
+
+## staya-public-route-contract | Reverse-Proxy Route as Public API Contract (P1, reviewed)
+**Когда:** Local /json/ может быть 404, но public /json-global/ корректен; агент объявляет ложный отказ.
+**Решение:** Описать exact public host+path, proxy matcher, strip/rewrite, expected status/content. Проверять публичный endpoint без раскрытия токена.
+**Не применять:** Не тестировать root вместо target; не расширять matcher до admin API.
+**Проверка:** Exact route vs legacy, trailing slash, TLS/host, content validation, no admin exposure.
+**Проекты:** STAYA
+**Первоисточник:** https://caddyserver.com/docs/caddyfile/matchers, https://caddyserver.com/docs/caddyfile/directives/handle_path, https://caddyserver.com/docs/api
+
+## staya-staged-config-promotion | Preflight–Stage–Promote–Verify–Rollback (P1, reviewed)
+**Когда:** Новую конфигурацию публикуют до теста и теряют рабочий Xray/Caddy.
+**Решение:** Кандидат + digest + backup, xray run -test preflight, staged update, active listener/public-route/E2E smoke. Отказ → documented per-service rollback and verify.
+**Не применять:** Caddy /load rollback не атомарен с Xray/3x-ui; parser PASS не значит REALITY/TLS PASS.
+**Проверка:** Invalid candidate, partial deploy, post-restart failure, digest mismatch, rollback probes.
+**Проекты:** STAYA
+**Первоисточник:** https://github.com/XTLS/Xray-core/blob/c456141815359e1d2c00dfc673f5f26adf22fae2/main/run.go, https://caddyserver.com/docs/api, https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html
+
+## staya-admin-api-isolation | Administrative Control Plane Isolation (P1, reviewed)
+**Когда:** Admin API доступен извне из-за wildcard proxy или listener binding.
+**Решение:** Отделить data/control plane, loopback/permissioned socket и ACL, независимую авторизацию и запрещающие маршруты.
+**Не применять:** Одного URL path недостаточно, когда admin listener уже открыт на публичном интерфейсе.
+**Проверка:** External anonymous GET/POST denied, local privileged allowed, firewall/binding verification.
+**Проекты:** STAYA
+**Первоисточник:** https://caddyserver.com/docs/api, https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html, https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html
+
+## staya-secret-lifecycle | Secret Inventory, Rotation and Redaction (P1, reviewed)
+**Когда:** Токены, ключи, конфиги попали в Git, logs, backup или stdout.
+**Решение:** Вести secret inventory, owner/access scope, rotation/revoke plan, encrypted storage, rights on backup, redact before logging; сохранить действующую SOPS/age policy.
+**Не применять:** UI-only mask не защищает stderr/console/history; не вставлять production credential в tests.
+**Проверка:** Canary leak scan, rotation rehearsal, permissions, old token revoked, clean report.
+**Проекты:** STAYA, KLIDAN, Audio Probe
+**Первоисточник:** https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html, https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html
+
+## security-structured-event-redaction | Structured Security Events without Token Leakage (P1, reviewed)
+**Когда:** Отладка требует correlation, но печатает raw subscription URL или secret JSON.
+**Решение:** Event code, component, safe ID, phase/status/reason, timestamp; redact sensitive data before sinks, escape newline, control access.
+**Не применять:** Не удалять audit trail целиком; не рассчитывать только на post-processing scrub.
+**Проверка:** Canary token absent in stdout/stderr/artifacts, newline injection test, useful correlation.
+**Проекты:** STAYA, KLIDAN, Audio Probe
+**Первоисточник:** https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html, https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html
+
+## secure-deploy-artifact-gate | Trusted Artifact and Protected Deployment Gate (P1, reviewed)
+**Когда:** На сервер отправляют бинарник без привязки к source SHA, artifact digest и approval.
+**Решение:** Проверять artifact digest и подпись у доверенного независимого источника, фиксировать source commit, preflight, deployment approval и rollback pointer.
+**Не применять:** SHA от того же недоверенного источника не authentication; подпись не доказывает отсутствие уязвимостей.
+**Проверка:** Tamper, untrusted manifest, incorrect SHA, unauthorized deploy, rollback verification.
+**Проекты:** STAYA, KLIDAN, Audio Probe
+**Первоисточник:** https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html, https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments
+
