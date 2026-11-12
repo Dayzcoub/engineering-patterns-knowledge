@@ -8,9 +8,9 @@
 | P0 | Потоки и звук | Real-time boundary, period lattice, actual buffer readback, duplex profiles, worker stop barrier, MMCSS | KLIDAN, Audio Probe | Минимальный стабильный профиль по физическим тестам, а не фиксированные 3/10 мс |
 | P0 | WPF и UI | MVVM, constraint-based layout, DPI reconciliation, Dispatcher, generation guard | KLIDAN | Full HD/DPI screenshot matrix, cancellation and focus tests |
 | P0 | Хранение и восстановление | SQLite WAL/checkpoint, backup, durability, cross-store intent, recovery | KLIDAN | Fault injection and no-data-loss gates |
-| P1 | Взаимодействие компонентов | Correlation ID, Versioned Value, Outbox | KLIDAN, STAYA | Late responses, IPC/reconnect tests |
-| P1 | Отказоустойчивость | Retry, Circuit Breaker, Bulkhead | STAYA | Failover and recovery tests |
-| P1 | Безопасность | Secure defaults, least privilege, validation | STAYA, installers | Negative tests |
+| P1 | Взаимодействие компонентов | IPC format/version, deadline, correlation, generation fence, poison payload | KLIDAN, Audio Probe, STAYA | Handshake/late reply tests |
+| P1 | Отказоустойчивость | Bounded work, rate limits, readiness layers, failover hysteresis, staged rollback | STAYA | Offline fault injection + live route/egress QA |
+| P1 | Безопасность | SSRF, admin isolation, secrets, logging redaction, artifact gates | STAYA, installers | Negative SSRF / leak / access tests |
 | P2 | Производительность | Dirty Flag, Data Locality | KLIDAN | Measured benchmark improvements |
 | P2 | Комплексные операции | Compensation, Saga | STAYA/new projects | Crash and compensation scenarios |
 | P3 | Масштабирование | Cloud, Serverless, Microservices | Future projects | Only on demand |
@@ -21,7 +21,7 @@
 - WPF/DPI/UI: первая документальная волна готова; нужны реальные KLIDAN скриншоты/layout QA и аппаратные multi-monitor прогоны. См. `wpf-fullhd-dpi-contract.md`.
 - SQLite/DataRoot: первая волна API и crash-recovery контракта готова; нужны физические interruption tests и code audit.
 - Договоры обновления приложений, signed installer, rollback и сохранение настроек.
-- Security design, secrets, multi-stage deployment для STAYA.
+- STAYA IPC/reliability/security: документальная P1-волна готова; требуется аудировать точные версии 3x-ui/Xray и провести ограниченные live negative/positive tests. См. `staya-ipc-resilience-security-contract.md`.
 
 ## Принцип управления источниками
 

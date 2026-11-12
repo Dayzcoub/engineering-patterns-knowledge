@@ -1,3 +1,10 @@
+## 0.5.0-preview.1 (2026-11-12)
+
+- Добавлены 16 карточек P1 по IPC, асинхронным ответам, rate limits, health, failover, SSRF, canonical subscription merge, public routing, safe deploy, admin isolation, secrets, logging и provenance.
+- Добавлен контракт STAYA и 6 machine-readable сценариев для review и QA.
+- Добавлены регрессионные проверки сценариев и статуса первоисточников.
+- Код STAYA/Xray/Caddy, рабочие ноды и пользовательские подписки не изменялись; live PASS не заявлен.
+
 ## 0.4.0-preview.1 (2026-11-12)
 
 - Добавлено 8 SQLite/DataRoot карточек: cross-store intent, checkpoint control, synchronous durability, live backup, single-writer retries, FK enforcement, integrity gate, nested savepoints.

@@ -11,3 +11,5 @@ This repository is an **offline knowledge skill**. The curated JSON is not a man
 7. Run `python scripts/validate.py` and `python -m unittest discover -s tests -v` before PR/commit.
 8. Do not modify KLIDAN/Audio Probe/STAYA sources from this repository. Integration belongs to the respective project PR.
 9. Never claim that automated JSON validation proves the pattern's architectural suitability.
+10. Для STAYA использовать placeholder вместо адресов, токенов, приватных ключей и production subscription URL. Evidence всегда redacted.
+11. Разделять document review, offline model checks, staged integration checks и live transport evidence.

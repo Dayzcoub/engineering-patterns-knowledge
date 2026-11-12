@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "version": "0.4.0-preview.1",
+  "version": "0.5.0-preview.1",
   "generated_on": "2026-11-12",
   "source_root": "https://github.com/DovAmir/awesome-design-patterns",
   "source_root_commit": "9006287f27e720000cc8763ae4cd150789b8571d",
-  "scope": "curated P0 audio, WPF and SQLite review; documentation not production QA",
+  "scope": "curated research cards: audio, WPF, SQLite, IPC, STAYA; not production QA",
   "cards": [
     {
       "id": "state-machine",
@@ -1073,6 +1073,387 @@
       "related": [
         "sqlite-atomic-transaction",
         "sqlite-cross-store-intent"
+      ]
+    },
+    {
+      "id": "ipc-request-deadline",
+      "title": "Request–Reply Deadline and Expired Reply",
+      "domain": "integration",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "Поздний IPC/HTTP ответ приходит после timeout, а pending операции не освобождаются.",
+      "approach": "Задать end-to-end deadline, correlation ID и явные TIMEOUT/CANCELLED; после deadline не применять ответ. Делить общий бюджет между retry/parse/apply.",
+      "avoid": "Не считать cancellation остановкой remote side-effect; без idempotency повтор опасен.",
+      "verification": "Fake late reply, timeout budget, correlation mismatch, no pending leak.",
+      "source_urls": [
+        "https://www.enterpriseintegrationpatterns.com/patterns/messaging/RequestReply.html",
+        "https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageExpiration.html",
+        "https://www.enterpriseintegrationpatterns.com/patterns/messaging/CorrelationIdentifier.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "message-correlation",
+        "idempotent-receiver",
+        "retry"
+      ]
+    },
+    {
+      "id": "ipc-protocol-format-guard",
+      "title": "Explicit Protocol Version / Format Indicator",
+      "domain": "integration",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "Worker и клиент разной версии иначе толкуют поля, а HELLO не несёт protocol.",
+      "approach": "Начинать с handshake version и capability flags; обязательные поля валидировать, unknown optional трактовать по контракту; несовместимость = PROTOCOL_VERSION.",
+      "avoid": "Version match не заменяет строгую проверку payload; optional полям нельзя произвольно ломать compatibility.",
+      "verification": "Missing/incorrect protocol, old/new peer, optional fields omitted, correlated ERROR.",
+      "source_urls": [
+        "https://www.enterpriseintegrationpatterns.com/patterns/messaging/FormatIndicator.html",
+        "https://www.enterpriseintegrationpatterns.com/patterns/messaging/RequestReply.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "message-correlation",
+        "input-validation"
+      ]
+    },
+    {
+      "id": "ipc-generation-fence",
+      "title": "Generation Fence for Stale Worker Results",
+      "domain": "concurrency",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "Старый worker или source возвращает результаты после reconnect/перезапуска.",
+      "approach": "Связывать запрос с owner generation и сверять непосредственно перед apply. Для распределённого leader использовать persistent term/fencing у получателя.",
+      "avoid": "Local counter не равен global consensus; wall-clock timestamp не fencing.",
+      "verification": "Old A completes after B, restart, late notify and stale leader term rejected.",
+      "source_urls": [
+        "https://martinfowler.com/articles/patterns-of-distributed-systems/generation-clock.html",
+        "https://www.enterpriseintegrationpatterns.com/patterns/messaging/CorrelationIdentifier.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "versioned-value",
+        "wpf-async-generation-guard",
+        "message-correlation"
+      ]
+    },
+    {
+      "id": "ipc-invalid-payload-quarantine",
+      "title": "Invalid Message Channel / Quarantine",
+      "domain": "integration",
+      "priority": "P1",
+      "projects": [
+        "STAYA",
+        "Audio Probe",
+        "KLIDAN"
+      ],
+      "signals": "Malformed subscription/IPC packet повторно запускает бесполезный обработчик.",
+      "approach": "Разделить permanent schema error и transient failure; сохранять bounded redacted diagnostic с code/hash, не автоматически повторять poison payload.",
+      "avoid": "Не хранить token, raw URL, body, private keys в журнале; broker не нужен для простого sync IPC.",
+      "verification": "Malformed/oversized/unknown version, no retry loop, no secret in logs.",
+      "source_urls": [
+        "https://www.enterpriseintegrationpatterns.com/patterns/messaging/InvalidMessageChannel.html",
+        "https://www.enterpriseintegrationpatterns.com/patterns/messaging/DeadLetterChannel.html",
+        "https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "input-validation",
+        "ipc-protocol-format-guard"
+      ]
+    },
+    {
+      "id": "bounded-upstream-work-backpressure",
+      "title": "Bounded Work Queue and Backpressure",
+      "domain": "reliability",
+      "priority": "P1",
+      "projects": [
+        "STAYA",
+        "KLIDAN"
+      ],
+      "signals": "При burst запросов и health probes растут memory, concurrency и задержки.",
+      "approach": "Задать max in-flight, bounded queue, overflow/reject/coalesce policy и fairness; контролировать queue age и cancelled work.",
+      "avoid": "Не вводить message broker без потребности; не терять обязательные команды молча.",
+      "verification": "100x burst, queue overflow, bounded memory, cancellation and shutdown.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/azure/architecture/patterns/queue-based-load-leveling",
+        "https://learn.microsoft.com/en-us/azure/architecture/patterns/rate-limiting-pattern"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "bulkhead",
+        "retry",
+        "event-queue"
+      ]
+    },
+    {
+      "id": "staya-active-path-health",
+      "title": "Process vs Public Endpoint vs End-to-End Health",
+      "domain": "reliability",
+      "priority": "P1",
+      "projects": [
+        "STAYA"
+      ],
+      "signals": "systemd active или 200 не доказывает, что публичный URL и реальный egress работают.",
+      "approach": "Разделить process/listener, local API, public host+path, content и end-to-end; каждому probe свой scope, timeout, права и диагностика.",
+      "avoid": "404 legacy/root не равен отказу нужного пути; HTTP 200 не доказывает VPN-транспорт.",
+      "verification": "Correct public path, active process with failed route, TLS mismatch, stale output, E2E failure.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/azure/architecture/patterns/health-endpoint-monitoring",
+        "https://caddyserver.com/docs/api",
+        "https://caddyserver.com/docs/caddyfile/matchers"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "circuit-breaker",
+        "staya-public-route-contract",
+        "staya-failover-hysteresis"
+      ]
+    },
+    {
+      "id": "staya-client-rate-limit",
+      "title": "Per-Upstream Rate Limit and Retry-After Budget",
+      "domain": "reliability",
+      "priority": "P1",
+      "projects": [
+        "STAYA"
+      ],
+      "signals": "Параллельный fetch подписок создаёт 429/503 и шторм повторов.",
+      "approach": "Устанавливать per-upstream rate/concurrency, bounded attempts и общий deadline; учитывать допустимый Retry-After, добавлять jitter.",
+      "avoid": "Не retry 400/401/403 или invalid schema; не обходить rate limit обходным host.",
+      "verification": "429 Retry-After, 503 burst, 401 fail closed, retry budget exhaustion.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/azure/architecture/patterns/rate-limiting-pattern",
+        "https://learn.microsoft.com/en-us/azure/architecture/patterns/retry"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "retry",
+        "bounded-upstream-work-backpressure",
+        "circuit-breaker"
+      ]
+    },
+    {
+      "id": "staya-failover-hysteresis",
+      "title": "Failover Hysteresis and Recovery Probe",
+      "domain": "reliability",
+      "priority": "P1",
+      "projects": [
+        "STAYA"
+      ],
+      "signals": "Ноды flapping от краткого ping failure; stale health оставляет умерший upstream.",
+      "approach": "Раздельно readiness/performance, пороги переходов, cooldown, half-open probes и TTL health. Проверить реальную способность текущего алгоритма Xray.",
+      "avoid": "leastLoad сам по себе не доказывает health-based failover; не принимать решение по одному ping.",
+      "verification": "One transient loss, repeated failures, cooldown, recovery and all-down scenario.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker",
+        "https://learn.microsoft.com/en-us/azure/architecture/patterns/health-endpoint-monitoring"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "circuit-breaker",
+        "staya-active-path-health",
+        "bulkhead"
+      ]
+    },
+    {
+      "id": "staya-subscription-ssrf-boundary",
+      "title": "Untrusted Subscription URL / SSRF Boundary",
+      "domain": "security",
+      "priority": "P1",
+      "projects": [
+        "STAYA"
+      ],
+      "signals": "Панель загружает URL внешней подписки, способный вести на loopback, LAN или metadata endpoint.",
+      "approach": "Разрешать policy schemes/hosts, запрещать private/link-local/metadata targets, контролировать DNS resolution, redirects и egress. Проверять адрес на каждом redirect.",
+      "avoid": "Строковый prefix или https не доказывают безопасность; не давать fetch доступ к admin socket.",
+      "verification": "127.0.0.1, ::1, link-local, RFC1918, redirect, DNS rebinding, URL userinfo.",
+      "source_urls": [
+        "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "input-validation",
+        "staya-subscription-normalization"
+      ]
+    },
+    {
+      "id": "staya-subscription-normalization",
+      "title": "Canonical Subscription Merge with Provenance",
+      "domain": "integration",
+      "priority": "P1",
+      "projects": [
+        "STAYA"
+      ],
+      "signals": "Внешние и локальные ноды конфликтуют по name/tag/id; результат зависит от порядка.",
+      "approach": "Нормализовать в каноническую схему с source namespace; задать deterministic collision policy/sorting, validate output. Сохранить отдельные direct fixed-IP и GLOBAL AUTO entries.",
+      "avoid": "Не отправлять secret URI в logs; не помещать direct nodes в AUTO по умолчанию.",
+      "verification": "Source reorder, duplicate ID, malformed tag, empty source, direct retained, client parsing.",
+      "source_urls": [
+        "https://www.enterpriseintegrationpatterns.com/patterns/messaging/Normalizer.html",
+        "https://www.enterpriseintegrationpatterns.com/patterns/messaging/CanonicalDataModel.html",
+        "https://www.enterpriseintegrationpatterns.com/patterns/messaging/ContentBasedRouter.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "idempotent-receiver",
+        "input-validation",
+        "staya-subscription-ssrf-boundary"
+      ]
+    },
+    {
+      "id": "staya-public-route-contract",
+      "title": "Reverse-Proxy Route as Public API Contract",
+      "domain": "integration",
+      "priority": "P1",
+      "projects": [
+        "STAYA"
+      ],
+      "signals": "Local /json/ может быть 404, но public /json-global/ корректен; агент объявляет ложный отказ.",
+      "approach": "Описать exact public host+path, proxy matcher, strip/rewrite, expected status/content. Проверять публичный endpoint без раскрытия токена.",
+      "avoid": "Не тестировать root вместо target; не расширять matcher до admin API.",
+      "verification": "Exact route vs legacy, trailing slash, TLS/host, content validation, no admin exposure.",
+      "source_urls": [
+        "https://caddyserver.com/docs/caddyfile/matchers",
+        "https://caddyserver.com/docs/caddyfile/directives/handle_path",
+        "https://caddyserver.com/docs/api"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "staya-active-path-health",
+        "least-privilege"
+      ]
+    },
+    {
+      "id": "staya-staged-config-promotion",
+      "title": "Preflight–Stage–Promote–Verify–Rollback",
+      "domain": "reliability",
+      "priority": "P1",
+      "projects": [
+        "STAYA"
+      ],
+      "signals": "Новую конфигурацию публикуют до теста и теряют рабочий Xray/Caddy.",
+      "approach": "Кандидат + digest + backup, xray run -test preflight, staged update, active listener/public-route/E2E smoke. Отказ → documented per-service rollback and verify.",
+      "avoid": "Caddy /load rollback не атомарен с Xray/3x-ui; parser PASS не значит REALITY/TLS PASS.",
+      "verification": "Invalid candidate, partial deploy, post-restart failure, digest mismatch, rollback probes.",
+      "source_urls": [
+        "https://github.com/XTLS/Xray-core/blob/c456141815359e1d2c00dfc673f5f26adf22fae2/main/run.go",
+        "https://caddyserver.com/docs/api",
+        "https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "staya-active-path-health",
+        "staya-public-route-contract",
+        "idempotent-receiver"
+      ]
+    },
+    {
+      "id": "staya-admin-api-isolation",
+      "title": "Administrative Control Plane Isolation",
+      "domain": "security",
+      "priority": "P1",
+      "projects": [
+        "STAYA"
+      ],
+      "signals": "Admin API доступен извне из-за wildcard proxy или listener binding.",
+      "approach": "Отделить data/control plane, loopback/permissioned socket и ACL, независимую авторизацию и запрещающие маршруты.",
+      "avoid": "Одного URL path недостаточно, когда admin listener уже открыт на публичном интерфейсе.",
+      "verification": "External anonymous GET/POST denied, local privileged allowed, firewall/binding verification.",
+      "source_urls": [
+        "https://caddyserver.com/docs/api",
+        "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html",
+        "https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "least-privilege",
+        "staya-public-route-contract"
+      ]
+    },
+    {
+      "id": "staya-secret-lifecycle",
+      "title": "Secret Inventory, Rotation and Redaction",
+      "domain": "security",
+      "priority": "P1",
+      "projects": [
+        "STAYA",
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Токены, ключи, конфиги попали в Git, logs, backup или stdout.",
+      "approach": "Вести secret inventory, owner/access scope, rotation/revoke plan, encrypted storage, rights on backup, redact before logging; сохранить действующую SOPS/age policy.",
+      "avoid": "UI-only mask не защищает stderr/console/history; не вставлять production credential в tests.",
+      "verification": "Canary leak scan, rotation rehearsal, permissions, old token revoked, clean report.",
+      "source_urls": [
+        "https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html",
+        "https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "least-privilege",
+        "staya-admin-api-isolation"
+      ]
+    },
+    {
+      "id": "security-structured-event-redaction",
+      "title": "Structured Security Events without Token Leakage",
+      "domain": "security",
+      "priority": "P1",
+      "projects": [
+        "STAYA",
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Отладка требует correlation, но печатает raw subscription URL или secret JSON.",
+      "approach": "Event code, component, safe ID, phase/status/reason, timestamp; redact sensitive data before sinks, escape newline, control access.",
+      "avoid": "Не удалять audit trail целиком; не рассчитывать только на post-processing scrub.",
+      "verification": "Canary token absent in stdout/stderr/artifacts, newline injection test, useful correlation.",
+      "source_urls": [
+        "https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html",
+        "https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "staya-secret-lifecycle",
+        "message-correlation"
+      ]
+    },
+    {
+      "id": "secure-deploy-artifact-gate",
+      "title": "Trusted Artifact and Protected Deployment Gate",
+      "domain": "security",
+      "priority": "P1",
+      "projects": [
+        "STAYA",
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "На сервер отправляют бинарник без привязки к source SHA, artifact digest и approval.",
+      "approach": "Проверять artifact digest и подпись у доверенного независимого источника, фиксировать source commit, preflight, deployment approval и rollback pointer.",
+      "avoid": "SHA от того же недоверенного источника не authentication; подпись не доказывает отсутствие уязвимостей.",
+      "verification": "Tamper, untrusted manifest, incorrect SHA, unauthorized deploy, rollback verification.",
+      "source_urls": [
+        "https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "staya-staged-config-promotion",
+        "staya-secret-lifecycle"
       ]
     }
   ]
