@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "version": "0.7.0-preview.1",
+  "generated_on": "2026-11-12",
+  "status": "proposed synthetic QA, not executed performance measurements",
+  "items": [
+    {
+      "id": "klidan-media-10k",
+      "project": "KLIDAN",
+      "query": "media library 10000 thumbnail assets consumes unbounded memory after scroll",
+      "must_consider": [
+        "cache-size-revision-budget",
+        "large-object-heap-budget",
+        "wpf-virtualized-list"
+      ],
+      "acceptance": [
+        "bounded cache size under 10k distinct media keys",
+        "file revision invalidates stale thumbnail",
+        "measure physical working-set and GC on target Windows runtime"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "klidan-concurrent-thumb",
+      "project": "KLIDAN",
+      "query": "10 simultaneous thumbnail requests for same media file cause duplicate expensive decoding",
+      "must_consider": [
+        "cache-single-flight",
+        "concurrent-getoradd-side-effect",
+        "pooled-buffer-ownership"
+      ],
+      "acceptance": [
+        "at most one active load per key under policy",
+        "failed load can retry",
+        "caller cancellation does not poison shared cache"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "klidan-video-preview-60fps",
+      "project": "KLIDAN",
+      "query": "decode 60fps but preview render 30fps causes increasing queue latency",
+      "must_consider": [
+        "latest-frame-coalescing",
+        "bounded-channel-overflow-policy",
+        "pooled-buffer-ownership"
+      ],
+      "acceptance": [
+        "preview queue remains bounded",
+        "superseded frame buffer released once",
+        "Program/TAKE and audio sync separately verified"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "audio-probe-cts-race",
+      "project": "Audio Probe",
+      "query": "cancel and dispose scanner while async worker has pending read",
+      "must_consider": [
+        "cancellation-source-lifecycle",
+        "audio-stream-shutdown-barrier",
+        "ipc-generation-fence"
+      ],
+      "acceptance": [
+        "Cancel precedes worker join and Dispose",
+        "late worker cannot apply result",
+        "no resource double dispose or deadlock"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "audio-probe-pool-after-return",
+      "project": "Audio Probe",
+      "query": "audio packet parser retained ArrayPool memory beyond owner lifetime",
+      "must_consider": [
+        "pooled-buffer-ownership",
+        "span-memory-lifetime",
+        "wasapi-capture-packet-lifetime"
+      ],
+      "acceptance": [
+        "no access after return",
+        "valid bytes distinct from array capacity",
+        "race/fault tests cover late reader"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "staya-cache-secret-leak",
+      "project": "STAYA",
+      "query": "subscription cache reused memory or key contains credential from previous user",
+      "must_consider": [
+        "pooled-sensitive-buffer-clearing",
+        "cache-size-revision-budget",
+        "security-structured-event-redaction"
+      ],
+      "acceptance": [
+        "canary secrets never leak between requests",
+        "cache keys bounded and redacted",
+        "cache eviction and TTL deterministic"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "klidan-layout-gc-regression",
+      "project": "KLIDAN",
+      "query": "full HD mixer rendering feels slower after refactor but unit tests are green",
+      "must_consider": [
+        "performance-baseline-budget",
+        "large-object-heap-budget",
+        "wpf-layout-pass-budget"
+      ],
+      "acceptance": [
+        "release baseline measured on target hardware",
+        "p95/p99, allocations, GC measured before and after",
+        "regression fails agreed threshold"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "ipc-pipeline-malformed-frame",
+      "project": "Audio Probe",
+      "query": "fragmented IPC packets cause PipeReader to retain buffers indefinitely",
+      "must_consider": [
+        "pipeline-backpressure-advance",
+        "ipc-protocol-format-guard",
+        "bounded-channel-overflow-policy"
+      ],
+      "acceptance": [
+        "reader advances consumed/examined positions correctly",
+        "malformed packet fails boundedly",
+        "Complete releases pipe memory on stop"
+      ],
+      "decision_status": "proposed"
+    }
+  ]
+}

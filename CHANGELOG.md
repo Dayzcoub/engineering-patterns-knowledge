@@ -1,3 +1,10 @@
+## 0.7.0-preview.1 (2026-11-12)
+
+- Добавлено 13 карточек P0/P2 по System.Threading.Channels, ArrayPool, LOH/GC, Span/Memory, Pipelines, GetOrAdd, кешированию, ReaderWriterLockSlim, CancellationTokenSource и preview coalescing.
+- Добавлены `references/performance-memory-contract.md` и 8 сценариев `data/performance-scenarios.json` для KLIDAN/Audio Probe/STAYA.
+- Синхронизированы версии уже существующих сценариев; тесты расширены на источники, ссылки и границы доказательств.
+- Реальных замеров и изменений production-кода нет.
+
 ## 0.6.0-preview.1 (2026-11-12)
 
 - Добавлены 16 P0/P1 карточек по Caddy validate/reload, systemd, Compose readiness, immutable images, SOPS, OpenTelemetry/Prometheus, TUF, Authenticode, MSI rollback, updater handoff, SLSA и release approvals.

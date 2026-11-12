@@ -164,5 +164,34 @@ class CatalogTests(unittest.TestCase):
                        'canary', 'rollback', 'cardinality'):
             self.assertIn(marker, text)
 
+    def test_perf_cases_and_source_links(self):
+        catalog = json.loads((ROOT / 'data' / 'patterns.json').read_text(encoding='utf-8'))
+        sources = json.loads((ROOT / 'data' / 'sources.json').read_text(encoding='utf-8'))
+        perf = json.loads((ROOT / 'data' / 'performance-scenarios.json').read_text(encoding='utf-8'))
+        self.assertEqual(perf['version'], catalog['version'])
+        self.assertEqual(len(perf['items']), 8)
+        ids = {c['id'] for c in catalog['cards']}
+        for case in perf['items']:
+            self.assertEqual(case['decision_status'], 'proposed')
+            self.assertTrue(set(case['must_consider']) <= ids)
+            self.assertGreaterEqual(len(case['acceptance']), 2)
+        urls = {s['url']: s for s in sources['sources']}
+        for card in catalog['cards']:
+            if card['id'] in {'pooled-buffer-ownership', 'bounded-channel-overflow-policy',
+                              'concurrent-getoradd-side-effect', 'cache-size-revision-budget',
+                              'latest-frame-coalescing', 'cancellation-source-lifecycle'}:
+                self.assertTrue(all(urls[u]['status'] == 'reviewed' for u in card['source_urls']))
+
+    def test_perf_contract_mentions_physical_limits(self):
+        text = (ROOT / 'references' / 'performance-memory-contract.md').read_text(encoding='utf-8')
+        for s in ('ArrayPool', 'GetOrAdd', 'AdvanceTo', 'Dispose', 'p95', 'Program'):
+            self.assertIn(s, text)
+
+    def test_all_scenario_versions_match_catalog(self):
+        catalog = json.loads((ROOT / 'data' / 'patterns.json').read_text(encoding='utf-8'))
+        for filename in ('staya-scenarios.json', 'devops-scenarios.json', 'performance-scenarios.json'):
+            content = json.loads((ROOT / 'data' / filename).read_text(encoding='utf-8'))
+            self.assertEqual(content['version'], catalog['version'])
+
 if __name__ == '__main__':
     unittest.main()

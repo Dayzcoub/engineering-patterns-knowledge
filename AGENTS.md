@@ -15,3 +15,5 @@ This repository is an **offline knowledge skill**. The curated JSON is not a man
 11. Разделять document review, offline model checks, staged integration checks и live transport evidence.
 12. Update-паттерны: определить реальный тип установщика (MSI/Inno/NSIS), ожидаемую цепочку доверия и модель update feed до предложения изменений.
 13. Отличать проверку конфигурации от проверки реального network/rollback/release; status DOC_REVIEW не является PROD_PASS.
+14. Любая performance-карточка требует ограничений памяти, модели owner/lifetime и физической метрики; `DOC_REVIEW` не равен измеренному улучшению на целевом компьютере.
+15. Не переносить drop/coalescing preview кадров на audio, Program output, команды и важные записываемые события.
