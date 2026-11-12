@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "0.9.2-preview.1",
+  "version": "0.9.3-preview.1",
   "generated_on": "2026-11-12",
   "status": "PROPOSED synthetic and physical QA; NOT EXECUTED",
   "items": [
@@ -100,6 +100,50 @@
         "Record device ID, mode, requested and effective period, sample format, duration, loss/discontinuity flags, lease p95/p99/max and artifact hashes",
         "Evaluate candidate supported buffers by transport stability and bounded processing, not signal amplitude or fixed 3/10 ms",
         "DOC_REVIEW and synthetic test success never become hardware PASS"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "capture-stop-reset-lease-barrier",
+      "project": "Audio Probe",
+      "query": "Stop/Reset races with a held GetBuffer packet",
+      "must_consider": [
+        "audio-capture-stop-reset-barrier",
+        "audio-capture-buffer-lease"
+      ],
+      "acceptance": [
+        "No Reset while active lease; expected BUFFER_OPERATION_PENDING classified",
+        "Cancellation joins worker within declared timeout; no stale packet accepted",
+        "Stop alone preserves clock position; Reset on stopped stream starts new epoch"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "capture-unplug-error-matrix",
+      "project": "Audio Probe",
+      "query": "Injected DEVICE_INVALIDATED RESOURCES_INVALIDATED SERVICE_NOT_RUNNING and BUFFER_ERROR",
+      "must_consider": [
+        "audio-capture-invalidation-recovery",
+        "audio-capture-packet-epoch"
+      ],
+      "acceptance": [
+        "Each HRESULT retained and classified; no invalidated scan counts as stable",
+        "Transient exclusive BUFFER_ERROR waits without spin; repeated errors enter bounded recovery",
+        "Reopened client uses fresh generation and capability discovery"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "capture-worker-shutdown-repetition",
+      "project": "KLIDAN",
+      "query": "Repeated Stop and cancellation while event wait is blocked",
+      "must_consider": [
+        "audio-capture-stop-reset-barrier"
+      ],
+      "acceptance": [
+        "Wake and bounded join complete; no COM release while worker uses client",
+        "Repeated Stop is idempotent; late callback cannot publish into new epoch",
+        "Physical USB unplug and long-duration test remain NOT EXECUTED"
       ],
       "decision_status": "proposed"
     }

@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "version": "0.9.2-preview.1",
+  "version": "0.9.3-preview.1",
   "generated_on": "2026-11-12",
   "source_root": "https://github.com/DovAmir/awesome-design-patterns",
   "source_root_commit": "9006287f27e720000cc8763ae4cd150789b8571d",
-  "scope": "curated Microsoft API DOC_REVIEW; no physical Audio Probe/KLIDAN qualification",
+  "scope": "WASAPI capture API DOC_REVIEW; no physical Audio Probe/KLIDAN qualification",
   "cards": [
     {
       "id": "state-machine",
@@ -2605,6 +2605,55 @@
         "audio-capture-buffer-lease",
         "audio-minimum-stable-profile",
         "audio-capture-discontinuity-evidence"
+      ]
+    },
+    {
+      "id": "audio-capture-stop-reset-barrier",
+      "title": "WASAPI Capture Stop/Reset Barrier",
+      "domain": "audio",
+      "priority": "P0",
+      "projects": [
+        "Audio Probe",
+        "KLIDAN"
+      ],
+      "signals": "Cancellation or Reset races with an active GetBuffer/ReleaseBuffer lease; worker shutdown hangs or returns AUDCLNT_E_BUFFER_OPERATION_PENDING.",
+      "approach": "Signal worker cancellation and wake its wait; stop acquisition, complete or safely abandon the active lease on the capture thread, join worker with a bounded deadline, then Stop and Reset only after outstanding buffer operations have ended. Reset requires stopped stream, flushes pending data and returns stream clock to zero. Preserve HRESULT and generation identity; restart is a new measurement epoch.",
+      "avoid": "Do not Reset a running stream or while a buffer operation is pending; do not dispose COM interfaces while worker still uses them; do not block capture callback on UI or network; do not assume Stop resets clock.",
+      "verification": "Proposed deterministic Stop during GetBuffer, cancellation while waiting, Reset before Stop, Reset during lease, late packet after restart, repeated stop/idempotence, bounded join and error classification. Hardware unplug/reconnect remains separately required.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-stop",
+        "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-reset",
+        "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getbuffer"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "audio-capture-buffer-lease",
+        "audio-capture-packet-epoch",
+        "audio-minimum-stable-profile"
+      ]
+    },
+    {
+      "id": "audio-capture-invalidation-recovery",
+      "title": "Capture Invalidation and Error Classification",
+      "domain": "audio",
+      "priority": "P0",
+      "projects": [
+        "Audio Probe",
+        "KLIDAN"
+      ],
+      "signals": "Device unplug, service stop, suspended stream, exclusive packet not ready or repeated GetBuffer failure is reported as a stable scan or an endless retry.",
+      "approach": "Classify AUDCLNT_E_DEVICE_INVALIDATED, RESOURCES_INVALIDATED, SERVICE_NOT_RUNNING and BUFFER_OPERATION_PENDING separately from exclusive-mode BUFFER_ERROR. For an isolated no-packet BUFFER_ERROR, wait for next processing pass; repeated errors trigger controlled shutdown and fresh client setup. Fence late results by stream generation, preserve failure evidence and re-discover device capability before a new scan.",
+      "avoid": "Do not spin on BUFFER_ERROR, count invalidated epochs as PASS, blindly retry every HRESULT, or reuse a pointer after ReleaseBuffer. A documented recovery option is not proof of stable hardware behavior.",
+      "verification": "Proposed fault matrix for unplug, audio-service loss, resource invalidation, transient/repeated exclusive BUFFER_ERROR and stale completion. Verify bounded recovery, no false stability and exact HRESULT evidence; physical reconnection is a separate gate.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getbuffer",
+        "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-releasebuffer"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "audio-capture-packet-epoch",
+        "audio-capture-stop-reset-barrier",
+        "qa-physical-evidence-separation"
       ]
     }
   ]

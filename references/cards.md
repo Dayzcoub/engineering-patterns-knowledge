@@ -934,3 +934,33 @@
 **Review:** DOC_REVIEW (source_review=reviewed), no hardware PASS.
 
 **Sources:** https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getnextpacketsize, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-getcurrentpadding, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getbuffer
+
+## WASAPI capture worker lifecycle (2026-11-12)
+
+### audio-capture-stop-reset-barrier
+
+**Signals:** Cancellation or Reset races with an active GetBuffer/ReleaseBuffer lease; worker shutdown hangs or returns AUDCLNT_E_BUFFER_OPERATION_PENDING.
+
+**Approach:** Signal worker cancellation and wake its wait; stop acquisition, complete or safely abandon the active lease on the capture thread, join worker with a bounded deadline, then Stop and Reset only after outstanding buffer operations have ended. Reset requires stopped stream, flushes pending data and returns stream clock to zero. Preserve HRESULT and generation identity; restart is a new measurement epoch.
+
+**Avoid:** Do not Reset a running stream or while a buffer operation is pending; do not dispose COM interfaces while worker still uses them; do not block capture callback on UI or network; do not assume Stop resets clock.
+
+**Verification:** Proposed deterministic Stop during GetBuffer, cancellation while waiting, Reset before Stop, Reset during lease, late packet after restart, repeated stop/idempotence, bounded join and error classification. Hardware unplug/reconnect remains separately required.
+
+**Review:** DOC_REVIEW (source_review=reviewed), hardware NOT EXECUTED.
+
+**Sources:** https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-stop, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-reset, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getbuffer
+
+### audio-capture-invalidation-recovery
+
+**Signals:** Device unplug, service stop, suspended stream, exclusive packet not ready or repeated GetBuffer failure is reported as a stable scan or an endless retry.
+
+**Approach:** Classify AUDCLNT_E_DEVICE_INVALIDATED, RESOURCES_INVALIDATED, SERVICE_NOT_RUNNING and BUFFER_OPERATION_PENDING separately from exclusive-mode BUFFER_ERROR. For an isolated no-packet BUFFER_ERROR, wait for next processing pass; repeated errors trigger controlled shutdown and fresh client setup. Fence late results by stream generation, preserve failure evidence and re-discover device capability before a new scan.
+
+**Avoid:** Do not spin on BUFFER_ERROR, count invalidated epochs as PASS, blindly retry every HRESULT, or reuse a pointer after ReleaseBuffer. A documented recovery option is not proof of stable hardware behavior.
+
+**Verification:** Proposed fault matrix for unplug, audio-service loss, resource invalidation, transient/repeated exclusive BUFFER_ERROR and stale completion. Verify bounded recovery, no false stability and exact HRESULT evidence; physical reconnection is a separate gate.
+
+**Review:** DOC_REVIEW (source_review=reviewed), hardware NOT EXECUTED.
+
+**Sources:** https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getbuffer, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-releasebuffer
