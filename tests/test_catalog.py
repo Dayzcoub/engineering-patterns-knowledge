@@ -62,6 +62,25 @@ class CatalogTests(unittest.TestCase):
         for marker in ('NO_STABLE_PROFILE', 'GetBufferSize', '60/300/600', 'hardwareEvidence'):
             self.assertIn(marker, text)
 
+    def test_p0_wpf_patterns_and_sources(self):
+        catalog = json.loads((ROOT / 'data' / 'patterns.json').read_text(encoding='utf-8'))
+        source_doc = json.loads((ROOT / 'data' / 'sources.json').read_text(encoding='utf-8'))
+        by_id = {card['id']: card for card in catalog['cards']}
+        urls = {item['url']: item for item in source_doc['sources']}
+        expected = {'wpf-responsive-layout', 'wpf-per-monitor-dpi', 'wpf-dispatcher-ownership',
+                    'wpf-async-generation-guard', 'wpf-virtualized-list', 'wpf-focus-scope'}
+        self.assertTrue(expected.issubset(by_id))
+        for pid in expected:
+            card = by_id[pid]
+            self.assertEqual(card['source_review'], 'reviewed')
+            self.assertTrue(all(urls[u]['status'] == 'reviewed' for u in card['source_urls']))
+
+    def test_wpf_contract_covers_fullhd_dpi_and_late_replies(self):
+        content = (ROOT / 'references' / 'wpf-fullhd-dpi-contract.md').read_text(encoding='utf-8')
+        for token in ('1920×1080', '100%', '125%', '150%', 'WorkArea',
+                      'Dispose', 'Dispatcher', 'virtualization'):
+            self.assertIn(token, content)
+
 
 if __name__ == '__main__':
     unittest.main()

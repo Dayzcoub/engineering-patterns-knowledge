@@ -114,7 +114,8 @@
       "url": "https://martinfowler.com/articles/patterns-of-distributed-systems/versioned-value.html",
       "status": "reviewed",
       "patterns": [
-        "versioned-value"
+        "versioned-value",
+        "wpf-async-generation-guard"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": ""
@@ -361,6 +362,109 @@
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/layout",
+      "status": "reviewed",
+      "patterns": [
+        "wpf-responsive-layout",
+        "wpf-per-monitor-dpi",
+        "wpf-layout-pass-budget"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Official Microsoft documentation checked 2026-11-12; source review is not a KLIDAN UI QA result.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/use-automatic-layout-overview",
+      "status": "reviewed",
+      "patterns": [
+        "wpf-responsive-layout"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Official Microsoft documentation checked 2026-11-12; source review is not a KLIDAN UI QA result.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/hidpi/high-dpi-desktop-application-development-on-windows",
+      "status": "reviewed",
+      "patterns": [
+        "wpf-per-monitor-dpi"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Official Microsoft documentation checked 2026-11-12; source review is not a KLIDAN UI QA result.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-layout-and-design",
+      "status": "reviewed",
+      "patterns": [
+        "wpf-layout-pass-budget"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Official Microsoft documentation checked 2026-11-12; source review is not a KLIDAN UI QA result.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model",
+      "status": "reviewed",
+      "patterns": [
+        "wpf-dispatcher-ownership",
+        "wpf-async-generation-guard"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Official Microsoft documentation checked 2026-11-12; source review is not a KLIDAN UI QA result.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-controls",
+      "status": "reviewed",
+      "patterns": [
+        "wpf-virtualized-list"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Official Microsoft documentation checked 2026-11-12; source review is not a KLIDAN UI QA result.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-data-binding",
+      "status": "reviewed",
+      "patterns": [
+        "wpf-virtualized-list"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Official Microsoft documentation checked 2026-11-12; source review is not a KLIDAN UI QA result.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/focus-overview",
+      "status": "reviewed",
+      "patterns": [
+        "wpf-focus-scope"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Official Microsoft documentation checked 2026-11-12; source review is not a KLIDAN UI QA result.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-application-resources",
+      "status": "reviewed",
+      "patterns": [
+        "wpf-shared-design-resources"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Official Microsoft documentation checked 2026-11-12; source review is not a KLIDAN UI QA result.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-2d-graphics-and-imaging",
+      "status": "reviewed",
+      "patterns": [
+        "wpf-thumbnail-decode-budget"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Official Microsoft documentation checked 2026-11-12; source review is not a KLIDAN UI QA result.",
       "reviewed_on": "2026-11-12"
     }
   ]
