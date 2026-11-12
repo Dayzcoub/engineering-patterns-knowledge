@@ -1,3 +1,9 @@
+## 0.9.0-preview.1 (2026-11-12)
+
+- 7 P1 карточек WPF: AutomationPeer, critical operator semantics, keyboard navigation, system contrast, text readability, localization and accessibility evidence.
+- Добавлены `references/wpf-accessibility-qa-contract.md` и 6 proposed QA scenarios.
+- Версии QA файлов и validator синхронизированы; реальные испытания KLIDAN не проводились.
+
 ## 0.8.0-preview.1 (2026-11-12)
 
 - 8 новых QA-карточек: fake time, deterministic ordering, I/O/crash fault injection, cancellation lifecycle, physical evidence separation, evidence manifest и CI isolation.

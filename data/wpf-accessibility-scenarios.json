@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "version": "0.9.0-preview.1",
+  "generated_on": "2026-11-12",
+  "status": "proposed UIA/keyboard/contrast QA, no physical validation",
+  "items": [
+    {
+      "id": "take-semantic-command",
+      "project": "KLIDAN",
+      "query": "critical TAKE action on custom operator surface has no accessible name or command state",
+      "must_consider": [
+        "wpf-semantic-critical-actions",
+        "wpf-custom-automation-peer"
+      ],
+      "acceptance": [
+        "UIA identity is distinct from Preview",
+        "Invoke/keyboard calls intended command only"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "led-joystick-keyboard",
+      "project": "KLIDAN",
+      "query": "LED workspace joystick supports mouse drag but not arrows or focus",
+      "must_consider": [
+        "wpf-keyboard-navigation-matrix",
+        "wpf-custom-automation-peer"
+      ],
+      "acceptance": [
+        "arrows move only the active LED target",
+        "TextBox editing and focus scopes are not hijacked"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "system-contrast-themes",
+      "project": "KLIDAN",
+      "query": "Windows contrast theme toggled during running operator session",
+      "must_consider": [
+        "wpf-system-contrast-resources",
+        "wpf-label-contrast-baseline"
+      ],
+      "acceptance": [
+        "critical states remain readable",
+        "changes apply while runtime remains open"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "modal-enter-escape-focus",
+      "project": "KLIDAN",
+      "query": "DataRoot dialog Enter Escape and focus return after closing",
+      "must_consider": [
+        "wpf-keyboard-navigation-matrix",
+        "wpf-accessibility-evidence-gate"
+      ],
+      "acceptance": [
+        "focus restores to visible enabled control",
+        "keyboard actions match dialog policy without accidental TAKE"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "localized-mixer-long-captions",
+      "project": "KLIDAN",
+      "query": "long Russian labels and custom DPI in audio mixer",
+      "must_consider": [
+        "wpf-operator-localization-expansion",
+        "wpf-responsive-layout"
+      ],
+      "acceptance": [
+        "critical actions and sliders are visible",
+        "no cut text at 1920x1080 DPI 100/125/150"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "uia-screen-reader-evidence",
+      "project": "KLIDAN",
+      "query": "custom audio fader appears in screenshot but no usable UI Automation provider",
+      "must_consider": [
+        "wpf-custom-automation-peer",
+        "wpf-accessibility-evidence-gate"
+      ],
+      "acceptance": [
+        "UIA RangeValue or appropriate pattern visible",
+        "synthetic UIA checks not called certified real screen-reader PASS"
+      ],
+      "decision_status": "proposed"
+    }
+  ]
+}

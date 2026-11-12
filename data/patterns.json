@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "version": "0.8.0-preview.1",
+  "version": "0.9.0-preview.1",
   "generated_on": "2026-11-12",
   "source_root": "https://github.com/DovAmir/awesome-design-patterns",
   "source_root_commit": "9006287f27e720000cc8763ae4cd150789b8571d",
-  "scope": "curated research and QA patterns; synthetic CI does not certify real hardware",
+  "scope": "curated docs, not verified KLIDAN WPF accessibility",
   "cards": [
     {
       "id": "state-machine",
@@ -2330,6 +2330,163 @@
       "related": [
         "deployment-approval-gate",
         "qa-evidence-provenance-manifest"
+      ]
+    },
+    {
+      "id": "wpf-custom-automation-peer",
+      "title": "UI Automation Peer for Custom Operator Controls",
+      "domain": "ui",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Custom fader, joystick, TAKE/Program widget is drawn but inaccessible to screen reader/automation tools.",
+      "approach": "Expose appropriate AutomationPeer, control type, Name, supported patterns (Invoke/RangeValue as applicable) and property changed events. Use built-in WPF controls where feasible.",
+      "avoid": "Do not create a Custom control type when a standard type describes behavior. AutomationPeer tests are not proof that every screen reader works.",
+      "verification": "UIA tree Name/control type/pattern; Invoke or range control; value update event; detached/hidden elements.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/controls/ui-automation-of-a-wpf-custom-control",
+        "https://learn.microsoft.com/en-us/dotnet/framework/ui-automation/accessibility-best-practices"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "wpf-mvvm",
+        "wpf-focus-scope"
+      ]
+    },
+    {
+      "id": "wpf-semantic-critical-actions",
+      "title": "Operator-Critical Action Identity and State",
+      "domain": "ui",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Visual TAKE, Program, Preview and Stop buttons have ambiguous names or disabled state is unclear for keyboard/screen-reader use.",
+      "approach": "Name every critical action by intent and current state, expose enabled/disabled, avoid relying on color alone, keep semantic command binding and visual label in sync.",
+      "avoid": "Do not assign the same accessible name to Program and Preview; do not make a decorative status lamp act as a hidden command.",
+      "verification": "AutomationProperties.Name/HelpText, CanExecute/disabled, program state event, keyboard activation and wrong-target negative tests.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/framework/ui-automation/accessibility-best-practices",
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/controls/ui-automation-of-a-wpf-custom-control"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "wpf-custom-automation-peer",
+        "command",
+        "wpf-mvvm"
+      ]
+    },
+    {
+      "id": "wpf-keyboard-navigation-matrix",
+      "title": "Keyboard Navigation and Focus Scope Matrix",
+      "domain": "ui",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Tab cycles through hidden items; Enter/Escape in dialogs, joystick and mixer hotkeys conflict with TextBox editing.",
+      "approach": "Map Tab/Shift-Tab and directional navigation by workspace, use WPF focus scopes/KeyboardNavigation intentionally, restore focus to visible enabled target after modal close.",
+      "avoid": "Do not intercept text input and IME globally; focus request before Loaded may fail; existing screen-specific bindings take precedence.",
+      "verification": "Tab order, arrows, Escape/Enter, modal focus return, TextBox caret, screen at 100/125/150% DPI.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/focus-overview",
+        "https://learn.microsoft.com/dotnet/desktop/wpf/advanced/input-overview"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "wpf-focus-scope",
+        "wpf-responsive-layout"
+      ]
+    },
+    {
+      "id": "wpf-system-contrast-resources",
+      "title": "System High-Contrast Resource Adaptation",
+      "domain": "ui",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Custom dark-theme panel fixes text/brush colors and loses important contrast in Windows contrast mode.",
+      "approach": "Detect WPF SystemParameters.HighContrast where relevant; use dynamic SystemColors brush keys for system-derived values; preserve semantic roles and visible state in custom templates.",
+      "avoid": "Do not copy WinUI ThemeDictionaries API into WPF; do not assume dark theme equals Windows high contrast; never convey alert with color alone.",
+      "verification": "Windows contrast mode switch while app open; selected/disabled/hover, focus border, text readability and theme-switch regression.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/api/system.windows.systemparameters.highcontrast?view=windowsdesktop-10.0",
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/graphics-multimedia/how-to-paint-an-area-with-a-system-brush",
+        "https://learn.microsoft.com/en-us/dotnet/framework/ui-automation/accessibility-best-practices"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "wpf-shared-design-resources",
+        "wpf-custom-automation-peer"
+      ]
+    },
+    {
+      "id": "wpf-label-contrast-baseline",
+      "title": "Accessible Text Contrast and Zoom Baseline",
+      "domain": "ui",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Tiny captions, meter labels and disabled/secondary text become unreadable at FHD/DPI or custom theme.",
+      "approach": "Check foreground/background contrast of functional text, keep important labels text rather than only graphics, verify readability after display scaling and with font settings.",
+      "avoid": "Do not rely on high-contrast mode to fix weak default palette; avoid hardcoded WCAG claims from screenshot-only comparison.",
+      "verification": "Contrast samples from actual theme, 1920x1080 100/125/150%, long labels, selected row and error text.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/windows/apps/design/accessibility/accessible-text-requirements",
+        "https://learn.microsoft.com/en-us/dotnet/framework/ui-automation/accessibility-best-practices"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "wpf-system-contrast-resources",
+        "wpf-responsive-layout"
+      ]
+    },
+    {
+      "id": "wpf-operator-localization-expansion",
+      "title": "Long Localized Text and Culture-Aware Layout",
+      "domain": "ui",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Russian labels get clipped; localized number formats and custom fonts change control width or rendering.",
+      "approach": "Prefer auto/relative layout, TextWrapping when appropriate, correct XML lang/culture for formatting, maintain stable resource keys and protect critical actions from clipping.",
+      "avoid": "Do not fix every translated string with fixed pixel widths. LocBaml on .NET Framework is not automatically compatible with modern .NET WPF.",
+      "verification": "Pseudo-long strings, RU/EN resource length, decimal separator, text overlap, focus and keyboard operation at FHD/DPI.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/framework/wpf/advanced/wpf-globalization-and-localization-overview"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "wpf-responsive-layout",
+        "wpf-shared-design-resources"
+      ]
+    },
+    {
+      "id": "wpf-accessibility-evidence-gate",
+      "title": "Accessibility Evidence Across Custom Workspaces",
+      "domain": "testing",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Screenshots and build PASS are accepted as proof of keyboard and assistive automation usability.",
+      "approach": "For each workspace capture scope-specific visual evidence plus UIA tree, keyboard-only navigation and real focus state, including modal and program display transitions.",
+      "avoid": "Do not treat AutomationPeer unit test or screenshot as complete physical accessibility certification; record test environment and remaining manual gaps.",
+      "verification": "Operator shell, mixer, LED joystick, media library, dialogs; Tab/Enter/Escape/UIA patterns, system contrast, 100/125/150% DPI.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/framework/ui-automation/accessibility-best-practices",
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/controls/ui-automation-of-a-wpf-custom-control",
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/focus-overview"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "qa-physical-evidence-separation",
+        "wpf-keyboard-navigation-matrix",
+        "wpf-custom-automation-peer"
       ]
     }
   ]

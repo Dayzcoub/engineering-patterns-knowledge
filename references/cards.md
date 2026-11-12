@@ -810,3 +810,59 @@
 **Проекты:** KLIDAN, Audio Probe, STAYA
 **Первоисточник:** https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency, https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices
 
+## wpf-custom-automation-peer | UI Automation Peer for Custom Operator Controls (P1, reviewed)
+**Когда:** Custom fader, joystick, TAKE/Program widget is drawn but inaccessible to screen reader/automation tools.
+**Решение:** Expose appropriate AutomationPeer, control type, Name, supported patterns (Invoke/RangeValue as applicable) and property changed events. Use built-in WPF controls where feasible.
+**Не применять:** Do not create a Custom control type when a standard type describes behavior. AutomationPeer tests are not proof that every screen reader works.
+**Проверка:** UIA tree Name/control type/pattern; Invoke or range control; value update event; detached/hidden elements.
+**Проекты:** KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/desktop/wpf/controls/ui-automation-of-a-wpf-custom-control, https://learn.microsoft.com/en-us/dotnet/framework/ui-automation/accessibility-best-practices
+
+## wpf-semantic-critical-actions | Operator-Critical Action Identity and State (P1, reviewed)
+**Когда:** Visual TAKE, Program, Preview and Stop buttons have ambiguous names or disabled state is unclear for keyboard/screen-reader use.
+**Решение:** Name every critical action by intent and current state, expose enabled/disabled, avoid relying on color alone, keep semantic command binding and visual label in sync.
+**Не применять:** Do not assign the same accessible name to Program and Preview; do not make a decorative status lamp act as a hidden command.
+**Проверка:** AutomationProperties.Name/HelpText, CanExecute/disabled, program state event, keyboard activation and wrong-target negative tests.
+**Проекты:** KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/framework/ui-automation/accessibility-best-practices, https://learn.microsoft.com/en-us/dotnet/desktop/wpf/controls/ui-automation-of-a-wpf-custom-control
+
+## wpf-keyboard-navigation-matrix | Keyboard Navigation and Focus Scope Matrix (P1, reviewed)
+**Когда:** Tab cycles through hidden items; Enter/Escape in dialogs, joystick and mixer hotkeys conflict with TextBox editing.
+**Решение:** Map Tab/Shift-Tab and directional navigation by workspace, use WPF focus scopes/KeyboardNavigation intentionally, restore focus to visible enabled target after modal close.
+**Не применять:** Do not intercept text input and IME globally; focus request before Loaded may fail; existing screen-specific bindings take precedence.
+**Проверка:** Tab order, arrows, Escape/Enter, modal focus return, TextBox caret, screen at 100/125/150% DPI.
+**Проекты:** KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/focus-overview, https://learn.microsoft.com/dotnet/desktop/wpf/advanced/input-overview
+
+## wpf-system-contrast-resources | System High-Contrast Resource Adaptation (P1, reviewed)
+**Когда:** Custom dark-theme panel fixes text/brush colors and loses important contrast in Windows contrast mode.
+**Решение:** Detect WPF SystemParameters.HighContrast where relevant; use dynamic SystemColors brush keys for system-derived values; preserve semantic roles and visible state in custom templates.
+**Не применять:** Do not copy WinUI ThemeDictionaries API into WPF; do not assume dark theme equals Windows high contrast; never convey alert with color alone.
+**Проверка:** Windows contrast mode switch while app open; selected/disabled/hover, focus border, text readability and theme-switch regression.
+**Проекты:** KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/api/system.windows.systemparameters.highcontrast?view=windowsdesktop-10.0, https://learn.microsoft.com/en-us/dotnet/desktop/wpf/graphics-multimedia/how-to-paint-an-area-with-a-system-brush, https://learn.microsoft.com/en-us/dotnet/framework/ui-automation/accessibility-best-practices
+
+## wpf-label-contrast-baseline | Accessible Text Contrast and Zoom Baseline (P1, reviewed)
+**Когда:** Tiny captions, meter labels and disabled/secondary text become unreadable at FHD/DPI or custom theme.
+**Решение:** Check foreground/background contrast of functional text, keep important labels text rather than only graphics, verify readability after display scaling and with font settings.
+**Не применять:** Do not rely on high-contrast mode to fix weak default palette; avoid hardcoded WCAG claims from screenshot-only comparison.
+**Проверка:** Contrast samples from actual theme, 1920x1080 100/125/150%, long labels, selected row and error text.
+**Проекты:** KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/windows/apps/design/accessibility/accessible-text-requirements, https://learn.microsoft.com/en-us/dotnet/framework/ui-automation/accessibility-best-practices
+
+## wpf-operator-localization-expansion | Long Localized Text and Culture-Aware Layout (P1, reviewed)
+**Когда:** Russian labels get clipped; localized number formats and custom fonts change control width or rendering.
+**Решение:** Prefer auto/relative layout, TextWrapping when appropriate, correct XML lang/culture for formatting, maintain stable resource keys and protect critical actions from clipping.
+**Не применять:** Do not fix every translated string with fixed pixel widths. LocBaml on .NET Framework is not automatically compatible with modern .NET WPF.
+**Проверка:** Pseudo-long strings, RU/EN resource length, decimal separator, text overlap, focus and keyboard operation at FHD/DPI.
+**Проекты:** KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/framework/wpf/advanced/wpf-globalization-and-localization-overview
+
+## wpf-accessibility-evidence-gate | Accessibility Evidence Across Custom Workspaces (P1, reviewed)
+**Когда:** Screenshots and build PASS are accepted as proof of keyboard and assistive automation usability.
+**Решение:** For each workspace capture scope-specific visual evidence plus UIA tree, keyboard-only navigation and real focus state, including modal and program display transitions.
+**Не применять:** Do not treat AutomationPeer unit test or screenshot as complete physical accessibility certification; record test environment and remaining manual gaps.
+**Проверка:** Operator shell, mixer, LED joystick, media library, dialogs; Tab/Enter/Escape/UIA patterns, system contrast, 100/125/150% DPI.
+**Проекты:** KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/framework/ui-automation/accessibility-best-practices, https://learn.microsoft.com/en-us/dotnet/desktop/wpf/controls/ui-automation-of-a-wpf-custom-control, https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/focus-overview
+

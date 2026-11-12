@@ -22,3 +22,4 @@
 17. Telemetry-паттерны должны иметь ограничения cardinality и явную обработку секретов; stage journal не доказывает успешное подключение к сети.
 18. Для performance/concurrency явно фиксировать политику потери, ownership, срок жизни pooled buffer и до/после на целевом runtime/hardware. Источник по API не доказывает достигнутый бюджет latency.
 19. QA-карточки обязаны хранить уровень доказательств. Synthetic/fake/CI PASS не заменяет hardware/production PASS. Test cases должны указывать failure point, invariant и expected/observed.
+20. WPF UI accessibility требует UI Automation, клавиатурных и контрастных проверок; скриншот и compile не доказывают доступность для ассистивных средств.

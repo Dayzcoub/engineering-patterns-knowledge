@@ -12,6 +12,7 @@
 | P1 | Отказоустойчивость | Bounded work, rate limits, readiness layers, failover hysteresis, staged rollback | STAYA | Offline fault injection + live route/egress QA |
 | P1 | Безопасность | SSRF, admin isolation, secrets, logging redaction, artifact gates | STAYA, installers | Negative SSRF / leak / access tests |
 | P1 | DevOps и обновления | Caddy validate, systemd watchdog, Compose readiness, TUF/Authenticode, update handoff, SLSA | STAYA, KLIDAN, Audio Probe | staged rollout and rollback, trust validation |
+| P1 | Операторский UI и доступность | WPF AutomationPeer, critical command identity, keyboard, contrast, localization | KLIDAN | UIA/keyboard evidence, real DPI and assistive technology |
 | P1 | Наблюдаемость | OpenTelemetry context, metrics cardinality, actionable alerts, stage journal | STAYA, KLIDAN, Audio Probe | evidence correlation without secret leakage |
 | P2 | Производительность | Data Locality, LOH/GC, ArrayPool, cache budgets, preview coalescing | KLIDAN, Audio Probe | Hardware baseline p95/p99 and memory regression |
 | P2 | Fault injection и доказательства | Fake clock, I/O crash matrix, late async results, evidence manifest | KLIDAN, Audio Probe, STAYA | Synthetic vs hardware gates, restart recovery |

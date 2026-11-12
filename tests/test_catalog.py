@@ -218,5 +218,23 @@ class CatalogTests(unittest.TestCase):
             self.assertEqual(doc['version'], catalog['version'])
 
 
+    def test_wpf_accessibility_patterns_and_cases(self):
+        catalog = json.loads((ROOT / 'data' / 'patterns.json').read_text(encoding='utf-8'))
+        doc = json.loads((ROOT / 'data' / 'wpf-accessibility-scenarios.json').read_text(encoding='utf-8'))
+        ids = {item['id'] for item in catalog['cards']}
+        self.assertEqual(doc['version'], catalog['version'])
+        self.assertEqual(len(doc['items']), 6)
+        for case in doc['items']:
+            self.assertEqual(case['decision_status'], 'proposed')
+            self.assertTrue(set(case['must_consider']) <= ids)
+        self.assertIn('wpf-custom-automation-peer', ids)
+        self.assertIn('wpf-system-contrast-resources', ids)
+
+    def test_wpf_accessibility_contract_not_certificate(self):
+        content = (ROOT / 'references' / 'wpf-accessibility-qa-contract.md').read_text(encoding='utf-8')
+        for term in ('AutomationPeer', 'SystemParameters.HighContrast', 'Tab order', 'DPI', 'not proof'):
+            self.assertIn(term, content)
+
+
 if __name__ == '__main__':
     unittest.main()
