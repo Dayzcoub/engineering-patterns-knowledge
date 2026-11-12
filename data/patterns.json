@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "version": "0.2.0-preview.1",
+  "version": "0.3.0-preview.1",
   "generated_on": "2026-11-12",
   "source_root": "https://github.com/DovAmir/awesome-design-patterns",
   "source_root_commit": "9006287f27e720000cc8763ae4cd150789b8571d",
-  "scope": "curated seed + P0 audio review; does not prove physical validation",
+  "scope": "curated P0 audio + WPF sources; no project UI test claims",
   "cards": [
     {
       "id": "state-machine",
@@ -690,6 +690,201 @@
         "versioned-value",
         "wasapi-invalid-device-recovery",
         "realtime-callback-boundary"
+      ]
+    },
+    {
+      "id": "wpf-responsive-layout",
+      "title": "WPF Constraint-Based Responsive Workspace",
+      "domain": "ui",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "На 1920×1080 и при масштабировании часть панели обрезается, действия уходят за край или прокрутка возникает в неправильной области.",
+      "approach": "Применить Grid/DockPanel с Auto/*, ограничениями Min/Max и отдельным scrolling для длинного контента. Контейнеры меняют плотность компоновки по фактическому доступному пространству в DIP. При нехватке ширины вторичные блоки сворачиваются, но критические кнопки остаются видимыми.",
+      "avoid": "Не рассчитывать размеры элементов из физического разрешения монитора; не оборачивать весь Operator workspace в бесконечно большой ScrollViewer. Canvas допустим для истинных координат сцены, но не как основа формы.",
+      "verification": "WPF layout/screenshot матрица 1920×1080 при DPI 100/125/150%; минимальный WorkArea; контроль пересечений, видимости TAKE/Program, scroll containment, клавиатуры.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/layout",
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/use-automatic-layout-overview"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "presentation-model",
+        "wpf-mvvm"
+      ]
+    },
+    {
+      "id": "wpf-per-monitor-dpi",
+      "title": "Per-Monitor DPI and WorkArea Reconciliation",
+      "domain": "ui",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Перемещение окна между мониторами меняет DPI; координаты окна или модальные диалоги оказываются вне видимой рабочей области.",
+      "approach": "Разделять физические пиксели и WPF DIP, учитывать активную DPI-awareness модель приложения и изменения DPI в жизненном цикле окна; размещать top-level окна относительно соответствующего monitor work area и перепроверять размеры после изменения DPI.",
+      "avoid": "Не считать установку manifest/per-monitor flag достаточной для всей WPF/Win32 интеграции. Не применять к геометрии сцены коэффициенты DPI повторно, если она уже задана в DIP.",
+      "verification": "Перенос между 100/150% мониторами, смена primary monitor, taskbar/work area, окно после перезапуска, диалоги и owned windows, проверка координат без двойного масштаба.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/windows/win32/hidpi/high-dpi-desktop-application-development-on-windows",
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/layout"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "wpf-responsive-layout"
+      ]
+    },
+    {
+      "id": "wpf-layout-pass-budget",
+      "title": "Avoid Unnecessary Measure/Arrange Passes",
+      "domain": "ui",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Перетаскивание фейдера, масштаба или панели вызывает заметные зависания при частых UpdateLayout/size changes.",
+      "approach": "Разделять изменения геометрии и визуального смещения. Предпочитать изменение существующего RenderTransform для частого перемещения, минимизировать LayoutTransform/UpdateLayout и глубокие повторные перестройки дерева. Измерять реальные layout passes до рефакторинга.",
+      "avoid": "Не заменять LayoutTransform на RenderTransform там, где новое геометрическое место необходимо окружающим элементам; не преждевременно оптимизировать простое дерево.",
+      "verification": "Frame-time, layout/measure counts, drag responsiveness и visual regression на FHD/DPI; сравнение до/после.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-layout-and-design",
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/layout"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "wpf-responsive-layout"
+      ]
+    },
+    {
+      "id": "wpf-dispatcher-ownership",
+      "title": "Dispatcher Ownership and UI Thread Isolation",
+      "domain": "ui",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Фоновые ADB, media discovery, device scans или audio telemetry напрямую изменяют WPF controls либо блокируют ввод.",
+      "approach": "Сохранять WPF DispatcherObject на UI owner thread, выполнять тяжёлую/блокирующую работу вне Dispatcher, отправлять краткие обновления через InvokeAsync, связывать lifetime операций с окном и источником. Не блокировать UI ожиданием Task.",
+      "avoid": "Не вызывать Task.Wait/Result на UI thread для DispatcherOperation; не выполнять real-time audio callback через UI Dispatcher; не создавать отдельный Dispatcher без необходимости.",
+      "verification": "Thread-affinity assertions, fake slow backend, UI responsiveness, window close before completion, deadlock watchdog, source disconnect during queued notification.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "versioned-value",
+        "wpf-mvvm",
+        "realtime-callback-boundary"
+      ]
+    },
+    {
+      "id": "wpf-async-generation-guard",
+      "title": "WPF Latest-Request-Wins with Generation Guard",
+      "domain": "ui",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Поздний результат старого поиска/сканирования/USB-poll перезаписывает новое состояние после reconnect, выбора вкладки или Dispose.",
+      "approach": "Каждой операции присваивать монотонную версию, привязанную к owner/source; после await и непосредственно перед UI apply сверять generation, cancellation и disposed state. Отменять старую операцию, но не считать cancellation достаточной защитой от late completion.",
+      "avoid": "Не применять latest-wins для обязательных событий, где нужна последовательная обработка всех команд. Не подавлять ошибки как 'stale' до фиксации диагностической причины.",
+      "verification": "Fake delayed operation A завершается после B; switch source, Dispose, dispatcher queued late delivery, повторный reconnect и соблюдение UI thread ownership.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model",
+        "https://martinfowler.com/articles/patterns-of-distributed-systems/versioned-value.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "versioned-value",
+        "wpf-dispatcher-ownership",
+        "state-machine"
+      ]
+    },
+    {
+      "id": "wpf-virtualized-list",
+      "title": "WPF Virtualized Items and Recycling-Safe State",
+      "domain": "ui",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Медиатека с тысячами элементов долго открывается, растёт память и теряется состояние раскрытых карточек при прокрутке.",
+      "approach": "Для подходящих ItemsControl активировать UI virtualization/recycling, не создавать контейнеры вручную, хранить item-specific state в VM/model, а не в переиспользуемом ListViewItem. Отдельно планировать data paging/virtualization, поскольку UI virtualization не загружает данные порциями.",
+      "avoid": "Не считать ScrollViewer вокруг ItemsControl бесплатным; не использовать UI virtualization как замену запросам по страницам; не применять без тестов к нестандартным панелям и двунаправленным спискам.",
+      "verification": "Число созданных visual containers, memory/load/scroll budget на 1k/10k items, сохранение selection/expanded state, page reload, thumbnail decode.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-controls",
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-data-binding"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "wpf-mvvm",
+        "data-locality"
+      ]
+    },
+    {
+      "id": "wpf-focus-scope",
+      "title": "WPF Focus Scope and Keyboard Navigation",
+      "domain": "ui",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "В модальных окнах, вкладках и Operator shell теряется фокус, Tab перескакивает на скрытые элементы, hotkey срабатывает в TextBox.",
+      "approach": "Различать keyboard vs logical focus, явно определять focus scopes, tab order и допустимые горячие клавиши; при смене workspace восстанавливать фокус после Loaded/visibility transition и проверять реальный Keyboard.FocusedElement.",
+      "avoid": "Не устанавливать фокус до появления элемента в visual tree; не перехватывать клавиши глобально, когда ввод находится в редактируемом поле; не использовать IsTabStop=false как замену доступности.",
+      "verification": "Tab/Shift+Tab, Enter/Escape, keyboard-only operation, focus return from dialogs, hidden/disabled controls, hotkeys while editing.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/focus-overview"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "wpf-responsive-layout"
+      ]
+    },
+    {
+      "id": "wpf-shared-design-resources",
+      "title": "WPF Shared Design Tokens and Dynamic Theme Boundaries",
+      "domain": "ui",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Те же кнопки/кисти отличаются на разных экранах; изменение темы не доходит до экземпляров или создаёт множество копий тяжёлых brushes.",
+      "approach": "Определять общие размеры, typography, Brushes, templates на уровне Application/Window/theme dictionaries; выбирать StaticResource по умолчанию, DynamicResource только когда ресурс действительно меняется во время работы. Сохранять стабильные KLIDAN.* keys.",
+      "avoid": "Не переводить все ссылки на DynamicResource без измерения; не дублировать Brush в каждой карточке; не заменять существующие токены новым параллельным набором.",
+      "verification": "Theme switch light/dark, runtime resource replacement, отсутствие missing resource keys, память на повторённых карточках, DPI/layout screenshots.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-application-resources"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "wpf-mvvm",
+        "wpf-responsive-layout"
+      ]
+    },
+    {
+      "id": "wpf-thumbnail-decode-budget",
+      "title": "WPF Thumbnail Decode to Display Size",
+      "domain": "ui",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Медиатека декодирует полные кадры ради маленьких превью, расходует память и замедляет scroll.",
+      "approach": "Декодировать изображения с целевым pixel budget/DecodePixelWidth/Height по display size и DPI, ограничить конкурентное декодирование, использовать cancellation/generation guard для late thumbnails; сохранять качество для Program output отдельно.",
+      "avoid": "Не понижать качество Program/Preview видеосигнала ради скорости UI thumbnails; не использовать thumbnail cache без понятного лимита и инвалидизации по ревизии файла.",
+      "verification": "RSS/working set, первая загрузка и быстрый scroll, смена media revision, late render after navigation, сравнение thumbnail и source pixel sizes.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-2d-graphics-and-imaging"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "wpf-virtualized-list",
+        "wpf-async-generation-guard"
       ]
     }
   ]

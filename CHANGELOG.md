@@ -1,3 +1,10 @@
+## 0.3.0-preview.1 (2026-11-12)
+
+- Добавлено 9 P0/P1 карточек по responsive WPF, per-monitor DPI, layout pass budget, dispatcher, stale async results, virtualization, focus, shared resource tokens и thumbnail decode.
+- Добавлена проверяемая Full HD/DPI QA matrix с разграничением рекомендаций и результатов приложения.
+- Дополнены unit checks на WPF карточки и provenance.
+- Не менялись исходники KLIDAN, не заявлен UI layout PASS.
+
 ## 0.2.0-preview.1 (2026-11-12)
 
 - Добавлены 10 P0-карточек по WASAPI, period discovery, actual buffer readback, minimum stable profile, packet lifetime, channel mapping, MMCSS, device recovery и shutdown barrier.

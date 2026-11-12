@@ -250,3 +250,75 @@
 **Проекты:** Audio Probe, KLIDAN
 **Первоисточник:** https://portaudio.com/docs/v19-doxydocs/start_stop_abort.html, https://learn.microsoft.com/en-us/windows/win32/coreaudio/recovering-from-an-invalid-device-error
 
+## wpf-responsive-layout | WPF Constraint-Based Responsive Workspace (P0, reviewed)
+**Когда:** На 1920×1080 и при масштабировании часть панели обрезается, действия уходят за край или прокрутка возникает в неправильной области.
+**Решение:** Применить Grid/DockPanel с Auto/*, ограничениями Min/Max и отдельным scrolling для длинного контента. Контейнеры меняют плотность компоновки по фактическому доступному пространству в DIP. При нехватке ширины вторичные блоки сворачиваются, но критические кнопки остаются видимыми.
+**Не применять:** Не рассчитывать размеры элементов из физического разрешения монитора; не оборачивать весь Operator workspace в бесконечно большой ScrollViewer. Canvas допустим для истинных координат сцены, но не как основа формы.
+**Проверка:** WPF layout/screenshot матрица 1920×1080 при DPI 100/125/150%; минимальный WorkArea; контроль пересечений, видимости TAKE/Program, scroll containment, клавиатуры.
+**Проекты:** KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/layout, https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/use-automatic-layout-overview
+
+## wpf-per-monitor-dpi | Per-Monitor DPI and WorkArea Reconciliation (P0, reviewed)
+**Когда:** Перемещение окна между мониторами меняет DPI; координаты окна или модальные диалоги оказываются вне видимой рабочей области.
+**Решение:** Разделять физические пиксели и WPF DIP, учитывать активную DPI-awareness модель приложения и изменения DPI в жизненном цикле окна; размещать top-level окна относительно соответствующего monitor work area и перепроверять размеры после изменения DPI.
+**Не применять:** Не считать установку manifest/per-monitor flag достаточной для всей WPF/Win32 интеграции. Не применять к геометрии сцены коэффициенты DPI повторно, если она уже задана в DIP.
+**Проверка:** Перенос между 100/150% мониторами, смена primary monitor, taskbar/work area, окно после перезапуска, диалоги и owned windows, проверка координат без двойного масштаба.
+**Проекты:** KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/windows/win32/hidpi/high-dpi-desktop-application-development-on-windows, https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/layout
+
+## wpf-layout-pass-budget | Avoid Unnecessary Measure/Arrange Passes (P1, reviewed)
+**Когда:** Перетаскивание фейдера, масштаба или панели вызывает заметные зависания при частых UpdateLayout/size changes.
+**Решение:** Разделять изменения геометрии и визуального смещения. Предпочитать изменение существующего RenderTransform для частого перемещения, минимизировать LayoutTransform/UpdateLayout и глубокие повторные перестройки дерева. Измерять реальные layout passes до рефакторинга.
+**Не применять:** Не заменять LayoutTransform на RenderTransform там, где новое геометрическое место необходимо окружающим элементам; не преждевременно оптимизировать простое дерево.
+**Проверка:** Frame-time, layout/measure counts, drag responsiveness и visual regression на FHD/DPI; сравнение до/после.
+**Проекты:** KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-layout-and-design, https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/layout
+
+## wpf-dispatcher-ownership | Dispatcher Ownership and UI Thread Isolation (P0, reviewed)
+**Когда:** Фоновые ADB, media discovery, device scans или audio telemetry напрямую изменяют WPF controls либо блокируют ввод.
+**Решение:** Сохранять WPF DispatcherObject на UI owner thread, выполнять тяжёлую/блокирующую работу вне Dispatcher, отправлять краткие обновления через InvokeAsync, связывать lifetime операций с окном и источником. Не блокировать UI ожиданием Task.
+**Не применять:** Не вызывать Task.Wait/Result на UI thread для DispatcherOperation; не выполнять real-time audio callback через UI Dispatcher; не создавать отдельный Dispatcher без необходимости.
+**Проверка:** Thread-affinity assertions, fake slow backend, UI responsiveness, window close before completion, deadlock watchdog, source disconnect during queued notification.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model
+
+## wpf-async-generation-guard | WPF Latest-Request-Wins with Generation Guard (P0, reviewed)
+**Когда:** Поздний результат старого поиска/сканирования/USB-poll перезаписывает новое состояние после reconnect, выбора вкладки или Dispose.
+**Решение:** Каждой операции присваивать монотонную версию, привязанную к owner/source; после await и непосредственно перед UI apply сверять generation, cancellation и disposed state. Отменять старую операцию, но не считать cancellation достаточной защитой от late completion.
+**Не применять:** Не применять latest-wins для обязательных событий, где нужна последовательная обработка всех команд. Не подавлять ошибки как 'stale' до фиксации диагностической причины.
+**Проверка:** Fake delayed operation A завершается после B; switch source, Dispose, dispatcher queued late delivery, повторный reconnect и соблюдение UI thread ownership.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model, https://martinfowler.com/articles/patterns-of-distributed-systems/versioned-value.html
+
+## wpf-virtualized-list | WPF Virtualized Items and Recycling-Safe State (P1, reviewed)
+**Когда:** Медиатека с тысячами элементов долго открывается, растёт память и теряется состояние раскрытых карточек при прокрутке.
+**Решение:** Для подходящих ItemsControl активировать UI virtualization/recycling, не создавать контейнеры вручную, хранить item-specific state в VM/model, а не в переиспользуемом ListViewItem. Отдельно планировать data paging/virtualization, поскольку UI virtualization не загружает данные порциями.
+**Не применять:** Не считать ScrollViewer вокруг ItemsControl бесплатным; не использовать UI virtualization как замену запросам по страницам; не применять без тестов к нестандартным панелям и двунаправленным спискам.
+**Проверка:** Число созданных visual containers, memory/load/scroll budget на 1k/10k items, сохранение selection/expanded state, page reload, thumbnail decode.
+**Проекты:** KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-controls, https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-data-binding
+
+## wpf-focus-scope | WPF Focus Scope and Keyboard Navigation (P1, reviewed)
+**Когда:** В модальных окнах, вкладках и Operator shell теряется фокус, Tab перескакивает на скрытые элементы, hotkey срабатывает в TextBox.
+**Решение:** Различать keyboard vs logical focus, явно определять focus scopes, tab order и допустимые горячие клавиши; при смене workspace восстанавливать фокус после Loaded/visibility transition и проверять реальный Keyboard.FocusedElement.
+**Не применять:** Не устанавливать фокус до появления элемента в visual tree; не перехватывать клавиши глобально, когда ввод находится в редактируемом поле; не использовать IsTabStop=false как замену доступности.
+**Проверка:** Tab/Shift+Tab, Enter/Escape, keyboard-only operation, focus return from dialogs, hidden/disabled controls, hotkeys while editing.
+**Проекты:** KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/focus-overview
+
+## wpf-shared-design-resources | WPF Shared Design Tokens and Dynamic Theme Boundaries (P1, reviewed)
+**Когда:** Те же кнопки/кисти отличаются на разных экранах; изменение темы не доходит до экземпляров или создаёт множество копий тяжёлых brushes.
+**Решение:** Определять общие размеры, typography, Brushes, templates на уровне Application/Window/theme dictionaries; выбирать StaticResource по умолчанию, DynamicResource только когда ресурс действительно меняется во время работы. Сохранять стабильные KLIDAN.* keys.
+**Не применять:** Не переводить все ссылки на DynamicResource без измерения; не дублировать Brush в каждой карточке; не заменять существующие токены новым параллельным набором.
+**Проверка:** Theme switch light/dark, runtime resource replacement, отсутствие missing resource keys, память на повторённых карточках, DPI/layout screenshots.
+**Проекты:** KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-application-resources
+
+## wpf-thumbnail-decode-budget | WPF Thumbnail Decode to Display Size (P1, reviewed)
+**Когда:** Медиатека декодирует полные кадры ради маленьких превью, расходует память и замедляет scroll.
+**Решение:** Декодировать изображения с целевым pixel budget/DecodePixelWidth/Height по display size и DPI, ограничить конкурентное декодирование, использовать cancellation/generation guard для late thumbnails; сохранять качество для Program output отдельно.
+**Не применять:** Не понижать качество Program/Preview видеосигнала ради скорости UI thumbnails; не использовать thumbnail cache без понятного лимита и инвалидизации по ревизии файла.
+**Проверка:** RSS/working set, первая загрузка и быстрый scroll, смена media revision, late render after navigation, сравнение thumbnail и source pixel sizes.
+**Проекты:** KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-2d-graphics-and-imaging
+
