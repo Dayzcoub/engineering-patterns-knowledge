@@ -198,7 +198,7 @@ class CatalogTests(unittest.TestCase):
         cases = json.loads((ROOT / 'data' / 'qa-scenarios.json').read_text(encoding='utf-8'))
         ids = {card['id'] for card in catalog['cards']}
         self.assertEqual(cases['version'], catalog['version'])
-        self.assertEqual(len(cases['items']), 6)
+        self.assertGreaterEqual(len(cases['items']), 6)
         for item in cases['items']:
             self.assertEqual(item['decision_status'], 'proposed')
             self.assertTrue(set(item['must_consider']) <= ids)

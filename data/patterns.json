@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "version": "0.9.3-preview.1",
+  "version": "0.9.4-preview.1",
   "generated_on": "2026-11-12",
   "source_root": "https://github.com/DovAmir/awesome-design-patterns",
   "source_root_commit": "9006287f27e720000cc8763ae4cd150789b8571d",
-  "scope": "WASAPI capture API DOC_REVIEW; no physical Audio Probe/KLIDAN qualification",
+  "scope": "SQLite online backup bounded lifecycle DOC_REVIEW; no physical KLIDAN recovery qualification",
   "cards": [
     {
       "id": "state-machine",
@@ -2654,6 +2654,51 @@
         "audio-capture-packet-epoch",
         "audio-capture-stop-reset-barrier",
         "qa-physical-evidence-separation"
+      ]
+    },
+    {
+      "id": "sqlite-backup-bounded-lifecycle",
+      "title": "Bounded Incremental SQLite Backup Lifecycle",
+      "domain": "storage",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Живая SQLite база изменяется во время backup; копирование может перезапускаться или ждать блокировку без конечного срока.",
+      "approach": "Использовать Online Backup API с ограниченными шагами, deadline и бюджетом повторов. После успешного init всегда вызывать finish ровно один раз; не использовать destination connection до finish. Считать успешным только DONE и успешную итоговую проверку копии.",
+      "avoid": "Не считать SQLITE_OK от finish признаком завершённой копии без DONE; не запускать бесконечный retry при постоянных записях; не копировать только .db из активного WAL.",
+      "verification": "Fake-clock deadline, конкурентный writer, многократный SQLITE_OK, отмена до DONE, проверка единственного finish и закрытия destination; итоговые integrity_check и foreign_key_check.",
+      "source_urls": [
+        "https://www.sqlite.org/c3ref/backup_finish.html",
+        "https://www.sqlite.org/backup.html",
+        "https://www.sqlite.org/pragma.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "sqlite-online-backup",
+        "sqlite-write-contention"
+      ]
+    },
+    {
+      "id": "sqlite-backup-error-classification",
+      "title": "SQLite Backup Retry vs Fatal Classification",
+      "domain": "storage",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Backup step возвращает BUSY/LOCKED либо IOERR/NOMEM/READONLY; общий retry скрывает неисправность и блокирует recovery.",
+      "approach": "Повторять BUSY/LOCKED только в пределах deadline/backoff; IOERR, NOMEM, READONLY завершать ошибкой, вызывать finish и сохранять прежний DataRoot. Сохранять код ошибки и факт DONE отдельно от результата finish.",
+      "avoid": "Не повторять fatal ошибки как временные; не публиковать неполную destination DB и не удалять pending intent после неудачного backup.",
+      "verification": "Таблица результатов step, истечение deadline, ошибка finish, сохранность старого DataRoot, отсутствие publish при partial backup.",
+      "source_urls": [
+        "https://www.sqlite.org/c3ref/backup_finish.html",
+        "https://www.sqlite.org/backup.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "sqlite-backup-bounded-lifecycle",
+        "sqlite-cross-store-intent"
       ]
     }
   ]
