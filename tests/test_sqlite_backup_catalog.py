@@ -30,4 +30,6 @@ class SQLiteBackupCatalogTests(unittest.TestCase):
         cards = json.loads((ROOT / "data/patterns.json").read_text(encoding="utf-8"))
         qa = json.loads((ROOT / "data/qa-scenarios.json").read_text(encoding="utf-8"))
         self.assertEqual(cards["version"], qa["version"])
-        self.assertEqual(cards["version"], "0.9.4-preview.1")
+        sources = json.loads((ROOT / "data/sources.json").read_text(encoding="utf-8"))
+        self.assertEqual(cards["version"], sources["version"])
+        self.assertRegex(cards["version"], r"^\d+\.\d+\.\d+-preview\.\d+$")
