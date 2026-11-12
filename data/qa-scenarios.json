@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "0.9.5-preview.1",
+  "version": "0.9.6-preview.1",
   "generated_on": "2026-11-12",
   "status": "proposed deterministic QA scenarios; NOT EXECUTED",
   "items": [
@@ -119,6 +119,22 @@
         "SYNTHETIC two-connection contention verifies BUSY does not imply commit and retries are bounded",
         "injected fatal errors require explicit transaction-state inspection and rollback policy",
         "pending DataRoot intent survives unknown or failed transaction; no premature publish"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "windows-dataroot-publication-failure-matrix",
+      "project": "KLIDAN",
+      "query": "Canonical DataRoot file replacement fails with Win32 1175/1176/1177 or target is on another volume",
+      "must_consider": [
+        "windows-replacefile-partial-failure-recovery",
+        "windows-cross-volume-publish-copy-delete-boundary"
+      ],
+      "acceptance": [
+        "SYNTHETIC 1175/1176/1177 scenarios inspect all named candidate and backup files before cleanup",
+        "cross-volume copy succeeds but source delete fails: both verified generations remain until reconciliation",
+        "restart after interrupted target copy never publishes incomplete candidate or silently initializes an empty database",
+        "pending intent is retained until canonical, marker and SQLite RootId readback agree"
       ],
       "decision_status": "proposed"
     }

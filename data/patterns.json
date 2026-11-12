@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "0.9.5-preview.1",
+  "version": "0.9.6-preview.1",
   "generated_on": "2026-11-12",
   "source_root": "https://github.com/DovAmir/awesome-design-patterns",
   "source_root_commit": "9006287f27e720000cc8763ae4cd150789b8571d",
@@ -2742,6 +2742,48 @@
         "sqlite-cross-store-intent",
         "sqlite-integrity-recovery-gate",
         "qa-io-fault-matrix"
+      ]
+    },
+    {
+      "id": "windows-replacefile-partial-failure-recovery",
+      "title": "ReplaceFileW Failure Requires Name and Backup Reconciliation",
+      "domain": "storage",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Publishing a canonical DataRoot JSON file through ReplaceFileW fails with ERROR_UNABLE_TO_MOVE_REPLACEMENT (1176), _2 (1177), or ERROR_UNABLE_TO_REMOVE_REPLACED (1175).",
+      "approach": "Stage and verify the replacement on the same volume, retain an independent old generation and pending intent, and classify GetLastError. On 1176/1177 inspect canonical, replacement and backup paths before any cleanup; 1177 may rename the original and transfer metadata to the replacement. Recover only after validating RootId and contents, then reconcile SQLite and marker.",
+      "avoid": "Do not assume a failed ReplaceFileW leaves the original canonical path untouched, delete the temporary candidate blindly, use unsupported REPLACEFILE_WRITE_THROUGH, or equate a successful API return with tested power-loss durability.",
+      "verification": "Proposed synthetic 1175/1176/1177 path-state matrix with injected errors and restart; assert at least one validated generation remains, pending intent persists, and no empty DataRoot is initialized. Physical power-loss evidence remains pending.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "sqlite-cross-store-intent",
+        "sqlite-integrity-recovery-gate"
+      ]
+    },
+    {
+      "id": "windows-cross-volume-publish-copy-delete-boundary",
+      "title": "Cross-Volume MoveFileExW Is Copy/Delete, Not Atomic Publish",
+      "domain": "storage",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "DataRoot target is on a different volume and code uses MoveFileExW with MOVEFILE_COPY_ALLOWED as though it were a rename transaction.",
+      "approach": "Detect volume boundaries before publication. For cross-volume transfers, stage a complete verified candidate on the target volume and publish locally only after verification; retain the source and pending intent until RootId/SQLite/marker readback. Account for documented copy/delete behavior and the case where copying succeeds but source deletion fails.",
+      "avoid": "Do not claim cross-volume atomicity, delete the old root before target verification, or treat MOVEFILE_WRITE_THROUGH as proof of crash-safe multi-store commit.",
+      "verification": "Proposed synthetic cross-volume copy succeeds/delete fails and interrupted copy cases, with restart and duplicate-source checks; require deterministic selection of verified generation and no silent reinitialization.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "sqlite-cross-store-intent",
+        "windows-replacefile-partial-failure-recovery"
       ]
     }
   ]

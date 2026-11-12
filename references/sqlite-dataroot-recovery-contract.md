@@ -68,3 +68,12 @@
 - **Proposed QA only:** two-connection BUSY, fake fault matrix, crash between commit and canonical publish. `DOC_REVIEW` is not production PASS.
 
 Source: https://www.sqlite.org/lang_transaction.html (reviewed 2026-11-12).
+
+## Windows canonical publication failure boundaries (DOC_REVIEW)
+
+- `ReplaceFileW` documents distinct partial failure states: `ERROR_UNABLE_TO_REMOVE_REPLACED` (1175), `ERROR_UNABLE_TO_MOVE_REPLACEMENT` (1176), and `ERROR_UNABLE_TO_MOVE_REPLACEMENT_2` (1177). Depending on backup-path selection, the canonical file may be absent or the original may be renamed. Never blindly delete the candidate on failure. `REPLACEFILE_WRITE_THROUGH` is unsupported.
+- Replacement, original and optional backup must be on the same volume. Before recovery inspect actual file names, verified content and RootId. Keep pending intent until SQLite, marker and canonical readback agree.
+- `MoveFileExW` with `MOVEFILE_COPY_ALLOWED` across volumes is documented as copy/delete. If source deletion fails after successful copy, the call can succeed while leaving both source and destination. It is not an atomic multi-volume publication primitive.
+- **Proposed QA:** synthetic Win32 1175/1176/1177 states, cross-volume interrupted copy, copy-success/delete-failure, restart reconciliation, no premature cleanup. Physical interruption and power-loss validation are not performed.
+
+Primary sources: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew · https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw

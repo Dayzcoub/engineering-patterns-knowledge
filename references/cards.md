@@ -1001,3 +1001,17 @@ Evidence: SQLite API DOC_REVIEW; proposed QA only, not production PASS.
 **Review:** DOC_REVIEW, synthetic QA proposed only; no production or hardware PASS.
 
 **Sources:** https://www.sqlite.org/lang_transaction.html
+
+## windows-replacefile-partial-failure-recovery | ReplaceFileW Failure Requires Name and Backup Reconciliation (P0, reviewed)
+**Signals:** Publishing a canonical DataRoot JSON file through ReplaceFileW fails with ERROR_UNABLE_TO_MOVE_REPLACEMENT (1176), _2 (1177), or ERROR_UNABLE_TO_REMOVE_REPLACED (1175).
+**Approach:** Stage and verify the replacement on the same volume, retain an independent old generation and pending intent, and classify GetLastError. On 1176/1177 inspect canonical, replacement and backup paths before any cleanup; 1177 may rename the original and transfer metadata to the replacement. Recover only after validating RootId and contents, then reconcile SQLite and marker.
+**Avoid:** Do not assume a failed ReplaceFileW leaves the original canonical path untouched, delete the temporary candidate blindly, use unsupported REPLACEFILE_WRITE_THROUGH, or equate a successful API return with tested power-loss durability.
+**Verification:** Proposed synthetic 1175/1176/1177 path-state matrix with injected errors and restart; assert at least one validated generation remains, pending intent persists, and no empty DataRoot is initialized. Physical power-loss evidence remains pending.
+**Sources:** https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew
+
+## windows-cross-volume-publish-copy-delete-boundary | Cross-Volume MoveFileExW Is Copy/Delete, Not Atomic Publish (P0, reviewed)
+**Signals:** DataRoot target is on a different volume and code uses MoveFileExW with MOVEFILE_COPY_ALLOWED as though it were a rename transaction.
+**Approach:** Detect volume boundaries before publication. For cross-volume transfers, stage a complete verified candidate on the target volume and publish locally only after verification; retain the source and pending intent until RootId/SQLite/marker readback. Account for documented copy/delete behavior and the case where copying succeeds but source deletion fails.
+**Avoid:** Do not claim cross-volume atomicity, delete the old root before target verification, or treat MOVEFILE_WRITE_THROUGH as proof of crash-safe multi-store commit.
+**Verification:** Proposed synthetic cross-volume copy succeeds/delete fails and interrupted copy cases, with restart and duplicate-source checks; require deterministic selection of verified generation and no silent reinitialization.
+**Sources:** https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw

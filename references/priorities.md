@@ -48,3 +48,5 @@
 - SQLite backup bounded lifecycle (2026-11-12): `sqlite-backup-bounded-lifecycle` и `sqlite-backup-error-classification`, два P0 DOC_REVIEW паттерна; proposed deterministic QA в `data/qa-scenarios.json`. Нет production/hardware PASS.
 
 - SQLite transaction state (2026-11-12): `sqlite-commit-busy-transaction-retention` and `sqlite-error-transaction-state-reconciliation`; official SQLite DOC_REVIEW, proposed two-connection/fault QA only. No production PASS.
+
+- Windows DataRoot publication (2026-11-12): ReplaceFileW 1175/1176/1177 and MoveFileExW cross-volume copy/delete reviewed from Microsoft Learn; two P0 cards, proposed synthetic QA only. No physical power-loss guarantee claimed.
