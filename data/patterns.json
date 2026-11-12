@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "version": "0.5.0-preview.1",
+  "version": "0.6.0-preview.1",
   "generated_on": "2026-11-12",
   "source_root": "https://github.com/DovAmir/awesome-design-patterns",
   "source_root_commit": "9006287f27e720000cc8763ae4cd150789b8571d",
-  "scope": "curated research cards: audio, WPF, SQLite, IPC, STAYA; not production QA",
+  "scope": "curated engineering research: platform operations, observability, secure updates; no production QA assertions",
   "cards": [
     {
       "id": "state-machine",
@@ -1454,6 +1454,382 @@
       "related": [
         "staya-staged-config-promotion",
         "staya-secret-lifecycle"
+      ]
+    },
+    {
+      "id": "config-caddy-validate-reload",
+      "title": "Caddy Adapt, Validate, Reload and Runtime Verification",
+      "domain": "operations",
+      "priority": "P1",
+      "projects": [
+        "STAYA"
+      ],
+      "signals": "При обновлении Caddy конфиг адаптируется без ошибки, но ещё не проверен на provisioning и реальный public route.",
+      "approach": "Сохранять исходную версию и digest; отдельно выполнять adapt, validate в совместимом окружении, reload через API; затем проверить exact host+path, TLS и ожидаемый ответ.",
+      "avoid": "Не приравнивать adapt к validate и reload к проверке сетевого маршрута; validate может не пройти из-за ресурсов, занятых работающим инстансом.",
+      "verification": "Недопустимый Caddyfile, valid JSON с provisioning failure, ошибочный публичный matcher, rollback после неуспешного reload.",
+      "source_urls": [
+        "https://caddyserver.com/docs/command-line",
+        "https://caddyserver.com/docs/api"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "staya-staged-config-promotion",
+        "staya-public-route-contract"
+      ]
+    },
+    {
+      "id": "systemd-restart-watchdog",
+      "title": "systemd Restart Budget and Service Readiness",
+      "domain": "operations",
+      "priority": "P1",
+      "projects": [
+        "STAYA"
+      ],
+      "signals": "Упавшая нода непрерывно перезапускается или systemd показывает active до готовности Xray.",
+      "approach": "Определить Type, ExecStartPre, Restart/RestartSec, лимиты старта, timeout и при поддержке приложения watchdog/READY notification; проверить состояние listener и transport отдельно.",
+      "avoid": "Не выставлять Type=notify без реализации sd_notify в приложении; Restart=always не лечит неверную конфигурацию; ExecStartPre не для фоновых daemon.",
+      "verification": "Crash loop, invalid config, watchdog missed, manual stop, slow startup, StartLimit, failure recovery.",
+      "source_urls": [
+        "https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html",
+        "https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "staya-active-path-health",
+        "staya-staged-config-promotion"
+      ]
+    },
+    {
+      "id": "compose-health-dependency",
+      "title": "Compose Dependency Health Gate",
+      "domain": "operations",
+      "priority": "P1",
+      "projects": [
+        "STAYA"
+      ],
+      "signals": "Compose запускает приложение до готовности DNS, базы или proxy; зависимый контейнер ошибается сразу после старта.",
+      "approach": "Настроить healthcheck и depends_on: condition service_healthy только там, где нужна readiness; отдельно проверить recovery после restart и обновления зависимого сервиса.",
+      "avoid": "Короткий depends_on гарантирует лишь startup order; healthcheck одного контейнера не доказывает end-to-end работу; не добавлять Compose для одного простого systemd daemon.",
+      "verification": "Delayed dependency, failed healthcheck, manual restart, container crash, readiness vs liveness.",
+      "source_urls": [
+        "https://docs.docker.com/compose/how-tos/startup-order",
+        "https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-10.0"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "staya-active-path-health",
+        "systemd-restart-watchdog"
+      ]
+    },
+    {
+      "id": "container-immutable-build",
+      "title": "Immutable Container Image and Digest Pinning",
+      "domain": "operations",
+      "priority": "P1",
+      "projects": [
+        "STAYA"
+      ],
+      "signals": "Деплой повторно скачивает latest, версия меняется без фиксации коммита и откат становится невоспроизводимым.",
+      "approach": "Использовать доверенный base и pinned digest там, где требуется воспроизводимость; build artifact связывать с source commit, регулярно обновлять pin с тестами; сокращать runtime image и privileges.",
+      "avoid": "Digest pin не гарантирует отсутствие CVE; нельзя навечно замораживать старый образ; checksum из того же недоверенного источника не удостоверение.",
+      "verification": "Rebuild/rollback по exact image digest, malicious tag move, reproducibility, scan and update policy.",
+      "source_urls": [
+        "https://docs.docker.com/build/building/best-practices/",
+        "https://slsa.dev/spec/v1.2/"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "secure-deploy-artifact-gate",
+        "staya-staged-config-promotion"
+      ]
+    },
+    {
+      "id": "sops-multi-recipient-recovery",
+      "title": "SOPS/age Multi-Recipient Secret Recovery",
+      "domain": "security",
+      "priority": "P1",
+      "projects": [
+        "STAYA"
+      ],
+      "signals": "Операции с зашифрованным конфигом блокируются после смены ключа/утраты одного получателя или секрет появляется в артефактах.",
+      "approach": "Описать и сверять SOPS policy/age recipients, тестировать decrypt каждым авторизованным путём, иметь revocation/rotation procedure и offline recovery, без plaintext в Git/QA.",
+      "avoid": "Наличие второго recipient не заменяет контролируемое хранение private key; ни один PR не должен раскрывать ключи или реальную подписку.",
+      "verification": "Synthetic encrypted fixture, lost-key simulation, recipient rotation, rejected unauthorized decrypt, secret scan.",
+      "source_urls": [
+        "https://github.com/getsops/sops"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "staya-secret-lifecycle",
+        "least-privilege"
+      ]
+    },
+    {
+      "id": "observability-context-propagation",
+      "title": "Trace Context Across IPC and Deploy Stages",
+      "domain": "observability",
+      "priority": "P1",
+      "projects": [
+        "STAYA",
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Ошибка проходит через несколько процессов/этапов, а независимые журналы нельзя связать с исходной операцией.",
+      "approach": "Передавать безопасный trace/correlation context через границы IPC, HTTP, worker и этапы deployment; чётко определять parent/child, retry attempt, generation и security boundary.",
+      "avoid": "Не включать секретные headers, full subscription URL, personal data или untrusted baggage в spans; не создавать distributed tracing для одномодульного локального действия без пользы.",
+      "verification": "Same trace across stages, new span per retry, late reply rejection, no cross-user leak in baggage, missing context fallback.",
+      "source_urls": [
+        "https://opentelemetry.io/docs/concepts/context-propagation/",
+        "https://opentelemetry.io/docs/concepts/signals/traces/"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "message-correlation",
+        "security-structured-event-redaction",
+        "ipc-generation-fence"
+      ]
+    },
+    {
+      "id": "observability-bounded-cardinality",
+      "title": "Low-Cardinality Metrics and Defined Units",
+      "domain": "observability",
+      "priority": "P1",
+      "projects": [
+        "STAYA",
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Теги метрик содержат user ID, device serial или request ID и количество временных рядов растёт.",
+      "approach": "Определять ограниченные labels с явным смыслом, базовые units, счётчики ошибок и гистограммы latency; идентификаторы операций оставлять в logs/traces, но не metric labels.",
+      "avoid": "Нельзя ставить токены, endpoint IDs, URL, произвольные исключения и безлимитные значения в labels.",
+      "verification": "Unique time series budget, large synthetic ID set, unit correctness, counter/gauge boundaries.",
+      "source_urls": [
+        "https://prometheus.io/docs/practices/naming/",
+        "https://opentelemetry.io/docs/concepts/signals/metrics/",
+        "https://opentelemetry.io/docs/concepts/semantic-conventions/"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "observability-context-propagation",
+        "security-structured-event-redaction"
+      ]
+    },
+    {
+      "id": "observability-actionable-alerts",
+      "title": "Symptom-Based Alerts With Runbook Actions",
+      "domain": "observability",
+      "priority": "P1",
+      "projects": [
+        "STAYA",
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Каждый restart или одиночная 404 создаёт шум, реальная недоступность не выявляется.",
+      "approach": "Оповещать по измеримому влиянию на пользовательский сценарий, поддерживать уровни warning/critical и runbook со scope, условиями отключения и подтверждением восстановления.",
+      "avoid": "Не отправлять срочные оповещения по несущественным событиям, не считать 404 legacy route отказом подписки.",
+      "verification": "Simulated prolonged outage alerts, transient recovery no page, correct route, alert dedup and runbook link.",
+      "source_urls": [
+        "https://prometheus.io/docs/practices/alerting/",
+        "https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-10.0"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "staya-active-path-health",
+        "observability-bounded-cardinality"
+      ]
+    },
+    {
+      "id": "deployment-stage-journal",
+      "title": "Immutable Stage Journal and Failure Evidence",
+      "domain": "operations",
+      "priority": "P1",
+      "projects": [
+        "STAYA",
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Сборка, установка и live smoke выводят PASS без привязки к конкретному source SHA или архивам; поздний этап переписывает статус раннего.",
+      "approach": "Записывать runId, sourceSha, artifact digest, stage, start/end, exit, structured error и scope каждого перехода. Неизвестный stage при отказе = UNKNOWN/PENDING; не переписывать старые свидетельства.",
+      "avoid": "Не записывать сырые секреты в journal; единый JSON не гарантирует durable write после power loss; фиксация процесса не равна фактическому smoke.",
+      "verification": "Crash midway, missing stage, hash mismatch, partial failure, log redaction, restart readback and immutable run history.",
+      "source_urls": [
+        "https://slsa.dev/spec/v1.2/",
+        "https://opentelemetry.io/docs/concepts/semantic-conventions/"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "secure-deploy-artifact-gate",
+        "staya-staged-config-promotion"
+      ]
+    },
+    {
+      "id": "update-tuf-antirollback",
+      "title": "Signed Update Metadata and Rollback/Freeze Protection",
+      "domain": "security",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "Клиент доверяет beta.json только по HTTPS и hash, что допускает устаревшую/подменённую метаинформацию при компрометации источника.",
+      "approach": "Изучить и при необходимости внедрить TUF-подобные роли root/targets/snapshot/timestamp с доверенными ключами, version counters, expiry and rollback protection; идентифицировать target по размеру и digest.",
+      "avoid": "Не объявлять собственный JSON feed совместимым с TUF без полноценной реализации клиента/репозитория; не считать один SHA от того же канала аутентификацией.",
+      "verification": "Old signed metadata replay, expired timestamp, changed target digest, missing trust anchor, key rotation and rollback policy.",
+      "source_urls": [
+        "https://theupdateframework.github.io/specification/latest/",
+        "https://docs.sigstore.dev/cosign/verifying/verify/"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "secure-deploy-artifact-gate",
+        "update-publisher-signature-policy"
+      ]
+    },
+    {
+      "id": "update-publisher-signature-policy",
+      "title": "Authenticode Publisher and Chain Policy",
+      "domain": "security",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Установщик подписан self-signed сертификатом, а агент ошибочно объявляет его доверенным для чужой машины.",
+      "approach": "На Windows проверять WinVerifyTrust/Authenticode по соответствующей политике, доверенную цепочку и ожидаемую идентичность издателя; подписанный test artifact отличать от publicly trusted production signer.",
+      "avoid": "Хеш SHA-256 и наличие подписи не равны доверенному издателю; отключать SmartScreen/Defender ради PASS нельзя.",
+      "verification": "Unsigned, tampered, wrong publisher, expired/revoked chain per policy, self-signed trust failure on clean Windows.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/windows/win32/api/wintrust/nf-wintrust-winverifytrust"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "secure-deploy-artifact-gate",
+        "update-tuf-antirollback"
+      ]
+    },
+    {
+      "id": "windows-msi-custom-rollback",
+      "title": "MSI Deferred Custom Action with Compensating Rollback",
+      "domain": "operations",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Установочный custom action меняет сервисы и внешние файлы, после сбоя Windows Installer не восстанавливает их.",
+      "approach": "Для MSI custom action, меняющих состояние системы, использовать deferred execution с соответствующими rollback actions и сценариями частичной ошибки, версионированные бэкапы и последующую проверку.",
+      "avoid": "Это только для Windows Installer/MSI; для Inno Setup/NSIS иной механизм; встроенный rollback MSI не покрывает все сторонние side effects.",
+      "verification": "Abort during custom action, rollback disabled, partial filesystem state, service install failure, non-admin account.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/windows/win32/msi/rollback-custom-actions",
+        "https://learn.microsoft.com/en-us/windows/win32/msi/deferred-execution-custom-actions",
+        "https://learn.microsoft.com/en-us/windows/win32/msi/rollback-installation"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "staya-staged-config-promotion",
+        "sqlite-cross-store-intent"
+      ]
+    },
+    {
+      "id": "update-worker-handoff",
+      "title": "Updater Process Lifetime and File-Promotion Barrier",
+      "domain": "operations",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Updater пытается заменить запущенный бинарник и теряет состояние при отмене/kill; модули продолжают писать в DataRoot.",
+      "approach": "До замены запретить новые операции, дождаться завершения worker и освобождения файлов, верифицировать candidate; публиковать файлы по правилам Windows API с journal и restart smoke, затем только удалять backup.",
+      "avoid": "Не считать замену нескольких файлов одной транзакцией; ReplaceFileW имеет ограничения same-volume и error cases, а installer backend может обладать другими возможностями.",
+      "verification": "Locked exe, updater crash, partial promotion, failed startup, alternate DataRoot, repeated update and rollback.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew",
+        "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw",
+        "https://learn.microsoft.com/en-us/windows/win32/msi/rollback-installation"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "audio-stream-shutdown-barrier",
+        "sqlite-cross-store-intent",
+        "update-publisher-signature-policy"
+      ]
+    },
+    {
+      "id": "supplychain-provenance-verification",
+      "title": "Build Provenance and Artifact Identity Verification",
+      "domain": "security",
+      "priority": "P1",
+      "projects": [
+        "STAYA",
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Выпущен артефакт с корректным размером и SHA, но нет уверенности, из какого commit и доверенной среды его собрали.",
+      "approach": "Вести provenance/source reference, identity build environment, immutable artifact digest и проверяемую подпись/attestation при требуемом threat model; отделять test signer от production.",
+      "avoid": "Не присваивать SLSA Level по одному файлу provenance; аттестацию нужно проверять против доверенной личности сборщика, а не просто хранить.",
+      "verification": "Wrong commit/digest, forged attestation, untrusted identity, runtime match and release record.",
+      "source_urls": [
+        "https://slsa.dev/spec/v1.2/",
+        "https://docs.sigstore.dev/cosign/verifying/verify/"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "secure-deploy-artifact-gate",
+        "container-immutable-build"
+      ]
+    },
+    {
+      "id": "deployment-approval-gate",
+      "title": "Environment Approval and Scoped Deployment Secrets",
+      "domain": "operations",
+      "priority": "P1",
+      "projects": [
+        "STAYA",
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "CI job с правом publish запускается из незащищённой ветки или unreviewed PR и получает production secrets.",
+      "approach": "Использовать GitHub environments, ограничение веток и approvals согласно доступности плана, минимальные permissions, отдельные secrets и staged promotion; проверять фактическую политику.",
+      "avoid": "Environment без настроенных protection rules не является автоматическим approval; не считать ручной запуск безопасным без проверки actor/branch/artifact.",
+      "verification": "Untrusted branch cannot deploy, rejection before secrets, allowed reviewer approval, restart and revoke.",
+      "source_urls": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments",
+        "https://slsa.dev/spec/v1.2/"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "secure-deploy-artifact-gate",
+        "supplychain-provenance-verification"
+      ]
+    },
+    {
+      "id": "progressive-release-acceptance",
+      "title": "Progressive Release and Post-Deploy Acceptance Gate",
+      "domain": "reliability",
+      "priority": "P1",
+      "projects": [
+        "STAYA",
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Один тестовый узел прошёл проверку, затем обновление публикуется всем клиентам без контроля состояния.",
+      "approach": "Продвигать staging→canary→wider rollout с фиксированными критериями: источник, installed version, update feed, new sessions, critical operations, rollback/stop rules; учитывать размер группы и доступные tester devices.",
+      "avoid": "Не обещать автоматическую canary процедуру без telemetry и клиентов; PASS из одного process-start не равен release success.",
+      "verification": "Canary failure blocks wider release, signed payload mismatch, updater rollback, stale feed, stop condition triggers.",
+      "source_urls": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments",
+        "https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-10.0",
+        "https://prometheus.io/docs/practices/alerting/"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "deployment-stage-journal",
+        "update-worker-handoff",
+        "observability-actionable-alerts"
       ]
     }
   ]

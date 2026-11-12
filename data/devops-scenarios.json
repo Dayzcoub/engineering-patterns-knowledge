@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "version": "0.6.0-preview.1",
+  "generated_on": "2026-11-12",
+  "status": "proposed synthetic test cases; not production QA",
+  "items": [
+    {
+      "id": "klidan-unsigned-beta-update",
+      "project": "KLIDAN",
+      "query": "beta updater downloaded installer with a matching SHA256 but untrusted self-signed Authenticode certificate",
+      "must_consider": [
+        "update-publisher-signature-policy",
+        "update-tuf-antirollback",
+        "secure-deploy-artifact-gate"
+      ],
+      "acceptance": [
+        "untrusted publisher is not reported as trusted",
+        "expected source and signed metadata verified independently",
+        "no bypass of Windows safety checks"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "klidan-updater-locked-files",
+      "project": "KLIDAN",
+      "query": "updater tries to replace running app while media library and worker still hold open handles",
+      "must_consider": [
+        "update-worker-handoff",
+        "deployment-stage-journal",
+        "sqlite-cross-store-intent"
+      ],
+      "acceptance": [
+        "worker shutdown completed before promotion",
+        "failed restart leaves recovery path and old app intact",
+        "DataRoot not reset"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "audio-probe-msi-custom-action",
+      "project": "Audio Probe",
+      "query": "custom installer action changes external service state then install fails halfway",
+      "must_consider": [
+        "windows-msi-custom-rollback",
+        "update-worker-handoff"
+      ],
+      "acceptance": [
+        "installer backend identified first (MSI versus other)",
+        "recovery of external side effects is tested",
+        "nonadmin failures handled"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "staya-caddy-adapt-pass-validate-fail",
+      "project": "STAYA",
+      "query": "caddy adapt succeeds, validate fails due to provisioned TLS resource or active listener",
+      "must_consider": [
+        "config-caddy-validate-reload",
+        "staya-public-route-contract"
+      ],
+      "acceptance": [
+        "adapt PASS not promoted into VALIDATE PASS",
+        "reload not performed without acceptable preflight",
+        "current public route stays usable"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "staya-compose-startup-race",
+      "project": "STAYA",
+      "query": "Docker Compose starts app before dependent database becomes ready",
+      "must_consider": [
+        "compose-health-dependency",
+        "systemd-restart-watchdog"
+      ],
+      "acceptance": [
+        "readiness dependency explicit",
+        "startup timeout and failed health represented",
+        "no assumption that started equals ready"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "staya-high-cardinality-metrics",
+      "project": "STAYA",
+      "query": "health metric labels contain dynamic subscriber token or request ID",
+      "must_consider": [
+        "observability-bounded-cardinality",
+        "security-structured-event-redaction"
+      ],
+      "acceptance": [
+        "cardinality bound demonstrated with synthetic IDs",
+        "metrics contain no secret or credential"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "staya-reboot-loop",
+      "project": "STAYA",
+      "query": "systemd service crashes and restarts continuously after invalid Xray configuration",
+      "must_consider": [
+        "systemd-restart-watchdog",
+        "config-caddy-validate-reload",
+        "observability-actionable-alerts"
+      ],
+      "acceptance": [
+        "restart budget stops runaway loop",
+        "service health scope distinct from public route",
+        "alert includes useful runbook actions"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "signed-feed-replay",
+      "project": "KLIDAN",
+      "query": "attacker replays old valid signed update metadata while current feed is unavailable",
+      "must_consider": [
+        "update-tuf-antirollback",
+        "update-publisher-signature-policy"
+      ],
+      "acceptance": [
+        "monotonic version or expiry prevents stale metadata acceptance",
+        "TUF compliance not claimed without TUF implementation",
+        "offline mode has explicit policy"
+      ],
+      "decision_status": "proposed"
+    }
+  ]
+}

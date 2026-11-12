@@ -11,6 +11,8 @@
 | P1 | Взаимодействие компонентов | IPC format/version, deadline, correlation, generation fence, poison payload | KLIDAN, Audio Probe, STAYA | Handshake/late reply tests |
 | P1 | Отказоустойчивость | Bounded work, rate limits, readiness layers, failover hysteresis, staged rollback | STAYA | Offline fault injection + live route/egress QA |
 | P1 | Безопасность | SSRF, admin isolation, secrets, logging redaction, artifact gates | STAYA, installers | Negative SSRF / leak / access tests |
+| P1 | DevOps и обновления | Caddy validate, systemd watchdog, Compose readiness, TUF/Authenticode, update handoff, SLSA | STAYA, KLIDAN, Audio Probe | staged rollout and rollback, trust validation |
+| P1 | Наблюдаемость | OpenTelemetry context, metrics cardinality, actionable alerts, stage journal | STAYA, KLIDAN, Audio Probe | evidence correlation without secret leakage |
 | P2 | Производительность | Dirty Flag, Data Locality | KLIDAN | Measured benchmark improvements |
 | P2 | Комплексные операции | Compensation, Saga | STAYA/new projects | Crash and compensation scenarios |
 | P3 | Масштабирование | Cloud, Serverless, Microservices | Future projects | Only on demand |
@@ -20,7 +22,7 @@
 - WASAPI/MMCSS contracts: первая документальная волна готова; следующий этап — duplex physical QA, ASIO и адаптация задержек по фактическим устройствам. См. `audio-probe-profile-contract.md`.
 - WPF/DPI/UI: первая документальная волна готова; нужны реальные KLIDAN скриншоты/layout QA и аппаратные multi-monitor прогоны. См. `wpf-fullhd-dpi-contract.md`.
 - SQLite/DataRoot: первая волна API и crash-recovery контракта готова; нужны физические interruption tests и code audit.
-- Договоры обновления приложений, signed installer, rollback и сохранение настроек.
+- Обновления/DevOps: документальная P1-волна готова, нужны интеграционные тесты подписей, отката и readiness; см. `devops-release-qa-contract.md`.
 - STAYA IPC/reliability/security: документальная P1-волна готова; требуется аудировать точные версии 3x-ui/Xray и провести ограниченные live negative/positive tests. См. `staya-ipc-resilience-security-contract.md`.
 
 ## Принцип управления источниками

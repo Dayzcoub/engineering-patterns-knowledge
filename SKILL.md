@@ -1,9 +1,9 @@
 ---
 name: engineering-patterns
-description: Curated engineering design-pattern decision support for architecture review, bug fixes, concurrency, WPF UI, real-time audio, SQLite, IPC, resilience, security and performance. Use when designing or reviewing modules, diagnosing race/crash/retry failures, or selecting tests for KLIDAN, Audio Probe, STAYA and new projects.
+description: Curated engineering pattern support for WPF, real-time audio, SQLite, IPC, STAYA, DevOps, observability, software updates, security and performance reviews. Use when designing or reviewing modules, diagnosing race/crash/retry failures, or selecting tests for KLIDAN, Audio Probe, STAYA and new projects.
 compatibility: Works offline with Python 3 standard library. External links require network only for source re-verification.
 metadata:
-  version: "0.5.0-preview.1"
+  version: "0.6.0-preview.1"
   language: "ru"
 ---
 
@@ -26,9 +26,10 @@ Use when a task has a substantial architectural choice, state machine, thread or
 7. Для WPF проверить WorkArea/DIP/per-monitor DPI, Dispatcher ownership, late async completion, focus/keyboard, virtualization, design tokens и скриншоты. См. `references/wpf-fullhd-dpi-contract.md`.
 8. Для SQLite/DataRoot разграничивать atomic DB transaction и операции файловой системы, сохранять pending intent до readback и проверять состояние WAL/backup/RootId. См. `references/sqlite-dataroot-recovery-contract.md`.
 9. Для STAYA исследовать `references/staya-ipc-resilience-security-contract.md` и сценарии из `data/staya-scenarios.json`. Проверять раздельно process, public route, egress, SSRF, retry budget, secrets, staged rollback. Не объявлять LIVE PASS по config parse.
-10. Для Audio Probe разделять capability discovery, requested/effective periods и физическую стабильность; не фиксировать 3/5/10 ms как универсальную цель. См. `references/audio-probe-profile-contract.md`.
-11. If primary source is `index_only` or `pending_primary_review`, say so. Verify externally before treating it as authoritative, and do not claim current implementation is compliant without code/tests.
-12. If implementing: keep change scoped; run project-defined builds, tests, and regression checks. Report PASS/FAIL with exact evidence.
+10. Для release/updater и DevOps проверить source identity, trust policy, metadata freshness, MSI vs non-MSI, staging/rollback, health scope, readiness и telemetry limits. См. `references/devops-release-qa-contract.md` и `data/devops-scenarios.json`.
+11. Для Audio Probe разделять capability discovery, requested/effective periods и физическую стабильность; не фиксировать 3/5/10 ms как универсальную цель. См. `references/audio-probe-profile-contract.md`.
+12. If primary source is `index_only` or `pending_primary_review`, say so. Verify externally before treating it as authoritative, and do not claim current implementation is compliant without code/tests.
+13. If implementing: keep change scoped; run project-defined builds, tests, and regression checks. Report PASS/FAIL with exact evidence.
 
 ## Answer contract for agents
 
@@ -54,6 +55,8 @@ Use when a task has a substantial architectural choice, state machine, thread or
 - `data/upstream-index.json`: 115 unreviewed upstream bibliography URLs (122 occurrences) for future research; NEVER cite as reviewed.
 - `references/priorities.md`: study waves and project mapping.
 - `references/adding-patterns.md`: expansion rules.
+- `references/devops-release-qa-contract.md`: versioned release and rollback, config validation, observability acceptance matrix.
+- `data/devops-scenarios.json`: synthetic proposed DevOps/update decisions (not executed QA).
 - `references/staya-ipc-resilience-security-contract.md`: STAYA IPC, resilience, security boundaries.
 - `data/staya-scenarios.json`: synthetic QA decision scenarios, not executed tests.
 - `references/sqlite-dataroot-recovery-contract.md`: транзакции, файлы, WAL и fault injection.
