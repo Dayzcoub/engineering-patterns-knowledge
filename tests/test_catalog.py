@@ -81,6 +81,25 @@ class CatalogTests(unittest.TestCase):
                       'Dispose', 'Dispatcher', 'virtualization'):
             self.assertIn(token, content)
 
+    def test_sqlite_dataroot_patterns_have_reviewed_sources(self):
+        catalog = json.loads((ROOT / 'data' / 'patterns.json').read_text(encoding='utf-8'))
+        sources = json.loads((ROOT / 'data' / 'sources.json').read_text(encoding='utf-8'))
+        by_id = {c['id']: c for c in catalog['cards']}
+        by_url = {s['url']: s for s in sources['sources']}
+        expected = {'sqlite-cross-store-intent', 'sqlite-wal-checkpoint-control',
+                    'sqlite-wal-durability-policy', 'sqlite-online-backup',
+                    'sqlite-write-contention', 'sqlite-integrity-recovery-gate'}
+        self.assertTrue(expected <= by_id.keys())
+        for pid in expected:
+            self.assertTrue(any(by_url[url]['status'] == 'reviewed'
+                                for url in by_id[pid]['source_urls']))
+
+    def test_sqlite_recovery_contract_has_failure_boundaries(self):
+        text = (ROOT / 'references' / 'sqlite-dataroot-recovery-contract.md').read_text(encoding='utf-8')
+        for token in ('RootId', 'pending', 'readback', 'cross-volume', 'power loss',
+                      'foreign_key_check', 'ReplaceFileW'):
+            self.assertIn(token, text)
+
 
 if __name__ == '__main__':
     unittest.main()

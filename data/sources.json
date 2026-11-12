@@ -69,7 +69,8 @@
       "url": "https://www.sqlite.org/atomiccommit.html",
       "status": "reviewed",
       "patterns": [
-        "sqlite-atomic-transaction"
+        "sqlite-atomic-transaction",
+        "sqlite-cross-store-intent"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": ""
@@ -78,7 +79,11 @@
       "url": "https://www.sqlite.org/wal.html",
       "status": "reviewed",
       "patterns": [
-        "sqlite-wal"
+        "sqlite-wal",
+        "sqlite-wal-checkpoint-control",
+        "sqlite-wal-durability-policy",
+        "sqlite-online-backup",
+        "sqlite-write-contention"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": ""
@@ -465,6 +470,101 @@
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Official Microsoft documentation checked 2026-11-12; source review is not a KLIDAN UI QA result.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew",
+      "status": "reviewed",
+      "patterns": [
+        "sqlite-cross-store-intent"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Original SQLite or Windows API documentation reviewed 2026-11-12; not a physical power-loss or KLIDAN recovery test.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw",
+      "status": "reviewed",
+      "patterns": [
+        "sqlite-cross-store-intent"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Original SQLite or Windows API documentation reviewed 2026-11-12; not a physical power-loss or KLIDAN recovery test.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.sqlite.org/c3ref/wal_checkpoint_v2.html",
+      "status": "reviewed",
+      "patterns": [
+        "sqlite-wal-checkpoint-control"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Original SQLite or Windows API documentation reviewed 2026-11-12; not a physical power-loss or KLIDAN recovery test.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.sqlite.org/pragma.html",
+      "status": "reviewed",
+      "patterns": [
+        "sqlite-wal-durability-policy",
+        "sqlite-online-backup",
+        "sqlite-foreign-keys-per-connection",
+        "sqlite-integrity-recovery-gate"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Original SQLite or Windows API documentation reviewed 2026-11-12; not a physical power-loss or KLIDAN recovery test.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.sqlite.org/backup.html",
+      "status": "reviewed",
+      "patterns": [
+        "sqlite-online-backup",
+        "sqlite-integrity-recovery-gate"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Original SQLite or Windows API documentation reviewed 2026-11-12; not a physical power-loss or KLIDAN recovery test.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.sqlite.org/lang_transaction.html",
+      "status": "reviewed",
+      "patterns": [
+        "sqlite-write-contention",
+        "sqlite-savepoint-nested-work"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Original SQLite or Windows API documentation reviewed 2026-11-12; not a physical power-loss or KLIDAN recovery test.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.sqlite.org/rescode.html",
+      "status": "reviewed",
+      "patterns": [
+        "sqlite-write-contention"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Original SQLite or Windows API documentation reviewed 2026-11-12; not a physical power-loss or KLIDAN recovery test.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.sqlite.org/foreignkeys.html",
+      "status": "reviewed",
+      "patterns": [
+        "sqlite-foreign-keys-per-connection"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Original SQLite or Windows API documentation reviewed 2026-11-12; not a physical power-loss or KLIDAN recovery test.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.sqlite.org/lang_savepoint.html",
+      "status": "reviewed",
+      "patterns": [
+        "sqlite-savepoint-nested-work"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Original SQLite or Windows API documentation reviewed 2026-11-12; not a physical power-loss or KLIDAN recovery test.",
       "reviewed_on": "2026-11-12"
     }
   ]

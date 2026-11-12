@@ -14,3 +14,5 @@
 11. Для real-time audio отделять проверенные контракты API от локальной политики измерений: статус `reviewed` относится только к первоисточникам, а не к физическому тесту. Сохранять requested/effective frames и конфигурацию устройства отдельно.
 
 12. Для WPF указывать, проверен ли конкретный runtime/OS/DPI-awareness; общий Microsoft источник не является доказательством UI PASS в KLIDAN.
+
+13. Для SQLite разграничивать crash atomicity, power-loss durability, WAL-sidecar и операции вне БД. Протокол multi-store reconciliation не считать гарантией SQLite без независимых fault-injection тестов.

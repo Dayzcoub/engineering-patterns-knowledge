@@ -322,3 +322,67 @@
 **Проекты:** KLIDAN
 **Первоисточник:** https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-2d-graphics-and-imaging
 
+## sqlite-cross-store-intent | Crash-Recoverable Intent Across SQLite and Filesystem (P0, reviewed)
+**Когда:** DataRoot/SQLite/JSON marker должны соответствовать одному RootId после ошибки между записью файлов и обновлением БД.
+**Решение:** Определить одну каноническую конфигурацию, сохранять pending intent с уникальным target RootId, готовить destination, проверять запись/readback, переключать canonical pointer, затем подтверждать повторным readback. При старте reconcile pending/canonical/DB marker по явным правилам; повторение должно быть идемпотентно.
+**Не применять:** Не называть несколько операций по SQLite+JSON одной атомарной транзакцией. Не удалять старый root до проверки нового. Не считать ReplaceFileW надёжным cross-volume commit; его собственные ограничения и ошибки обрабатывать отдельно.
+**Проверка:** Fault injection до и после каждого шага, zero-byte/temp/permission denied, cross-volume, inconsistent marker, retry after crash, non-admin operator, recovery without data loss.
+**Проекты:** KLIDAN
+**Первоисточник:** https://www.sqlite.org/atomiccommit.html, https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew, https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw
+
+## sqlite-wal-checkpoint-control | SQLite WAL Checkpoint and Long Reader Lifecycle (P0, reviewed)
+**Когда:** Файл -wal растёт, хотя изменения небольшие; медиатека держит активную read transaction и блокирует завершение checkpoint.
+**Решение:** Отслеживать длительность readers, размер WAL и checkpoint progress. Проверять результат checkpoint и BUSY; планировать обслуживающую операцию вне UI критического пути. Не делать TRUNCATE при активных readers без временного бюджета и политики обработки busy.
+**Не применять:** Не считать WAL бесконечно быстрым или запись действительно параллельной; в WAL одновременно один writer; не применять WAL на network filesystem без подтверждённой поддержки.
+**Проверка:** Long-lived reader + writes, PASSIVE incomplete, FULL/TRUNCATE busy, release reader then successful checkpoint, UI remains responsive.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://www.sqlite.org/wal.html, https://www.sqlite.org/c3ref/wal_checkpoint_v2.html
+
+## sqlite-wal-durability-policy | WAL synchronous Mode vs Power-Loss Durability (P0, reviewed)
+**Когда:** Разработчик считает любой COMMIT гарантированно сохранённым после отключения питания независимо от PRAGMA synchronous.
+**Решение:** Для каждой критичности данных зафиксировать journal_mode и synchronous; WAL+FULL обеспечивает более сильную гарантию durability при power loss, чем WAL+NORMAL. Разделять приложение crash, OS crash и power loss. Readback через соединение не равнозначен физически durable commit.
+**Не применять:** Не менять GLOBAL/connection PRAGMA на OFF ради ускорения без принятого риска потерь; не описывать WAL+NORMAL как защиту от потери последнего commit при power loss.
+**Проверка:** Readback journal/synchronous на реальном соединении, test recovery after process termination, fault/power-loss test on controlled hardware, результат и лимиты документировать.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://www.sqlite.org/pragma.html, https://www.sqlite.org/wal.html
+
+## sqlite-online-backup | Online SQLite Backup Instead of Bare File Copy (P0, reviewed)
+**Когда:** Резервная копия SQLite создаётся копированием .db при открытом WAL и потом не восстанавливается или теряет данные.
+**Решение:** Для live database использовать SQLite Online Backup API или документированную альтернативу VACUUM INTO. Копию проверить отдельно: open, integrity_check, RootId, schema version, и восстановить на временном стенде; сохранять provenance и версию.
+**Не применять:** Не копировать только файл .db из работающей WAL базы и не считать успешный File.Copy достаточной проверкой. Не заменять существующую активную базу без остановки клиентов и rollback plan.
+**Проверка:** Backup while writer active, reopen destination, quick_check/integrity_check, restore on clean host, simulated interruption and insufficient disk.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://www.sqlite.org/backup.html, https://www.sqlite.org/wal.html, https://www.sqlite.org/pragma.html
+
+## sqlite-write-contention | SQLite Single-Writer Contention and Bounded Retry (P0, reviewed)
+**Когда:** Два процесса/модуля пишут одновременно, виден SQLITE_BUSY, бесконечный retry в UI или зависшая транзакция.
+**Решение:** Уточнить boundary ownership и BEGIN DEFERRED/IMMEDIATE, использовать ограниченный busy_timeout/backoff с cancellation вне UI, корректно откатывать и повторять полную идемпотентную операцию. Диагностировать долгие readers, writers и locks.
+**Не применять:** Не считать WAL многопишущим; не повторять частично выполненную side-effect операцию без idempotency key; не держать write transaction во время сети/длинного сканирования.
+**Проверка:** Two concurrent writers, busy on BEGIN IMMEDIATE, timeout→recoverable error, cancellation, retry duplicate fingerprint, no UI freeze.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://www.sqlite.org/lang_transaction.html, https://www.sqlite.org/rescode.html, https://www.sqlite.org/wal.html
+
+## sqlite-foreign-keys-per-connection | Foreign Key Enforcement Per SQLite Connection (P1, reviewed)
+**Когда:** Схема содержит FOREIGN KEY, но дочерние записи-сироты появляются через новый connection pool/тестовый процесс.
+**Решение:** На каждом новом соединении включить PRAGMA foreign_keys=ON вне активной транзакции, прочитать back, проверять foreign_key_check при миграциях; считать настройку connection-scoped.
+**Не применять:** Не предполагать, что наличие FOREIGN KEY в DDL гарантирует runtime enforcement; не переключать PRAGMA после BEGIN в надежде немедленно включить.
+**Проверка:** Новый pooled/non-pooled connection, insert orphan must fail, migration creates no orphan, foreign_key_check empty.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://www.sqlite.org/foreignkeys.html, https://www.sqlite.org/pragma.html
+
+## sqlite-integrity-recovery-gate | SQLite Integrity and Recovery Gate Before Promotion (P0, reviewed)
+**Когда:** После копирования/аварии найден файл БД, но приложение сразу назначает его рабочим без верификации.
+**Решение:** Перед признанием нового DataRoot/backup рабочим проверить открытие, PRAGMA quick_check/integrity_check, отдельно foreign_key_check и прикладной RootId/schema marker. При ошибке сохранить старое состояние и предоставить диагностируемый режим recovery.
+**Не применять:** Не считать quick_check полным эквивалентом integrity_check; integrity_check не выявляет FK errors. Не выполнять тяжёлую проверку в UI Dispatcher.
+**Проверка:** Known corrupt file, broken FK, mismatched RootId, clean backup, fault at readback, untrusted path and access denied; no silent overwrite.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://www.sqlite.org/pragma.html, https://www.sqlite.org/backup.html
+
+## sqlite-savepoint-nested-work | SQLite SAVEPOINT Scope Is Not an Independent Commit (P1, reviewed)
+**Когда:** Внутренний сервис делает RELEASE savepoint, а затем внешняя операция откатывает всю транзакцию, хотя сервис считал изменения надёжно сохранёнными.
+**Решение:** Использовать SAVEPOINT для локального отката фрагмента внутри одной транзакции; считать надёжным завершением только внешний COMMIT. Документировать владельца transaction и границы state/lifetime.
+**Не применять:** Не выдавать RELEASE внутреннего savepoint за durable commit, не смешивать с отдельными filesystem mutations без recovery protocol.
+**Проверка:** Inner RELEASE then outer ROLLBACK, nested retry, ROLLBACK TO continuation and COMMIT, injected exception across service boundaries.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://www.sqlite.org/lang_savepoint.html, https://www.sqlite.org/lang_transaction.html
+
