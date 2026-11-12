@@ -40,3 +40,5 @@
 ## Волна P0: WASAPI capture clock evidence (2026-11-12)
 
 Три новых паттерна: `audio-capture-discontinuity-evidence`, `audio-clock-domain-reconciliation`, `audio-capture-packet-epoch`. Источники Microsoft Learn reviewed, сценарии proposed. Нет физического теста или production PASS. Следующая тема: проверка callback/ReleaseBuffer lifetime и реального профиля минимального стабильного буфера.
+
+- WASAPI capture packet ownership: API DOC_REVIEW 2026-11-12; two new P0 cards and three proposed cases. Physical lease budget, actual device periods and loss flags remain unverified. See `audio-capture-buffer-contract.md`.

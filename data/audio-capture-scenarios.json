@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "0.9.1-preview.1",
+  "version": "0.9.2-preview.1",
   "generated_on": "2026-11-12",
   "status": "PROPOSED synthetic and physical QA; NOT EXECUTED",
   "items": [
@@ -55,6 +55,51 @@
       "acceptance": [
         "Report DOC_REVIEW/SYNTHETIC separately from hardware PASS",
         "Physical claim requires device identity, mode, actual period, duration, sample format, artifacts and hashes"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "capture-lease-lifetime",
+      "project": "Audio Probe",
+      "query": "GetBuffer pointer lease, ReleaseBuffer(0) replay, invalid partial count, delayed processing and cancellation",
+      "must_consider": [
+        "audio-capture-buffer-lease",
+        "audio-capture-packet-epoch"
+      ],
+      "acceptance": [
+        "Consume full packet or none; ReleaseBuffer(frame_count) for full read, zero only for none; partial count rejected",
+        "No pointer use after release; no unbounded wait on UI/network/disk; record lease budget and HRESULT",
+        "Injected invalidation and cancellation preserve cleanup and do not count stale packets as stable"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "capture-shared-exclusive-packet-sizing",
+      "project": "Audio Probe",
+      "query": "Shared GetNextPacketSize versus exclusive event/polling capture packet-size contract",
+      "must_consider": [
+        "audio-capture-packet-size-mode"
+      ],
+      "acceptance": [
+        "GetNextPacketSize only shared and same capture thread; shared size matches subsequent GetBuffer",
+        "Exclusive polling padding is only a snapshot; actual GetBuffer frames may be larger",
+        "Exclusive event path does not assume polling padding equality"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "capture-physical-lease-budget",
+      "project": "Audio Probe",
+      "query": "Physical USB device period and lease latency evidence for minimum stable buffer qualification",
+      "must_consider": [
+        "audio-capture-buffer-lease",
+        "audio-minimum-stable-profile",
+        "qa-physical-evidence-separation"
+      ],
+      "acceptance": [
+        "Record device ID, mode, requested and effective period, sample format, duration, loss/discontinuity flags, lease p95/p99/max and artifact hashes",
+        "Evaluate candidate supported buffers by transport stability and bounded processing, not signal amplitude or fixed 3/10 ms",
+        "DOC_REVIEW and synthetic test success never become hardware PASS"
       ],
       "decision_status": "proposed"
     }

@@ -904,3 +904,33 @@
 **Verification:** Proposed deterministic late-packet, Stop/Start, Reset and DEVICE_INVALIDATED cases; assert no old generation contributes to new stability result. Physical reconnect evidence remains separate.
 
 **Review:** DOC_REVIEW (primary sources reviewed; physical QA not executed). [Sources](https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getbuffer)
+
+## WASAPI capture packet lease and mode sizing (2026-11-12)
+
+### audio-capture-buffer-lease
+
+**Signals:** Capture packet memory is held across asynchronous processing; partial packet release, repeated frames or dropped capture samples occur.
+
+**Approach:** Treat each successful GetBuffer as a short exclusive lease on one whole packet. Copy required samples and metadata into owned bounded storage before ReleaseBuffer. Release exactly the acquired frame count after consuming the whole packet; ReleaseBuffer(0) only when intentionally consuming none, which replays the same packet. Keep acquisition, processing and release within the buffer-processing period; record elapsed lease duration and failure HRESULT. Apply a bounded overflow policy without blocking the capture path.
+
+**Avoid:** Never keep the returned pointer after ReleaseBuffer, release a partial frame count, defer release to UI/disk/network work, or infer stability from microphone signal amplitude. A short lease is necessary but not sufficient for device qualification.
+
+**Verification:** Proposed deterministic tests: exact full/zero release, zero replays packet, partial count rejected, invalidation/cleanup, delayed consumer and bounded queue; record physical lease-duration distribution against actual device period and loss flags.
+
+**Review:** DOC_REVIEW (source_review=reviewed), no hardware PASS.
+
+**Sources:** https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-releasebuffer, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getbuffer
+
+### audio-capture-packet-size-mode
+
+**Signals:** Capture code assumes GetNextPacketSize works in exclusive mode or treats GetCurrentPadding snapshot as an exact exclusive packet size.
+
+**Approach:** Use GetNextPacketSize only for shared-mode capture, on the same thread as GetBuffer and ReleaseBuffer. In shared mode, GetCurrentPadding reports the next packet frame count and matches the subsequent GetBuffer. In exclusive polling mode, padding is a snapshot and the next packet may grow before GetBuffer; use the actual returned frame count. For exclusive event-driven streams, process the notified buffer according to the stream contract. Separate sizing logic by share mode and event/polling configuration.
+
+**Avoid:** Do not call GetNextPacketSize in exclusive mode, require exclusive polling padding to equal actual GetBuffer frames, assume event-driven exclusive capture needs polling padding, or use a fixed 3/10 ms packet as a universal acceptance rule.
+
+**Verification:** Proposed mode matrix: shared packet-size equality and same-thread requirement; exclusive polling nondecreasing packet size relative to prior padding snapshot; exclusive event path; invalidation/error handling and physical requested/effective period readback.
+
+**Review:** DOC_REVIEW (source_review=reviewed), no hardware PASS.
+
+**Sources:** https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getnextpacketsize, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-getcurrentpadding, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getbuffer
