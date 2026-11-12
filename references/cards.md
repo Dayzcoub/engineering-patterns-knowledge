@@ -964,3 +964,10 @@
 **Review:** DOC_REVIEW (source_review=reviewed), hardware NOT EXECUTED.
 
 **Sources:** https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getbuffer, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-releasebuffer
+
+### SQLite Online Backup bounded lifecycle (2026-11-12)
+
+- `sqlite-backup-bounded-lifecycle`: incremental steps, deadline, exactly-one finish, DONE gate.
+- `sqlite-backup-error-classification`: retry BUSY/LOCKED; fail IOERR/NOMEM/READONLY.
+
+Evidence: SQLite API DOC_REVIEW; proposed QA only, not production PASS.

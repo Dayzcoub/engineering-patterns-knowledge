@@ -47,3 +47,15 @@
 - [Windows ReplaceFileW](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew) и [MoveFileExW](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw)
 
 **Граница доказательств:** сведения выше описывают документированные гарантии и ограничения. Полный протокол intent/reconcile является инженерным предложением для проверки отдельно в KLIDAN. Отсутствуют результаты аварийных испытаний, если они не приложены в PR реализации.
+
+## Incremental Online Backup: bounded lifecycle (DOC_REVIEW)
+
+- После успешного `sqlite3_backup_init` всегда вызвать `sqlite3_backup_finish` ровно один раз. Destination connection не использовать до finish.
+- `sqlite3_backup_step` возвращает `SQLITE_OK`, если работа ещё не завершена, и `SQLITE_DONE` после окончания. `finish` может вернуть `SQLITE_OK` и при отмене до DONE: это **не** подтверждает готовую копию.
+- `SQLITE_BUSY` и `SQLITE_LOCKED` допускают ограниченный повтор. `SQLITE_IOERR_*`, `SQLITE_NOMEM`, `SQLITE_READONLY` завершают попытку; не публиковать частичную копию.
+- Внешние записи в source могут перезапустить backup. Установить общий deadline, ограничение числа повторов и явный результат `INCOMPLETE` при истечении бюджета.
+- После DONE проверить копию, включая `PRAGMA integrity_check` и отдельно `PRAGMA foreign_key_check`; это проектная политика, а не гарантия API. Pending DataRoot intent сохраняется до сверки RootId и readback.
+
+**Proposed QA:** fake-clock timeout при непрерывной записи, BUSY/LOCKED vs IOERR, cancellation, exactly-once finish, запрет публикации partial destination, foreign key violations при `integrity_check=ok`. Только DOC_REVIEW/SYNTHETIC, без hardware/production PASS.
+
+Источники: https://www.sqlite.org/c3ref/backup_finish.html · https://www.sqlite.org/backup.html · https://www.sqlite.org/pragma.html

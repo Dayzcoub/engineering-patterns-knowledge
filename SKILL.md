@@ -3,7 +3,7 @@ name: engineering-patterns
 description: Evidence-linked engineering patterns for WPF, real-time audio, SQLite, IPC, STAYA, DevOps, performance profiling, bounded queues, caching, concurrency and memory ownership. Use when designing or reviewing modules, diagnosing race/crash/retry failures, or selecting tests for KLIDAN, Audio Probe, STAYA and new projects.
 compatibility: Works offline with Python 3 standard library. External links require network only for source re-verification.
 metadata:
-  version: "0.9.3-preview.1"
+  version: "0.9.4-preview.1"
   language: "ru"
 ---
 
@@ -83,3 +83,5 @@ Use when a task has a substantial architectural choice, state machine, thread or
 ## Reuse in ChatGPT and coding agents
 
 Agent reads the local skill when mounted in its skill path; repository instructions can point to it. ChatGPT in a new conversation does not automatically know local files or this archive: attach the skill or provide it through a shared Project/connector context. No hidden automatic synchronization is assumed.
+
+20. Для SQLite backup использовать ограниченный deadline, различать DONE и OK, выполнять finish ровно один раз после init. См. `references/sqlite-dataroot-recovery-contract.md`. DOC_REVIEW не равен recovery PASS.

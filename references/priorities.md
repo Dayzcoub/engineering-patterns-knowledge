@@ -44,3 +44,5 @@
 - WASAPI capture packet ownership: API DOC_REVIEW 2026-11-12; two new P0 cards and three proposed cases. Physical lease budget, actual device periods and loss flags remain unverified. See `audio-capture-buffer-contract.md`.
 
 - WASAPI capture worker lifecycle (2026-11-12): two P0 cards for Stop/Reset barrier and invalidation classification; three new proposed QA cases; Microsoft API DOC_REVIEW, no hardware PASS. See `audio-capture-worker-lifecycle-contract.md`.
+
+- SQLite backup bounded lifecycle (2026-11-12): `sqlite-backup-bounded-lifecycle` и `sqlite-backup-error-classification`, два P0 DOC_REVIEW паттерна; proposed deterministic QA в `data/qa-scenarios.json`. Нет production/hardware PASS.

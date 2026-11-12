@@ -526,7 +526,8 @@
         "sqlite-wal-durability-policy",
         "sqlite-online-backup",
         "sqlite-foreign-keys-per-connection",
-        "sqlite-integrity-recovery-gate"
+        "sqlite-integrity-recovery-gate",
+        "sqlite-backup-bounded-lifecycle"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Original SQLite or Windows API documentation reviewed 2026-11-12; not a physical power-loss or KLIDAN recovery test.",
@@ -537,7 +538,9 @@
       "status": "reviewed",
       "patterns": [
         "sqlite-online-backup",
-        "sqlite-integrity-recovery-gate"
+        "sqlite-integrity-recovery-gate",
+        "sqlite-backup-bounded-lifecycle",
+        "sqlite-backup-error-classification"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Original SQLite or Windows API documentation reviewed 2026-11-12; not a physical power-loss or KLIDAN recovery test.",
@@ -1399,6 +1402,16 @@
       "from_awesome_list": "subsource_or_added",
       "note": "Microsoft API inspected 2026-11-12; DOC_REVIEW only",
       "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.sqlite.org/c3ref/backup_finish.html",
+      "status": "reviewed",
+      "patterns": [
+        "sqlite-backup-bounded-lifecycle",
+        "sqlite-backup-error-classification"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "SQLite primary API documentation checked 2026-11-12; DOC_REVIEW only."
     }
   ]
 }

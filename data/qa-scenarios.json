@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "0.9.3-preview.1",
+  "version": "0.9.4-preview.1",
   "generated_on": "2026-11-12",
   "status": "proposed deterministic QA scenarios; NOT EXECUTED",
   "items": [
@@ -88,6 +88,22 @@
       "acceptance": [
         "per-run unique temp root",
         "no colliding artifacts or unsafe automatic cancellation"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "sqlite-backup-bounded-retry",
+      "project": "KLIDAN",
+      "query": "Concurrent SQLite writes restart backup until deadline; BUSY/LOCKED transient but IOERR fatal",
+      "must_consider": [
+        "sqlite-backup-bounded-lifecycle",
+        "sqlite-backup-error-classification"
+      ],
+      "acceptance": [
+        "synthetic clock enforces total deadline; no infinite loop",
+        "finish exactly once after successful init on DONE, fatal and cancel",
+        "destination not published without DONE and integrity/foreign-key checks",
+        "old DataRoot and pending intent preserved after failed copy"
       ],
       "decision_status": "proposed"
     }
