@@ -162,6 +162,22 @@ def check():
                 error(f'{case_id}: missing pattern links or acceptance')
             for pid in case.get('must_consider', []):
                 if pid not in ids: error(f'{case_id}: unknown pattern {pid}')
+    # Proposed performance case links and version must follow catalog.
+    perf_file = ROOT / 'data/performance-scenarios.json'
+    if perf_file.exists():
+        perf = load('data/performance-scenarios.json')
+        if perf.get('schema_version') != 1 or perf.get('version') != catalog.get('version'):
+            error('performance scenario schema/version mismatch')
+        perf_ids = set()
+        for case in perf.get('items', []):
+            cid = case.get('id', '')
+            if not isinstance(cid, str) or not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', cid) or cid in perf_ids:
+                error(f'invalid or duplicate perf scenario id: {cid}')
+            perf_ids.add(cid)
+            if case.get('decision_status') != 'proposed': error(f'{cid}: proposed only, no physical proof')
+            if not case.get('must_consider') or not case.get('acceptance'): error(f'{cid}: missing links/acceptance')
+            for pid in case.get('must_consider', []):
+                if pid not in ids: error(f'{cid}: unknown pattern {pid}')
     return len(cards),len(by_url)
 
 
