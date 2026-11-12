@@ -1,3 +1,10 @@
+## 0.6.0-preview.1 (2026-11-12)
+
+- Добавлены 16 P0/P1 карточек по Caddy validate/reload, systemd, Compose readiness, immutable images, SOPS, OpenTelemetry/Prometheus, TUF, Authenticode, MSI rollback, updater handoff, SLSA и release approvals.
+- Подготовлены `references/devops-release-qa-contract.md` и 8 machine-readable сценариев; ни один не помечен как выполненная production QA.
+- Расширена валидация сценариев и offline tests. STAYA scenarios синхронизированы с текущей версией каталога.
+- Никакие приложения и рабочие сервисы не менялись.
+
 ## 0.5.0-preview.1 (2026-11-12)
 
 - Добавлены 16 карточек P1 по IPC, асинхронным ответам, rate limits, health, failover, SSRF, canonical subscription merge, public routing, safe deploy, admin isolation, secrets, logging и provenance.

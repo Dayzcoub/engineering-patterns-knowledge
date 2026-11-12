@@ -144,6 +144,24 @@ def check():
                 error(f'{case_id}: scenario needs patterns and acceptance conditions')
             for pid in case.get('must_consider', []):
                 if pid not in ids: error(f'{case_id}: unknown pattern {pid}')
+    # General-purpose DevOps/update scenarios: proposed only, never presumed executed.
+    qa_file = ROOT / 'data/devops-scenarios.json'
+    if qa_file.exists():
+        qa = load('data/devops-scenarios.json')
+        if qa.get('schema_version') != 1 or qa.get('version') != catalog.get('version'):
+            error('devops scenarios schema/version mismatch')
+        seen_devops = set()
+        for case in qa.get('items', []):
+            case_id = case.get('id', '')
+            if not isinstance(case_id, str) or not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', case_id) or case_id in seen_devops:
+                error(f'invalid or duplicate devops scenario id: {case_id}')
+            seen_devops.add(case_id)
+            if case.get('decision_status') != 'proposed':
+                error(f'{case_id}: scenario must remain proposed until tested in project')
+            if not case.get('must_consider') or not case.get('acceptance'):
+                error(f'{case_id}: missing pattern links or acceptance')
+            for pid in case.get('must_consider', []):
+                if pid not in ids: error(f'{case_id}: unknown pattern {pid}')
     return len(cards),len(by_url)
 
 

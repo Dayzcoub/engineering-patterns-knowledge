@@ -18,3 +18,5 @@
 13. Для SQLite разграничивать crash atomicity, power-loss durability, WAL-sidecar и операции вне БД. Протокол multi-store reconciliation не считать гарантией SQLite без независимых fault-injection тестов.
 14. Для STAYA различать process, listener, public subscription route, admin API и transport/egress. Для каждой проверки писать scope и доказательство.
 15. В QA-сценариях и документации использовать только synthetic credentials; production URL подписок с токенами не копировать в Git.
+16. Update-паттерны обязаны указывать signer trust, artifact digest provenance и способ защиты от старых метаданных. MSI-specific решения нельзя автоматически применять к другому установщику.
+17. Telemetry-паттерны должны иметь ограничения cardinality и явную обработку секретов; stage journal не доказывает успешное подключение к сети.

@@ -133,5 +133,36 @@ class CatalogTests(unittest.TestCase):
         for term in ('SSRF', 'leastLoad', 'rollback', 'end-to-end', 'DOC_REVIEW', 'LIVE_TRANSPORT_QA'):
             self.assertIn(term, content)
 
+    def test_devops_scenarios_are_proposed_and_referential(self):
+        db = json.loads((ROOT / 'data' / 'patterns.json').read_text(encoding='utf-8'))
+        src = json.loads((ROOT / 'data' / 'devops-scenarios.json').read_text(encoding='utf-8'))
+        valid_ids = {p['id'] for p in db['cards']}
+        self.assertEqual(src['version'], db['version'])
+        self.assertEqual(len(src['items']), 8)
+        for case in src['items']:
+            self.assertEqual(case['decision_status'], 'proposed')
+            self.assertTrue(set(case['must_consider']) <= valid_ids)
+            self.assertGreaterEqual(len(case['acceptance']), 2)
+
+    def test_devops_patterns_reference_reviewed_sources(self):
+        db = json.loads((ROOT / 'data' / 'patterns.json').read_text(encoding='utf-8'))
+        src = json.loads((ROOT / 'data' / 'sources.json').read_text(encoding='utf-8'))
+        by_id = {p['id']: p for p in db['cards']}
+        by_url = {p['url']: p for p in src['sources']}
+        expected = {'config-caddy-validate-reload', 'compose-health-dependency',
+                    'update-tuf-antirollback', 'update-publisher-signature-policy',
+                    'windows-msi-custom-rollback', 'observability-bounded-cardinality',
+                    'deployment-stage-journal', 'progressive-release-acceptance'}
+        self.assertTrue(expected <= by_id.keys())
+        for pid in expected:
+            self.assertEqual(by_id[pid]['source_review'], 'reviewed')
+            self.assertTrue(all(by_url[u]['status'] == 'reviewed' for u in by_id[pid]['source_urls']))
+
+    def test_devops_contract_has_trust_and_runtime_boundaries(self):
+        text = (ROOT / 'references' / 'devops-release-qa-contract.md').read_text(encoding='utf-8')
+        for marker in ('WinVerifyTrust', 'TUF', 'MSI', 'depends_on', 'caddy validate',
+                       'canary', 'rollback', 'cardinality'):
+            self.assertIn(marker, text)
+
 if __name__ == '__main__':
     unittest.main()
