@@ -9,7 +9,7 @@
 3. Treat every upstream subscription as untrusted: allowlist scheme and destination where appropriate; validate IP/DNS and redirects, size, schema and duplicate fields.
 4. Normalize inputs into a canonical model with source namespace and deterministic collision rules. Preserve fixed-IP direct nodes apart from GLOBAL AUTO unless explicitly requested.
 5. Bound concurrency, work queues and retry budget. Distinguish permanent 4xx or schema errors from transient 429/503 and honor permitted Retry-After.
-6. Specify failover with health TTL, failure threshold, cooldown and recovery probes. Verify whether the actual deployed Xray configuration supports the desired selection algorithm.
+6. Specify failover with health TTL, failure threshold, cooldown and recovery probes. For STAYA, the GLOBAL AUTO `leastLoad` label alone is not evidence of health-based failover: verify runtime Xray selection semantics, probe configuration and observed node switching separately.
 7. Stage deployment as candidate + digest + backup + preflight + promotion + public-route/e2e smoke; rollback and verify per service if a stage fails.
 8. Redact secret tokens, URI credentials and private keys before creating logs, stdout, stderr or CI artifacts. Use synthetic secrets for testing.
 
