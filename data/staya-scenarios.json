@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "version": "0.5.0-preview.1",
+  "generated_on": "2026-11-12",
+  "status": "proposed decision cases; not actual STAYA QA",
+  "items": [
+    {
+      "id": "staya-subscription-ssrf-redirect",
+      "project": "STAYA",
+      "query": "external subscription redirected into loopback or cloud metadata endpoint",
+      "must_consider": [
+        "staya-subscription-ssrf-boundary",
+        "input-validation"
+      ],
+      "acceptance": [
+        "reject private, loopback and metadata URLs including redirects",
+        "no URI credentials in logs"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "staya-composite-subscription",
+      "project": "STAYA",
+      "query": "combine external subscription with GLOBAL AUTO and fixed-IP direct nodes",
+      "must_consider": [
+        "staya-subscription-normalization",
+        "staya-public-route-contract",
+        "staya-client-rate-limit"
+      ],
+      "acceptance": [
+        "deterministic merge on reordered input",
+        "direct nodes survive source collision",
+        "exact public route verified"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "staya-reload-failure",
+      "project": "STAYA",
+      "query": "Xray candidate configuration passes syntax test but real egress fails",
+      "must_consider": [
+        "staya-staged-config-promotion",
+        "staya-active-path-health",
+        "secure-deploy-artifact-gate"
+      ],
+      "acceptance": [
+        "candidate hash backup and preflight recorded",
+        "failed end-to-end smoke leads to rollback",
+        "syntax test alone never marked production PASS"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "staya-health-flapping",
+      "project": "STAYA",
+      "query": "leastLoad health fluctuates and automatic selection oscillates between nodes",
+      "must_consider": [
+        "staya-failover-hysteresis",
+        "staya-active-path-health",
+        "circuit-breaker"
+      ],
+      "acceptance": [
+        "one transient loss cannot flip route repeatedly",
+        "recovery requires cooldown probe",
+        "health mechanism verified against exact runtime version"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "ipc-late-worker-response",
+      "project": "Audio Probe",
+      "query": "late IPC response after worker reconnect and protocol version changed",
+      "must_consider": [
+        "ipc-request-deadline",
+        "ipc-protocol-format-guard",
+        "ipc-generation-fence"
+      ],
+      "acceptance": [
+        "stale response never applies",
+        "protocol and correlation checked",
+        "request wait bounded by deadline"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "staya-credential-leak",
+      "project": "STAYA",
+      "query": "subscription token printed in deployment report debug logs",
+      "must_consider": [
+        "staya-secret-lifecycle",
+        "security-structured-event-redaction",
+        "staya-admin-api-isolation"
+      ],
+      "acceptance": [
+        "canary token absent from all outputs",
+        "rotation and revocation plan documented"
+      ],
+      "decision_status": "proposed"
+    }
+  ]
+}

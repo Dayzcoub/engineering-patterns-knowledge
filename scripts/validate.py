@@ -124,6 +124,26 @@ def check():
         else: occurrence_count+=len(occur)
     if backlog.get('unique_urls') != len(entries) or backlog.get('link_occurrences') != occurrence_count:
         error('upstream index counts mismatch')
+    # Optional project-specific decision cases; each must link existing pattern IDs.
+    cases_file = ROOT / 'data/staya-scenarios.json'
+    if cases_file.exists():
+        cases = load('data/staya-scenarios.json')
+        if cases.get('schema_version') != 1:
+            error('STAYA scenario schema_version must be 1')
+        if cases.get('version') != catalog.get('version'):
+            error('STAYA scenarios version does not match patterns version')
+        seen_case_ids = set()
+        for case in cases.get('items', []):
+            case_id = case.get('id', '')
+            if case_id in seen_case_ids or not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', case_id):
+                error(f'invalid or duplicate scenario id: {case_id}')
+            seen_case_ids.add(case_id)
+            if case.get('decision_status') != 'proposed':
+                error(f'{case_id}: do not mark unexecuted QA as successful')
+            if not case.get('must_consider') or not case.get('acceptance'):
+                error(f'{case_id}: scenario needs patterns and acceptance conditions')
+            for pid in case.get('must_consider', []):
+                if pid not in ids: error(f'{case_id}: unknown pattern {pid}')
     return len(cards),len(by_url)
 
 

@@ -16,3 +16,5 @@
 12. Для WPF указывать, проверен ли конкретный runtime/OS/DPI-awareness; общий Microsoft источник не является доказательством UI PASS в KLIDAN.
 
 13. Для SQLite разграничивать crash atomicity, power-loss durability, WAL-sidecar и операции вне БД. Протокол multi-store reconciliation не считать гарантией SQLite без независимых fault-injection тестов.
+14. Для STAYA различать process, listener, public subscription route, admin API и transport/egress. Для каждой проверки писать scope и доказательство.
+15. В QA-сценариях и документации использовать только synthetic credentials; production URL подписок с токенами не копировать в Git.
