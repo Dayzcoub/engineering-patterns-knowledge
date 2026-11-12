@@ -3,7 +3,7 @@ name: engineering-patterns
 description: Curated engineering design-pattern decision support for architecture review, bug fixes, concurrency, WPF UI, real-time audio, SQLite, IPC, resilience, security and performance. Use when designing or reviewing modules, diagnosing race/crash/retry failures, or selecting tests for KLIDAN, Audio Probe, STAYA and new projects.
 compatibility: Works offline with Python 3 standard library. External links require network only for source re-verification.
 metadata:
-  version: "0.1.0-preview.2"
+  version: "0.2.0-preview.1"
   language: "ru"
 ---
 
@@ -23,8 +23,9 @@ Use when a task has a substantial architectural choice, state machine, thread or
 4. Choose the simplest adequate solution. Explicitly compare it with **doing nothing** or a simpler local fix. Prefer compatible changes; don't use a pattern to justify a needless refactor.
 5. State: evidence in this codebase, proposed pattern, why it fits, why alternatives do not, tradeoffs, failure modes, and specific tests.
 6. For concurrency, record ownership, lifetime, ordering, queue bounds, cancellation and recovery. For WPF, check 1920×1080, DPI 100/125/150%, keyboard/focus and existing design tokens. For audio, measure callback timing and never assume a queue or double-buffer is real-time safe.
-7. If primary source is `index_only` or `pending_primary_review`, say so. Verify externally before treating it as authoritative, and do not claim current implementation is compliant without code/tests.
-8. If implementing: keep change scoped; run project-defined builds, tests, and regression checks. Report PASS/FAIL with exact evidence.
+7. Для Audio Probe разделять capability discovery, requested/effective periods и физическую стабильность; не фиксировать 3/5/10 ms как универсальную цель. См. `references/audio-probe-profile-contract.md`.
+8. If primary source is `index_only` or `pending_primary_review`, say so. Verify externally before treating it as authoritative, and do not claim current implementation is compliant without code/tests.
+9. If implementing: keep change scoped; run project-defined builds, tests, and regression checks. Report PASS/FAIL with exact evidence.
 
 ## Answer contract for agents
 
@@ -50,6 +51,7 @@ Use when a task has a substantial architectural choice, state machine, thread or
 - `data/upstream-index.json`: 115 unreviewed upstream bibliography URLs (122 occurrences) for future research; NEVER cite as reviewed.
 - `references/priorities.md`: study waves and project mapping.
 - `references/adding-patterns.md`: expansion rules.
+- `references/audio-probe-profile-contract.md`: WASAPI discovery, minimum stable profile decision and physical QA boundary.
 - `scripts/search_patterns.py`: local retrieval (no network).
 - `scripts/validate.py`: integrity checks for updated catalog.
 

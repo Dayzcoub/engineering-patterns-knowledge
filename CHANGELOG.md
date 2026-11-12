@@ -1,3 +1,10 @@
+## 0.2.0-preview.1 (2026-11-12)
+
+- Добавлены 10 P0-карточек по WASAPI, period discovery, actual buffer readback, minimum stable profile, packet lifetime, channel mapping, MMCSS, device recovery и shutdown barrier.
+- Real-time callback boundary подтверждён доступным PortAudio-первоисточником; ссылка Ross Bencina по-прежнему pending (502), её статус не повышен.
+- Добавлены первоисточники Microsoft/PortAudio, контракт physical QA и проверка инвариантов каталога.
+- Production код KLIDAN/Audio Probe не менялся; реальные профили устройств не заявлены проверенными.
+
 # Changelog
 
 ## 0.1.0-preview.2 (2026-11-11)
