@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "0.9.4-preview.1",
+  "version": "0.9.5-preview.1",
   "generated_on": "2026-11-12",
   "status": "proposed deterministic QA scenarios; NOT EXECUTED",
   "items": [
@@ -104,6 +104,21 @@
         "finish exactly once after successful init on DONE, fatal and cancel",
         "destination not published without DONE and integrity/foreign-key checks",
         "old DataRoot and pending intent preserved after failed copy"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "sqlite-commit-busy-and-error-state",
+      "project": "KLIDAN",
+      "query": "SQLite COMMIT returns BUSY or IOERR/FULL/INTERRUPT inside DataRoot transaction",
+      "must_consider": [
+        "sqlite-commit-busy-transaction-retention",
+        "sqlite-error-transaction-state-reconciliation"
+      ],
+      "acceptance": [
+        "SYNTHETIC two-connection contention verifies BUSY does not imply commit and retries are bounded",
+        "injected fatal errors require explicit transaction-state inspection and rollback policy",
+        "pending DataRoot intent survives unknown or failed transaction; no premature publish"
       ],
       "decision_status": "proposed"
     }

@@ -46,3 +46,5 @@
 - WASAPI capture worker lifecycle (2026-11-12): two P0 cards for Stop/Reset barrier and invalidation classification; three new proposed QA cases; Microsoft API DOC_REVIEW, no hardware PASS. See `audio-capture-worker-lifecycle-contract.md`.
 
 - SQLite backup bounded lifecycle (2026-11-12): `sqlite-backup-bounded-lifecycle` и `sqlite-backup-error-classification`, два P0 DOC_REVIEW паттерна; proposed deterministic QA в `data/qa-scenarios.json`. Нет production/hardware PASS.
+
+- SQLite transaction state (2026-11-12): `sqlite-commit-busy-transaction-retention` and `sqlite-error-transaction-state-reconciliation`; official SQLite DOC_REVIEW, proposed two-connection/fault QA only. No production PASS.

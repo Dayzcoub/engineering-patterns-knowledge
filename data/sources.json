@@ -551,10 +551,12 @@
       "status": "reviewed",
       "patterns": [
         "sqlite-write-contention",
-        "sqlite-savepoint-nested-work"
+        "sqlite-savepoint-nested-work",
+        "sqlite-commit-busy-transaction-retention",
+        "sqlite-error-transaction-state-reconciliation"
       ],
       "from_awesome_list": "subsource_or_added",
-      "note": "Original SQLite or Windows API documentation reviewed 2026-11-12; not a physical power-loss or KLIDAN recovery test.",
+      "note": "Official SQLite transaction documentation reviewed 2026-11-12; DOC_REVIEW only, no KLIDAN fault-injection or hardware PASS.",
       "reviewed_on": "2026-11-12"
     },
     {
@@ -1413,5 +1415,6 @@
       "from_awesome_list": "subsource_or_added",
       "note": "SQLite primary API documentation checked 2026-11-12; DOC_REVIEW only."
     }
-  ]
+  ],
+  "version": "0.9.5-preview.1"
 }

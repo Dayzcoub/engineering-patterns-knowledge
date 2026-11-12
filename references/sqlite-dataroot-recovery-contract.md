@@ -59,3 +59,12 @@
 **Proposed QA:** fake-clock timeout при непрерывной записи, BUSY/LOCKED vs IOERR, cancellation, exactly-once finish, запрет публикации partial destination, foreign key violations при `integrity_check=ok`. Только DOC_REVIEW/SYNTHETIC, без hardware/production PASS.
 
 Источники: https://www.sqlite.org/c3ref/backup_finish.html · https://www.sqlite.org/backup.html · https://www.sqlite.org/pragma.html
+
+## SQLite transaction state after COMMIT errors (DOC_REVIEW)
+
+- `COMMIT` can return `SQLITE_BUSY` while the transaction remains active. Use bounded retry or explicit rollback; never report DataRoot success before confirmed commit and RootId readback.
+- After `SQLITE_FULL`, `SQLITE_IOERR`, `SQLITE_INTERRUPT` or `SQLITE_NOMEM`, SQLite may roll back one statement or the entire transaction. Inspect `sqlite3_get_autocommit` / `sqlite3_txn_state` before deciding recovery; use explicit rollback policy.
+- Journal mode and active reader/writer configuration matter. Do not infer universal BUSY behavior from a single WAL or rollback-journal test.
+- **Proposed QA only:** two-connection BUSY, fake fault matrix, crash between commit and canonical publish. `DOC_REVIEW` is not production PASS.
+
+Source: https://www.sqlite.org/lang_transaction.html (reviewed 2026-11-12).

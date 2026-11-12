@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "0.9.4-preview.1",
+  "version": "0.9.5-preview.1",
   "generated_on": "2026-11-12",
   "source_root": "https://github.com/DovAmir/awesome-design-patterns",
   "source_root_commit": "9006287f27e720000cc8763ae4cd150789b8571d",
@@ -2699,6 +2699,49 @@
       "related": [
         "sqlite-backup-bounded-lifecycle",
         "sqlite-cross-store-intent"
+      ]
+    },
+    {
+      "id": "sqlite-commit-busy-transaction-retention",
+      "title": "SQLite COMMIT BUSY Is Not a Completed Transaction",
+      "domain": "storage",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "A concurrent reader or writer causes COMMIT to return SQLITE_BUSY; caller assumes commit or rolls back without recording outcome.",
+      "approach": "Track the transaction as open when COMMIT returns SQLITE_BUSY; use a bounded retry after contention clears, or explicitly ROLLBACK according to the operation contract. Do not publish DataRoot success until COMMIT and cross-store readback complete. Log the primary SQLite code and the chosen terminal action.",
+      "avoid": "Do not interpret SQLITE_BUSY as a successful commit, retry forever, or clear pending intent before confirmed completion. Do not claim the same reader-blocking behavior in every journal mode.",
+      "verification": "Proposed two-connection rollback-journal reader contention and WAL writer contention tests. Assert BUSY leaves transaction active, bounded retry or rollback is explicit, and pending RootId is not acknowledged early.",
+      "source_urls": [
+        "https://www.sqlite.org/lang_transaction.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "sqlite-write-contention",
+        "sqlite-cross-store-intent"
+      ]
+    },
+    {
+      "id": "sqlite-error-transaction-state-reconciliation",
+      "title": "SQLite Error May Roll Back More Than One Statement",
+      "domain": "storage",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "SQLITE_FULL, SQLITE_IOERR, SQLITE_INTERRUPT or SQLITE_NOMEM occurs inside a transaction and recovery assumes all earlier writes remain pending.",
+      "approach": "After an error, inspect transaction state via sqlite3_get_autocommit or sqlite3_txn_state where available; apply an explicit rollback policy before retrying the whole operation. Treat DataRoot intent and canonical file readback as separate recovery evidence. Preserve original error code and distinguish statement failure from transaction rollback.",
+      "avoid": "Do not assume every error aborts only its statement or that every error rolls back the whole transaction. Do not issue an unconditional follow-up COMMIT after an unknown transaction state.",
+      "verification": "Proposed fault-injection matrix at INSERT, COMMIT and readback boundaries for FULL, IOERR, INTERRUPT and NOMEM. Assert transaction state is classified, no duplicate effects, no silent empty database, and pending intent persists on failure.",
+      "source_urls": [
+        "https://www.sqlite.org/lang_transaction.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "sqlite-cross-store-intent",
+        "sqlite-integrity-recovery-gate",
+        "qa-io-fault-matrix"
       ]
     }
   ]

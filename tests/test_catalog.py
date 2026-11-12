@@ -52,6 +52,25 @@ class CatalogTests(unittest.TestCase):
             self.assertEqual(card['source_review'], 'reviewed')
             self.assertTrue(any(by_url[u]['status'] == 'reviewed' for u in card['source_urls']))
 
+    def test_sqlite_transaction_state_wave(self):
+        cards = json.loads((ROOT / 'data' / 'patterns.json').read_text(encoding='utf-8'))
+        sources = json.loads((ROOT / 'data' / 'sources.json').read_text(encoding='utf-8'))
+        qa = json.loads((ROOT / 'data' / 'qa-scenarios.json').read_text(encoding='utf-8'))
+        by_id = {c['id']: c for c in cards['cards']}
+        expected = {'sqlite-commit-busy-transaction-retention', 'sqlite-error-transaction-state-reconciliation'}
+        self.assertTrue(expected <= by_id.keys())
+        source_url = 'https://www.sqlite.org/lang_transaction.html'
+        source = next(s for s in sources['sources'] if s['url'] == source_url)
+        self.assertEqual(source['status'], 'reviewed')
+        for pid in expected:
+            self.assertEqual(by_id[pid]['source_review'], 'reviewed')
+            self.assertIn(source_url, by_id[pid]['source_urls'])
+            self.assertIn(pid, source['patterns'])
+        case = next(x for x in qa['items'] if x['id'] == 'sqlite-commit-busy-and-error-state')
+        self.assertEqual(case['decision_status'], 'proposed')
+        self.assertEqual(set(case['must_consider']), expected)
+        self.assertGreaterEqual(len(case['acceptance']), 2)
+
     def test_ross_bencina_remains_pending(self):
         sources = json.loads((ROOT / 'data' / 'sources.json').read_text(encoding='utf-8'))
         ross = next(s for s in sources['sources'] if 'rossbencina.com' in s['url'])

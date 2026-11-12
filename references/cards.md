@@ -971,3 +971,33 @@
 - `sqlite-backup-error-classification`: retry BUSY/LOCKED; fail IOERR/NOMEM/READONLY.
 
 Evidence: SQLite API DOC_REVIEW; proposed QA only, not production PASS.
+
+## SQLite transaction state after errors (2026-11-12)
+
+### sqlite-commit-busy-transaction-retention
+
+**Signals:** A concurrent reader or writer causes COMMIT to return SQLITE_BUSY; caller assumes commit or rolls back without recording outcome.
+
+**Approach:** Track the transaction as open when COMMIT returns SQLITE_BUSY; use a bounded retry after contention clears, or explicitly ROLLBACK according to the operation contract. Do not publish DataRoot success until COMMIT and cross-store readback complete. Log the primary SQLite code and the chosen terminal action.
+
+**Avoid:** Do not interpret SQLITE_BUSY as a successful commit, retry forever, or clear pending intent before confirmed completion. Do not claim the same reader-blocking behavior in every journal mode.
+
+**Verification:** Proposed two-connection rollback-journal reader contention and WAL writer contention tests. Assert BUSY leaves transaction active, bounded retry or rollback is explicit, and pending RootId is not acknowledged early.
+
+**Review:** DOC_REVIEW, synthetic QA proposed only; no production or hardware PASS.
+
+**Sources:** https://www.sqlite.org/lang_transaction.html
+
+### sqlite-error-transaction-state-reconciliation
+
+**Signals:** SQLITE_FULL, SQLITE_IOERR, SQLITE_INTERRUPT or SQLITE_NOMEM occurs inside a transaction and recovery assumes all earlier writes remain pending.
+
+**Approach:** After an error, inspect transaction state via sqlite3_get_autocommit or sqlite3_txn_state where available; apply an explicit rollback policy before retrying the whole operation. Treat DataRoot intent and canonical file readback as separate recovery evidence. Preserve original error code and distinguish statement failure from transaction rollback.
+
+**Avoid:** Do not assume every error aborts only its statement or that every error rolls back the whole transaction. Do not issue an unconditional follow-up COMMIT after an unknown transaction state.
+
+**Verification:** Proposed fault-injection matrix at INSERT, COMMIT and readback boundaries for FULL, IOERR, INTERRUPT and NOMEM. Assert transaction state is classified, no duplicate effects, no silent empty database, and pending intent persists on failure.
+
+**Review:** DOC_REVIEW, synthetic QA proposed only; no production or hardware PASS.
+
+**Sources:** https://www.sqlite.org/lang_transaction.html
