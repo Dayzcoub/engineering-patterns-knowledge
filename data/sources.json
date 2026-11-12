@@ -451,7 +451,9 @@
       "url": "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/focus-overview",
       "status": "reviewed",
       "patterns": [
-        "wpf-focus-scope"
+        "wpf-focus-scope",
+        "wpf-keyboard-navigation-matrix",
+        "wpf-accessibility-evidence-gate"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Official Microsoft documentation checked 2026-11-12; source review is not a KLIDAN UI QA result.",
@@ -1245,6 +1247,82 @@
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Original platform/test documentation inspected 2026-11-12; not live hardware QA.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/controls/ui-automation-of-a-wpf-custom-control",
+      "status": "reviewed",
+      "patterns": [
+        "wpf-custom-automation-peer",
+        "wpf-semantic-critical-actions",
+        "wpf-accessibility-evidence-gate"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft WPF/Windows accessibility docs reviewed 2026-11-12; no operator UI/device QA carried out.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/framework/ui-automation/accessibility-best-practices",
+      "status": "reviewed",
+      "patterns": [
+        "wpf-custom-automation-peer",
+        "wpf-semantic-critical-actions",
+        "wpf-system-contrast-resources",
+        "wpf-label-contrast-baseline",
+        "wpf-accessibility-evidence-gate"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft WPF/Windows accessibility docs reviewed 2026-11-12; no operator UI/device QA carried out.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/dotnet/desktop/wpf/advanced/input-overview",
+      "status": "reviewed",
+      "patterns": [
+        "wpf-keyboard-navigation-matrix"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft WPF/Windows accessibility docs reviewed 2026-11-12; no operator UI/device QA carried out.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/api/system.windows.systemparameters.highcontrast?view=windowsdesktop-10.0",
+      "status": "reviewed",
+      "patterns": [
+        "wpf-system-contrast-resources"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft WPF/Windows accessibility docs reviewed 2026-11-12; no operator UI/device QA carried out.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/graphics-multimedia/how-to-paint-an-area-with-a-system-brush",
+      "status": "reviewed",
+      "patterns": [
+        "wpf-system-contrast-resources"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft WPF/Windows accessibility docs reviewed 2026-11-12; no operator UI/device QA carried out.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/apps/design/accessibility/accessible-text-requirements",
+      "status": "reviewed",
+      "patterns": [
+        "wpf-label-contrast-baseline"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft WPF/Windows accessibility docs reviewed 2026-11-12; no operator UI/device QA carried out.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/framework/wpf/advanced/wpf-globalization-and-localization-overview",
+      "status": "reviewed",
+      "patterns": [
+        "wpf-operator-localization-expansion"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft WPF/Windows accessibility docs reviewed 2026-11-12; no operator UI/device QA carried out.",
       "reviewed_on": "2026-11-12"
     }
   ]

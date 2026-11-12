@@ -194,6 +194,22 @@ def check():
             if not case.get('must_consider') or not case.get('acceptance'): error(f'{cid}: missing QA links/acceptance')
             for pid in case.get('must_consider', []):
                 if pid not in ids: error(f'{cid}: unknown pattern {pid}')
+    # Proposed WPF accessibility QA cases must match current catalog.
+    a11y_path = ROOT / 'data/wpf-accessibility-scenarios.json'
+    if a11y_path.exists():
+        doc = load('data/wpf-accessibility-scenarios.json')
+        if doc.get('schema_version') != 1 or doc.get('version') != catalog.get('version'):
+            error('wpf-accessibility scenarios schema/version mismatch')
+        seen_a11y = set()
+        for case in doc.get('items', []):
+            cid = case.get('id', '')
+            if not isinstance(cid, str) or not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', cid) or cid in seen_a11y:
+                error(f'invalid or duplicate WPF scenario id: {cid}')
+            seen_a11y.add(cid)
+            if case.get('decision_status') != 'proposed': error(f'{cid}: only proposed QA')
+            if not case.get('must_consider') or not case.get('acceptance'): error(f'{cid}: empty QA links/acceptance')
+            for pid in case.get('must_consider', []):
+                if pid not in ids: error(f'{cid}: unknown pattern {pid}')
     return len(cards),len(by_url)
 
 

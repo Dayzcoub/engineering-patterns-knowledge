@@ -18,3 +18,4 @@ This repository is an **offline knowledge skill**. The curated JSON is not a man
 14. Любая performance-карточка требует ограничений памяти, модели owner/lifetime и физической метрики; `DOC_REVIEW` не равен измеренному улучшению на целевом компьютере.
 15. Не переносить drop/coalescing preview кадров на audio, Program output, команды и важные записываемые события.
 16. Synthetic fault injection и fake clock не должны автоматически переводить hardware QA в PASS. Записывать evidence level и исходный SHA.
+17. WPF accessibility: не заявлять доступность интерфейса только по скриншоту, UIA unit test или build. Сохранять отдельную клавиатурную/assistive evidence matrix.

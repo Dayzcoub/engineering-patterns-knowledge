@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "0.8.0-preview.1",
+  "version": "0.9.0-preview.1",
   "generated_on": "2026-11-12",
   "status": "proposed synthetic QA, not executed performance measurements",
   "items": [
