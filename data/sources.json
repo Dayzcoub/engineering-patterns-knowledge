@@ -478,7 +478,8 @@
       "url": "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew",
       "status": "reviewed",
       "patterns": [
-        "sqlite-cross-store-intent"
+        "sqlite-cross-store-intent",
+        "update-worker-handoff"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Original SQLite or Windows API documentation reviewed 2026-11-12; not a physical power-loss or KLIDAN recovery test.",
@@ -488,7 +489,8 @@
       "url": "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw",
       "status": "reviewed",
       "patterns": [
-        "sqlite-cross-store-intent"
+        "sqlite-cross-store-intent",
+        "update-worker-handoff"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Original SQLite or Windows API documentation reviewed 2026-11-12; not a physical power-loss or KLIDAN recovery test.",
@@ -691,7 +693,8 @@
         "staya-active-path-health",
         "staya-public-route-contract",
         "staya-staged-config-promotion",
-        "staya-admin-api-isolation"
+        "staya-admin-api-isolation",
+        "config-caddy-validate-reload"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
@@ -797,10 +800,221 @@
       "url": "https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments",
       "status": "reviewed",
       "patterns": [
-        "secure-deploy-artifact-gate"
+        "secure-deploy-artifact-gate",
+        "deployment-approval-gate",
+        "progressive-release-acceptance"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Primary documentation inspected 2026-11-12; does not prove live STAYA behavior.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://caddyserver.com/docs/command-line",
+      "status": "reviewed",
+      "patterns": [
+        "config-caddy-validate-reload"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html",
+      "status": "reviewed",
+      "patterns": [
+        "systemd-restart-watchdog"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html",
+      "status": "reviewed",
+      "patterns": [
+        "systemd-restart-watchdog"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://docs.docker.com/compose/how-tos/startup-order",
+      "status": "reviewed",
+      "patterns": [
+        "compose-health-dependency"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-10.0",
+      "status": "reviewed",
+      "patterns": [
+        "compose-health-dependency",
+        "observability-actionable-alerts",
+        "progressive-release-acceptance"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://docs.docker.com/build/building/best-practices/",
+      "status": "reviewed",
+      "patterns": [
+        "container-immutable-build"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://slsa.dev/spec/v1.2/",
+      "status": "reviewed",
+      "patterns": [
+        "container-immutable-build",
+        "deployment-stage-journal",
+        "supplychain-provenance-verification",
+        "deployment-approval-gate"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://github.com/getsops/sops",
+      "status": "reviewed",
+      "patterns": [
+        "sops-multi-recipient-recovery"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://opentelemetry.io/docs/concepts/context-propagation/",
+      "status": "reviewed",
+      "patterns": [
+        "observability-context-propagation"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://opentelemetry.io/docs/concepts/signals/traces/",
+      "status": "reviewed",
+      "patterns": [
+        "observability-context-propagation"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://prometheus.io/docs/practices/naming/",
+      "status": "reviewed",
+      "patterns": [
+        "observability-bounded-cardinality"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://opentelemetry.io/docs/concepts/signals/metrics/",
+      "status": "reviewed",
+      "patterns": [
+        "observability-bounded-cardinality"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://opentelemetry.io/docs/concepts/semantic-conventions/",
+      "status": "reviewed",
+      "patterns": [
+        "observability-bounded-cardinality",
+        "deployment-stage-journal"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://prometheus.io/docs/practices/alerting/",
+      "status": "reviewed",
+      "patterns": [
+        "observability-actionable-alerts",
+        "progressive-release-acceptance"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://theupdateframework.github.io/specification/latest/",
+      "status": "reviewed",
+      "patterns": [
+        "update-tuf-antirollback"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://docs.sigstore.dev/cosign/verifying/verify/",
+      "status": "reviewed",
+      "patterns": [
+        "update-tuf-antirollback",
+        "supplychain-provenance-verification"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/wintrust/nf-wintrust-winverifytrust",
+      "status": "reviewed",
+      "patterns": [
+        "update-publisher-signature-policy"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/msi/rollback-custom-actions",
+      "status": "reviewed",
+      "patterns": [
+        "windows-msi-custom-rollback"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/msi/deferred-execution-custom-actions",
+      "status": "reviewed",
+      "patterns": [
+        "windows-msi-custom-rollback"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/msi/rollback-installation",
+      "status": "reviewed",
+      "patterns": [
+        "windows-msi-custom-rollback",
+        "update-worker-handoff"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
       "reviewed_on": "2026-11-12"
     }
   ]

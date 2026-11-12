@@ -514,3 +514,131 @@
 **Проекты:** STAYA, KLIDAN, Audio Probe
 **Первоисточник:** https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html, https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments
 
+## config-caddy-validate-reload | Caddy Adapt, Validate, Reload and Runtime Verification (P1, reviewed)
+**Когда:** При обновлении Caddy конфиг адаптируется без ошибки, но ещё не проверен на provisioning и реальный public route.
+**Решение:** Сохранять исходную версию и digest; отдельно выполнять adapt, validate в совместимом окружении, reload через API; затем проверить exact host+path, TLS и ожидаемый ответ.
+**Не применять:** Не приравнивать adapt к validate и reload к проверке сетевого маршрута; validate может не пройти из-за ресурсов, занятых работающим инстансом.
+**Проверка:** Недопустимый Caddyfile, valid JSON с provisioning failure, ошибочный публичный matcher, rollback после неуспешного reload.
+**Проекты:** STAYA
+**Первоисточник:** https://caddyserver.com/docs/command-line, https://caddyserver.com/docs/api
+
+## systemd-restart-watchdog | systemd Restart Budget and Service Readiness (P1, reviewed)
+**Когда:** Упавшая нода непрерывно перезапускается или systemd показывает active до готовности Xray.
+**Решение:** Определить Type, ExecStartPre, Restart/RestartSec, лимиты старта, timeout и при поддержке приложения watchdog/READY notification; проверить состояние listener и transport отдельно.
+**Не применять:** Не выставлять Type=notify без реализации sd_notify в приложении; Restart=always не лечит неверную конфигурацию; ExecStartPre не для фоновых daemon.
+**Проверка:** Crash loop, invalid config, watchdog missed, manual stop, slow startup, StartLimit, failure recovery.
+**Проекты:** STAYA
+**Первоисточник:** https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html, https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html
+
+## compose-health-dependency | Compose Dependency Health Gate (P1, reviewed)
+**Когда:** Compose запускает приложение до готовности DNS, базы или proxy; зависимый контейнер ошибается сразу после старта.
+**Решение:** Настроить healthcheck и depends_on: condition service_healthy только там, где нужна readiness; отдельно проверить recovery после restart и обновления зависимого сервиса.
+**Не применять:** Короткий depends_on гарантирует лишь startup order; healthcheck одного контейнера не доказывает end-to-end работу; не добавлять Compose для одного простого systemd daemon.
+**Проверка:** Delayed dependency, failed healthcheck, manual restart, container crash, readiness vs liveness.
+**Проекты:** STAYA
+**Первоисточник:** https://docs.docker.com/compose/how-tos/startup-order, https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-10.0
+
+## container-immutable-build | Immutable Container Image and Digest Pinning (P1, reviewed)
+**Когда:** Деплой повторно скачивает latest, версия меняется без фиксации коммита и откат становится невоспроизводимым.
+**Решение:** Использовать доверенный base и pinned digest там, где требуется воспроизводимость; build artifact связывать с source commit, регулярно обновлять pin с тестами; сокращать runtime image и privileges.
+**Не применять:** Digest pin не гарантирует отсутствие CVE; нельзя навечно замораживать старый образ; checksum из того же недоверенного источника не удостоверение.
+**Проверка:** Rebuild/rollback по exact image digest, malicious tag move, reproducibility, scan and update policy.
+**Проекты:** STAYA
+**Первоисточник:** https://docs.docker.com/build/building/best-practices/, https://slsa.dev/spec/v1.2/
+
+## sops-multi-recipient-recovery | SOPS/age Multi-Recipient Secret Recovery (P1, reviewed)
+**Когда:** Операции с зашифрованным конфигом блокируются после смены ключа/утраты одного получателя или секрет появляется в артефактах.
+**Решение:** Описать и сверять SOPS policy/age recipients, тестировать decrypt каждым авторизованным путём, иметь revocation/rotation procedure и offline recovery, без plaintext в Git/QA.
+**Не применять:** Наличие второго recipient не заменяет контролируемое хранение private key; ни один PR не должен раскрывать ключи или реальную подписку.
+**Проверка:** Synthetic encrypted fixture, lost-key simulation, recipient rotation, rejected unauthorized decrypt, secret scan.
+**Проекты:** STAYA
+**Первоисточник:** https://github.com/getsops/sops
+
+## observability-context-propagation | Trace Context Across IPC and Deploy Stages (P1, reviewed)
+**Когда:** Ошибка проходит через несколько процессов/этапов, а независимые журналы нельзя связать с исходной операцией.
+**Решение:** Передавать безопасный trace/correlation context через границы IPC, HTTP, worker и этапы deployment; чётко определять parent/child, retry attempt, generation и security boundary.
+**Не применять:** Не включать секретные headers, full subscription URL, personal data или untrusted baggage в spans; не создавать distributed tracing для одномодульного локального действия без пользы.
+**Проверка:** Same trace across stages, new span per retry, late reply rejection, no cross-user leak in baggage, missing context fallback.
+**Проекты:** STAYA, KLIDAN, Audio Probe
+**Первоисточник:** https://opentelemetry.io/docs/concepts/context-propagation/, https://opentelemetry.io/docs/concepts/signals/traces/
+
+## observability-bounded-cardinality | Low-Cardinality Metrics and Defined Units (P1, reviewed)
+**Когда:** Теги метрик содержат user ID, device serial или request ID и количество временных рядов растёт.
+**Решение:** Определять ограниченные labels с явным смыслом, базовые units, счётчики ошибок и гистограммы latency; идентификаторы операций оставлять в logs/traces, но не metric labels.
+**Не применять:** Нельзя ставить токены, endpoint IDs, URL, произвольные исключения и безлимитные значения в labels.
+**Проверка:** Unique time series budget, large synthetic ID set, unit correctness, counter/gauge boundaries.
+**Проекты:** STAYA, KLIDAN, Audio Probe
+**Первоисточник:** https://prometheus.io/docs/practices/naming/, https://opentelemetry.io/docs/concepts/signals/metrics/, https://opentelemetry.io/docs/concepts/semantic-conventions/
+
+## observability-actionable-alerts | Symptom-Based Alerts With Runbook Actions (P1, reviewed)
+**Когда:** Каждый restart или одиночная 404 создаёт шум, реальная недоступность не выявляется.
+**Решение:** Оповещать по измеримому влиянию на пользовательский сценарий, поддерживать уровни warning/critical и runbook со scope, условиями отключения и подтверждением восстановления.
+**Не применять:** Не отправлять срочные оповещения по несущественным событиям, не считать 404 legacy route отказом подписки.
+**Проверка:** Simulated prolonged outage alerts, transient recovery no page, correct route, alert dedup and runbook link.
+**Проекты:** STAYA, KLIDAN, Audio Probe
+**Первоисточник:** https://prometheus.io/docs/practices/alerting/, https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-10.0
+
+## deployment-stage-journal | Immutable Stage Journal and Failure Evidence (P1, reviewed)
+**Когда:** Сборка, установка и live smoke выводят PASS без привязки к конкретному source SHA или архивам; поздний этап переписывает статус раннего.
+**Решение:** Записывать runId, sourceSha, artifact digest, stage, start/end, exit, structured error и scope каждого перехода. Неизвестный stage при отказе = UNKNOWN/PENDING; не переписывать старые свидетельства.
+**Не применять:** Не записывать сырые секреты в journal; единый JSON не гарантирует durable write после power loss; фиксация процесса не равна фактическому smoke.
+**Проверка:** Crash midway, missing stage, hash mismatch, partial failure, log redaction, restart readback and immutable run history.
+**Проекты:** STAYA, KLIDAN, Audio Probe
+**Первоисточник:** https://slsa.dev/spec/v1.2/, https://opentelemetry.io/docs/concepts/semantic-conventions/
+
+## update-tuf-antirollback | Signed Update Metadata and Rollback/Freeze Protection (P0, reviewed)
+**Когда:** Клиент доверяет beta.json только по HTTPS и hash, что допускает устаревшую/подменённую метаинформацию при компрометации источника.
+**Решение:** Изучить и при необходимости внедрить TUF-подобные роли root/targets/snapshot/timestamp с доверенными ключами, version counters, expiry and rollback protection; идентифицировать target по размеру и digest.
+**Не применять:** Не объявлять собственный JSON feed совместимым с TUF без полноценной реализации клиента/репозитория; не считать один SHA от того же канала аутентификацией.
+**Проверка:** Old signed metadata replay, expired timestamp, changed target digest, missing trust anchor, key rotation and rollback policy.
+**Проекты:** KLIDAN, Audio Probe, STAYA
+**Первоисточник:** https://theupdateframework.github.io/specification/latest/, https://docs.sigstore.dev/cosign/verifying/verify/
+
+## update-publisher-signature-policy | Authenticode Publisher and Chain Policy (P0, reviewed)
+**Когда:** Установщик подписан self-signed сертификатом, а агент ошибочно объявляет его доверенным для чужой машины.
+**Решение:** На Windows проверять WinVerifyTrust/Authenticode по соответствующей политике, доверенную цепочку и ожидаемую идентичность издателя; подписанный test artifact отличать от publicly trusted production signer.
+**Не применять:** Хеш SHA-256 и наличие подписи не равны доверенному издателю; отключать SmartScreen/Defender ради PASS нельзя.
+**Проверка:** Unsigned, tampered, wrong publisher, expired/revoked chain per policy, self-signed trust failure on clean Windows.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/windows/win32/api/wintrust/nf-wintrust-winverifytrust
+
+## windows-msi-custom-rollback | MSI Deferred Custom Action with Compensating Rollback (P1, reviewed)
+**Когда:** Установочный custom action меняет сервисы и внешние файлы, после сбоя Windows Installer не восстанавливает их.
+**Решение:** Для MSI custom action, меняющих состояние системы, использовать deferred execution с соответствующими rollback actions и сценариями частичной ошибки, версионированные бэкапы и последующую проверку.
+**Не применять:** Это только для Windows Installer/MSI; для Inno Setup/NSIS иной механизм; встроенный rollback MSI не покрывает все сторонние side effects.
+**Проверка:** Abort during custom action, rollback disabled, partial filesystem state, service install failure, non-admin account.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/windows/win32/msi/rollback-custom-actions, https://learn.microsoft.com/en-us/windows/win32/msi/deferred-execution-custom-actions, https://learn.microsoft.com/en-us/windows/win32/msi/rollback-installation
+
+## update-worker-handoff | Updater Process Lifetime and File-Promotion Barrier (P0, reviewed)
+**Когда:** Updater пытается заменить запущенный бинарник и теряет состояние при отмене/kill; модули продолжают писать в DataRoot.
+**Решение:** До замены запретить новые операции, дождаться завершения worker и освобождения файлов, верифицировать candidate; публиковать файлы по правилам Windows API с journal и restart smoke, затем только удалять backup.
+**Не применять:** Не считать замену нескольких файлов одной транзакцией; ReplaceFileW имеет ограничения same-volume и error cases, а installer backend может обладать другими возможностями.
+**Проверка:** Locked exe, updater crash, partial promotion, failed startup, alternate DataRoot, repeated update and rollback.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew, https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw, https://learn.microsoft.com/en-us/windows/win32/msi/rollback-installation
+
+## supplychain-provenance-verification | Build Provenance and Artifact Identity Verification (P1, reviewed)
+**Когда:** Выпущен артефакт с корректным размером и SHA, но нет уверенности, из какого commit и доверенной среды его собрали.
+**Решение:** Вести provenance/source reference, identity build environment, immutable artifact digest и проверяемую подпись/attestation при требуемом threat model; отделять test signer от production.
+**Не применять:** Не присваивать SLSA Level по одному файлу provenance; аттестацию нужно проверять против доверенной личности сборщика, а не просто хранить.
+**Проверка:** Wrong commit/digest, forged attestation, untrusted identity, runtime match and release record.
+**Проекты:** STAYA, KLIDAN, Audio Probe
+**Первоисточник:** https://slsa.dev/spec/v1.2/, https://docs.sigstore.dev/cosign/verifying/verify/
+
+## deployment-approval-gate | Environment Approval and Scoped Deployment Secrets (P1, reviewed)
+**Когда:** CI job с правом publish запускается из незащищённой ветки или unreviewed PR и получает production secrets.
+**Решение:** Использовать GitHub environments, ограничение веток и approvals согласно доступности плана, минимальные permissions, отдельные secrets и staged promotion; проверять фактическую политику.
+**Не применять:** Environment без настроенных protection rules не является автоматическим approval; не считать ручной запуск безопасным без проверки actor/branch/artifact.
+**Проверка:** Untrusted branch cannot deploy, rejection before secrets, allowed reviewer approval, restart and revoke.
+**Проекты:** STAYA, KLIDAN, Audio Probe
+**Первоисточник:** https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments, https://slsa.dev/spec/v1.2/
+
+## progressive-release-acceptance | Progressive Release and Post-Deploy Acceptance Gate (P1, reviewed)
+**Когда:** Один тестовый узел прошёл проверку, затем обновление публикуется всем клиентам без контроля состояния.
+**Решение:** Продвигать staging→canary→wider rollout с фиксированными критериями: источник, installed version, update feed, new sessions, critical operations, rollback/stop rules; учитывать размер группы и доступные tester devices.
+**Не применять:** Не обещать автоматическую canary процедуру без telemetry и клиентов; PASS из одного process-start не равен release success.
+**Проверка:** Canary failure blocks wider release, signed payload mismatch, updater rollback, stale feed, stop condition triggers.
+**Проекты:** STAYA, KLIDAN, Audio Probe
+**Первоисточник:** https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments, https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-10.0, https://prometheus.io/docs/practices/alerting/
+
