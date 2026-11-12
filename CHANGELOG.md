@@ -1,3 +1,9 @@
+## 0.9.2-preview.1 (2026-11-12)
+
+- Two P0 WASAPI cards: capture buffer lease and mode-specific packet sizing, reviewed against Microsoft Learn.
+- Three additional proposed capture QA scenarios, a dedicated contract and catalog tests.
+- All scenario versions synchronized; no physical audio or production PASS claimed.
+
 ## 0.9.0-preview.1 (2026-11-12)
 
 - 7 P1 карточек WPF: AutomationPeer, critical operator semantics, keyboard navigation, system contrast, text readability, localization and accessibility evidence.

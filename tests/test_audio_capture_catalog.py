@@ -14,7 +14,7 @@ class AudioCaptureCatalogTests(unittest.TestCase):
         expected = {"audio-capture-discontinuity-evidence", "audio-clock-domain-reconciliation", "audio-capture-packet-epoch"}
         self.assertTrue(expected <= cards.keys())
         self.assertEqual(patterns["version"], qa["version"])
-        self.assertEqual(4, len(qa["items"]))
+        self.assertEqual(7, len(qa["items"]))
         for pid in expected:
             card = cards[pid]
             self.assertEqual("reviewed", card["source_review"])
