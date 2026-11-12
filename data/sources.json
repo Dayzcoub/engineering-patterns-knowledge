@@ -348,7 +348,9 @@
       "url": "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getbuffer",
       "status": "reviewed",
       "patterns": [
-        "wasapi-capture-packet-lifetime"
+        "wasapi-capture-packet-lifetime",
+        "audio-capture-discontinuity-evidence",
+        "audio-capture-packet-epoch"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
@@ -1323,6 +1325,27 @@
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Microsoft WPF/Windows accessibility docs reviewed 2026-11-12; no operator UI/device QA carried out.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclock-getposition",
+      "status": "reviewed",
+      "patterns": [
+        "audio-clock-domain-reconciliation",
+        "audio-capture-packet-epoch"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft Learn API contract reviewed 2026-11-12; not physical device or production QA.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclock2-getdeviceposition",
+      "status": "reviewed",
+      "patterns": [
+        "audio-clock-domain-reconciliation"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft Learn API contract reviewed 2026-11-12; not physical device or production QA.",
       "reviewed_on": "2026-11-12"
     }
   ]

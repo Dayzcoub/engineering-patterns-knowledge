@@ -866,3 +866,41 @@
 **Проекты:** KLIDAN
 **Первоисточник:** https://learn.microsoft.com/en-us/dotnet/framework/ui-automation/accessibility-best-practices, https://learn.microsoft.com/en-us/dotnet/desktop/wpf/controls/ui-automation-of-a-wpf-custom-control, https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/focus-overview
 
+
+## WASAPI capture and clock (2026-11-12)
+
+### audio-capture-discontinuity-evidence
+
+**Signals:** Capture packets contain DATA_DISCONTINUITY, TIMESTAMP_ERROR or SILENT; a stream appears stable despite uncertain packet timing.
+
+**Approach:** Record flag bitmask, packet frame count, stream-relative device position and QPC time (100 ns) per packet. Treat discontinuity as a glitch indicator, timestamp error as invalid timing evidence and SILENT as silence rather than automatically a glitch. Distinguish BUFFER_EMPTY from successful nonempty packets. Keep GetBuffer/ReleaseBuffer ordered on one thread and release promptly.
+
+**Avoid:** Do not treat SILENT as data loss, accept invalid timestamps as latency PASS, assume a missing flag proves glitch-free hardware, or delay ReleaseBuffer for expensive logging.
+
+**Verification:** Proposed synthetic flag-combination and empty/error-code matrix; separate physical endpoint run with load, reconnect and raw artifact provenance. Assert timestamp-uncertain packets cannot establish timing PASS.
+
+**Review:** DOC_REVIEW (primary sources reviewed; physical QA not executed). [Sources](https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getbuffer)
+
+### audio-clock-domain-reconciliation
+
+**Signals:** Duplex capture/render clocks drift or a sample-position comparison gives impossible latency because units or rates differ.
+
+**Approach:** For IAudioClock position, obtain GetFrequency and normalize position/frequency; compare each endpoint using correlated QPC in 100 ns units. For shared mode only, IAudioClock2 hardware frame position is an alternative, but endpoint sample rate can differ from client mix rate. Record mode, endpoint, frequency, epoch, clock method and confidence.
+
+**Avoid:** Do not compare raw positions from distinct clocks, equate endpoint and mix sample rates, call IAudioClock2 for exclusive mode, or treat S_FALSE delayed readings as equally accurate S_OK. Do not retry S_FALSE indefinitely.
+
+**Verification:** Proposed synthetic independent-clock rate and delayed-read matrix, QPC unit normalization, shared/exclusive negative cases; physical two-USB-endpoint drift evidence required before hardware claim.
+
+**Review:** DOC_REVIEW (primary sources reviewed; physical QA not executed). [Sources](https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclock-getposition)
+
+### audio-capture-packet-epoch
+
+**Signals:** A late capture packet or clock observation from an invalidated stream updates a newly started measurement; position resets to zero.
+
+**Approach:** Assign a generation to each initialized capture stream and to all packet metadata; reject late observations from previous generations. Stop freezes IAudioClock position; subsequent Start resumes; Reset while stopped sets position to zero, so begin a new analysis epoch after Reset or stream recreation. Preserve raw error/status and cleanup ordering.
+
+**Avoid:** Do not require position monotonicity across Reset or device recreation, reuse old QPC correlations after invalidation, or treat generation fencing as proof of actual hardware stability.
+
+**Verification:** Proposed deterministic late-packet, Stop/Start, Reset and DEVICE_INVALIDATED cases; assert no old generation contributes to new stability result. Physical reconnect evidence remains separate.
+
+**Review:** DOC_REVIEW (primary sources reviewed; physical QA not executed). [Sources](https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getbuffer)

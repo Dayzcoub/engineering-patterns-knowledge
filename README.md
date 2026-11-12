@@ -4,12 +4,12 @@
 
 Общая расширяемая библиотека инженерных паттернов и [Agent Skill](SKILL.md) для Codex, OpenCode и других совместимых агентов. Основная цель: **выбирать решение по симптомам и проверкам, а не вводить архитектурные абстракции ради модных названий**.
 
-**Версия:** `0.9.0-preview.1` · **Статус:** исследовательская база, не обязательный стандарт для production.
+**Версия:** `0.9.1-preview.1` · **Статус:** исследовательская база, не обязательный стандарт для production.
 
 ## Состав
 
-- **108 карточек** в [`data/patterns.json`](data/patterns.json). Каждая содержит признаки задачи, подход, ограничения, способы проверки и ссылки.
-- **126 URL первоисточников** в [`data/sources.json`](data/sources.json) со статусами глубины проверки.
+- **111 карточек** в [`data/patterns.json`](data/patterns.json). Каждая содержит признаки задачи, подход, ограничения, способы проверки и ссылки.
+- **128 URL первоисточников** в [`data/sources.json`](data/sources.json) со статусами глубины проверки.
 - **115 уникальных URL (122 вхождения)** в [`data/upstream-index.json`](data/upstream-index.json). Это очередь для исследований по оригинальному списку, **не 115 изученных паттернов**.
 - [`references/cards.md`](references/cards.md): читаемые людьми карточки; [`references/priorities.md`](references/priorities.md): приоритеты для KLIDAN, Audio Probe, STAYA.
 - [`SKILL.md`](SKILL.md): правила применения скилла; [`AGENTS.md`](AGENTS.md): правила работы в этом репозитории.
@@ -82,3 +82,7 @@ python scripts/search_patterns.py 'retry duplicate'
 ### P1: Operator Accessibility and UIA
 
 [WPF operator accessibility contract](references/wpf-accessibility-qa-contract.md) и [6 proposed сценариев](data/wpf-accessibility-scenarios.json) для клавиатурного управления, кастомных AutomationPeer, системной контрастности и локализации. Это DOC_REVIEW, не физическая проверка KLIDAN.
+
+### P0: WASAPI capture packet/clock evidence
+
+[Контракт packet flags, clock domains и stream epochs](references/audio-capture-clock-contract.md) и [4 proposed QA-сценария](data/audio-capture-scenarios.json) отделяют discontinuity, silence, timestamp error, device clock и reset. Microsoft API DOC_REVIEW не подтверждает физическую стабильность Audio Probe.

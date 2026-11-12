@@ -36,3 +36,7 @@
 4. Привязать сценарий тестирования и метрику.
 5. Пометить источник `reviewed`, `index_only` или `pending_primary_review`.
 6. Повторно проверять устаревшие технические сведения перед внедрением.
+
+## Волна P0: WASAPI capture clock evidence (2026-11-12)
+
+Три новых паттерна: `audio-capture-discontinuity-evidence`, `audio-clock-domain-reconciliation`, `audio-capture-packet-epoch`. Источники Microsoft Learn reviewed, сценарии proposed. Нет физического теста или production PASS. Следующая тема: проверка callback/ReleaseBuffer lifetime и реального профиля минимального стабильного буфера.
