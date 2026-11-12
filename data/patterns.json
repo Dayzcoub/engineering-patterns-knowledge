@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "version": "0.7.0-preview.1",
+  "version": "0.8.0-preview.1",
   "generated_on": "2026-11-12",
   "source_root": "https://github.com/DovAmir/awesome-design-patterns",
   "source_root_commit": "9006287f27e720000cc8763ae4cd150789b8571d",
-  "scope": "reviewed platform guidance, not physical timing or production memory QA",
+  "scope": "curated research and QA patterns; synthetic CI does not certify real hardware",
   "cards": [
     {
       "id": "state-machine",
@@ -2135,6 +2135,201 @@
         "bounded-channel-overflow-policy",
         "pooled-buffer-ownership",
         "ipc-generation-fence"
+      ]
+    },
+    {
+      "id": "qa-controllable-time",
+      "title": "Controllable Clock and Deadline Replay",
+      "domain": "testing",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "Тест timeout зависит от Sleep, wall-clock и скорости CI и периодически падает.",
+      "approach": "Ввести TimeProvider либо минимальный clock abstraction в нужных границах; управлять FakeTimeProvider в тесте, отдельно сохранять monotonic duration и UTC timestamps.",
+      "avoid": "Не подменять физический таймер аудиоустройства и не считать fake clock доказательством реального deadline; не добавлять новый пакет, если проект уже имеет проверяемый clock.",
+      "verification": "Deadline just before/after boundary, timer advance, cancellation, no real sleeps, no wall-clock dependence.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/standard/datetime/timeprovider-overview",
+        "https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.time.testing.faketimeprovider.advance?view=net-10.0-pp"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "ipc-request-deadline",
+        "retry"
+      ]
+    },
+    {
+      "id": "qa-scheduled-interleavings",
+      "title": "Deterministic Async Interleaving Test",
+      "domain": "testing",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "Race между reconnect, Stop и поздним callback проявляется только иногда.",
+      "approach": "На границе I/O/IPC/worker поставить контролируемые barriers и завершать операции в заданном порядке A→B, B→A, Cancel→late reply; проверять generation и ownership.",
+      "avoid": "Не заменять управляемым тестом нагрузочные race/physical тесты; избегать задержек на случайном Thread.Sleep вместо сигнала готовности.",
+      "verification": "Late A after B, simultaneous dispose/apply, no deadlock, all tasks join, repeatable ordering across CI.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices",
+        "https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/task-cancellation"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "ipc-generation-fence",
+        "wpf-async-generation-guard",
+        "audio-stream-shutdown-barrier"
+      ]
+    },
+    {
+      "id": "qa-io-fault-matrix",
+      "title": "Fault Injection at Every Durable I/O Boundary",
+      "domain": "testing",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "Миграция/установка или backup проходят happy path, но падают посередине commit/readback.",
+      "approach": "Перечислить операции I/O, на каждой точке подставлять permission denied, short write, disk full, corrupted readback и проверять rollback/retry invariants. Отдельно проверять отказ в recovery path.",
+      "avoid": "Не утверждать, что симулятор I/O точно моделирует отключение питания и порядок fsync на конкретном носителе.",
+      "verification": "Fail before/after stage, write, rename, commit, readback; no silent reset, no data loss; recovery idempotent.",
+      "source_urls": [
+        "https://www.sqlite.org/testing.html",
+        "https://www.sqlite.org/atomiccommit.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "sqlite-cross-store-intent",
+        "sqlite-integrity-recovery-gate"
+      ]
+    },
+    {
+      "id": "qa-process-crash-recovery",
+      "title": "Process-Crash Boundary and Restart Verification",
+      "domain": "testing",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "Приложение после аварии на стадии установки или DataRoot использует неполный журнал.",
+      "approach": "Запускать тест в дочернем процессе с подготовленным workspace, убивать в контролируемой точке, потом открывать state свежим процессом и сверять persisted intent/RootId/статус.",
+      "avoid": "Kill дочернего процесса не моделирует потерю питания или отказ OS; не запускать crash injection на production DataRoot.",
+      "verification": "Crash before/after canonical write, restart, check journal, match IDs, repeat safe retry, no corrupt DB.",
+      "source_urls": [
+        "https://www.sqlite.org/testing.html",
+        "https://www.sqlite.org/atomiccommit.html"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "sqlite-cross-store-intent",
+        "sqlite-online-backup",
+        "deployment-stage-journal"
+      ]
+    },
+    {
+      "id": "qa-cancel-is-not-stop",
+      "title": "Cancellation Request Is Not Stop/Join Proof",
+      "domain": "testing",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "Stop помечен PASS сразу после Cancel, хотя worker продолжает писать в память или IPC.",
+      "approach": "Фиксировать отдельные состояния cancel requested, worker acknowledged, worker exited и resources released; проверять wait/join, cancellation response и поздние результаты.",
+      "avoid": "Не считать Task status Canceled обязательным, если delegate нормально завершился; не освобождать интерфейсы до остановки владельца.",
+      "verification": "Cancel returns before worker, late completion, noncooperative task, bounded shutdown, dispose after join.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/task-cancellation",
+        "https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "cancellation-source-lifecycle",
+        "audio-stream-shutdown-barrier"
+      ]
+    },
+    {
+      "id": "qa-physical-evidence-separation",
+      "title": "Synthetic, Integration and Hardware QA Scope",
+      "domain": "testing",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "Фейковые устройства и мок-сервер успешно проходят тест, а итоговый отчёт заявляет physical PASS.",
+      "approach": "В результатах хранить evidenceLevel, target runtime/OS, реальные endpoint IDs в защищённых локальных отчётах, проверенную операцию и критерии; синтетические результаты маркировать отдельно от physical hardware/network.",
+      "avoid": "Не выводить device stability из mocked WASAPI; не считать HTTP 200 доказательством VPN egress; не включать чувствительные идентификаторы в публичную карточку.",
+      "verification": "Fake-only shows SYNTHETIC, hardware test required for PHYSICAL, exact source and device, no false promotion.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/windows/win32/coreaudio/recovering-from-an-invalid-device-error",
+        "https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "audio-minimum-stable-profile",
+        "staya-active-path-health",
+        "performance-baseline-budget"
+      ]
+    },
+    {
+      "id": "qa-evidence-provenance-manifest",
+      "title": "Reproducible Evidence Manifest and Retention",
+      "domain": "testing",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "Скриншоты, JSON и CI-log нельзя связать с точной сборкой или идентификатором теста.",
+      "approach": "Сохранять run ID, source SHA, artifact digest, OS/runtime, test policy, timestamp, outcome, evidence paths/hashes; задавать retention и redaction; исключать secret-bearing raw logs.",
+      "avoid": "Подписанный manifest не делает сфабрикованный результат реальным; отсутствие артефакта означает отсутствие доказательства, а не PASS.",
+      "verification": "Artifact mismatched hash, missing file, expired retention, wrong source SHA, sensitive canary leak.",
+      "source_urls": [
+        "https://docs.github.com/en/actions/how-tos/manage-workflow-runs/remove-workflow-artifacts",
+        "https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "deployment-stage-journal",
+        "secure-deploy-artifact-gate"
+      ]
+    },
+    {
+      "id": "qa-ci-isolation-and-concurrency",
+      "title": "CI Concurrency Group and Isolated Test Matrix",
+      "domain": "testing",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "Параллельные тесты используют общий каталог/устройство и портят друг другу состояние, новый run отменяет нужный deploy.",
+      "approach": "Изолировать temp/data roots на run, определить parallel-safe группы; для GitHub Actions использовать точные concurrency groups и политику cancel-in-progress только если отмена безопасна.",
+      "avoid": "Не включать cancel-in-progress для stateful deploy без восстановительного протокола; не считать green CI воспроизводимостью hardware сценария.",
+      "verification": "Two PR runs, shared resource collision, matrix OS/runtime coverage, queued/cancel semantics and cleanup.",
+      "source_urls": [
+        "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency",
+        "https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "deployment-approval-gate",
+        "qa-evidence-provenance-manifest"
       ]
     }
   ]

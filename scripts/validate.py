@@ -178,6 +178,22 @@ def check():
             if not case.get('must_consider') or not case.get('acceptance'): error(f'{cid}: missing links/acceptance')
             for pid in case.get('must_consider', []):
                 if pid not in ids: error(f'{cid}: unknown pattern {pid}')
+    # Keep proposed QA cases referentially correct and version-aligned.
+    qa_file = ROOT / 'data/qa-scenarios.json'
+    if qa_file.exists():
+        qa = load('data/qa-scenarios.json')
+        if qa.get('schema_version') != 1 or qa.get('version') != catalog.get('version'):
+            error('qa scenarios schema/version mismatch')
+        qa_ids = set()
+        for case in qa.get('items', []):
+            cid = case.get('id', '')
+            if not isinstance(cid, str) or not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', cid) or cid in qa_ids:
+                error(f'invalid or duplicate QA scenario id: {cid}')
+            qa_ids.add(cid)
+            if case.get('decision_status') != 'proposed': error(f'{cid}: QA must remain proposed')
+            if not case.get('must_consider') or not case.get('acceptance'): error(f'{cid}: missing QA links/acceptance')
+            for pid in case.get('must_consider', []):
+                if pid not in ids: error(f'{cid}: unknown pattern {pid}')
     return len(cards),len(by_url)
 
 

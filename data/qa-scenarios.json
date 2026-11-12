@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "version": "0.8.0-preview.1",
+  "generated_on": "2026-11-12",
+  "status": "proposed deterministic QA scenarios; NOT EXECUTED",
+  "items": [
+    {
+      "id": "klidan-dataroot-write-crash",
+      "project": "KLIDAN",
+      "query": "DataRoot bootstrap interrupted between pending intent and canonical readback",
+      "must_consider": [
+        "qa-io-fault-matrix",
+        "qa-process-crash-recovery",
+        "sqlite-cross-store-intent"
+      ],
+      "acceptance": [
+        "per-boundary crash matrix",
+        "new process readback and no accidental empty database"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "audio-probe-late-worker",
+      "project": "Audio Probe",
+      "query": "Stop requested while worker blocked and late IPC completion arrives after new start",
+      "must_consider": [
+        "qa-scheduled-interleavings",
+        "qa-cancel-is-not-stop",
+        "ipc-generation-fence"
+      ],
+      "acceptance": [
+        "Stop does not claim done before join",
+        "stale callback does not update current generation"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "staya-rollback-error",
+      "project": "STAYA",
+      "query": "Xray rollout failed and rollback itself reports partial error",
+      "must_consider": [
+        "qa-io-fault-matrix",
+        "qa-evidence-provenance-manifest",
+        "staya-staged-config-promotion"
+      ],
+      "acceptance": [
+        "rollback failure has distinct status",
+        "known-good configuration not silently overwritten"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "fake-time-deadline",
+      "project": "Audio Probe",
+      "query": "IPC deadline and retry tested without wall clock sleeps",
+      "must_consider": [
+        "qa-controllable-time",
+        "ipc-request-deadline"
+      ],
+      "acceptance": [
+        "fake clock advances deadline deterministically",
+        "explicit comparison before and after deadline"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "physical-audio-evidence",
+      "project": "Audio Probe",
+      "query": "unit tests pass but actual USB audio buffer stability not measured",
+      "must_consider": [
+        "qa-physical-evidence-separation",
+        "audio-minimum-stable-profile"
+      ],
+      "acceptance": [
+        "synthetic PASS not promoted to hardware PASS",
+        "real endpoint, format, jitter and duration evidence required"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "shared-run-isolation",
+      "project": "KLIDAN",
+      "query": "parallel CI runs use same temp folder and fail intermittently",
+      "must_consider": [
+        "qa-ci-isolation-and-concurrency",
+        "qa-evidence-provenance-manifest"
+      ],
+      "acceptance": [
+        "per-run unique temp root",
+        "no colliding artifacts or unsafe automatic cancellation"
+      ],
+      "decision_status": "proposed"
+    }
+  ]
+}

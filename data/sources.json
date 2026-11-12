@@ -70,7 +70,9 @@
       "status": "reviewed",
       "patterns": [
         "sqlite-atomic-transaction",
-        "sqlite-cross-store-intent"
+        "sqlite-cross-store-intent",
+        "qa-io-fault-matrix",
+        "qa-process-crash-recovery"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": ""
@@ -304,7 +306,8 @@
       "status": "reviewed",
       "patterns": [
         "wasapi-invalid-device-recovery",
-        "audio-stream-shutdown-barrier"
+        "audio-stream-shutdown-barrier",
+        "qa-physical-evidence-separation"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
@@ -1166,6 +1169,82 @@
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Microsoft platform doc reviewed 2026-11-12; not a production benchmark or real-time guarantee.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/standard/datetime/timeprovider-overview",
+      "status": "reviewed",
+      "patterns": [
+        "qa-controllable-time"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Original platform/test documentation inspected 2026-11-12; not live hardware QA.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.time.testing.faketimeprovider.advance?view=net-10.0-pp",
+      "status": "reviewed",
+      "patterns": [
+        "qa-controllable-time"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Original platform/test documentation inspected 2026-11-12; not live hardware QA.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices",
+      "status": "reviewed",
+      "patterns": [
+        "qa-scheduled-interleavings",
+        "qa-cancel-is-not-stop",
+        "qa-physical-evidence-separation",
+        "qa-evidence-provenance-manifest",
+        "qa-ci-isolation-and-concurrency"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Original platform/test documentation inspected 2026-11-12; not live hardware QA.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/task-cancellation",
+      "status": "reviewed",
+      "patterns": [
+        "qa-scheduled-interleavings",
+        "qa-cancel-is-not-stop"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Original platform/test documentation inspected 2026-11-12; not live hardware QA.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://www.sqlite.org/testing.html",
+      "status": "reviewed",
+      "patterns": [
+        "qa-io-fault-matrix",
+        "qa-process-crash-recovery"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Original platform/test documentation inspected 2026-11-12; not live hardware QA.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://docs.github.com/en/actions/how-tos/manage-workflow-runs/remove-workflow-artifacts",
+      "status": "reviewed",
+      "patterns": [
+        "qa-evidence-provenance-manifest"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Original platform/test documentation inspected 2026-11-12; not live hardware QA.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency",
+      "status": "reviewed",
+      "patterns": [
+        "qa-ci-isolation-and-concurrency"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Original platform/test documentation inspected 2026-11-12; not live hardware QA.",
       "reviewed_on": "2026-11-12"
     }
   ]

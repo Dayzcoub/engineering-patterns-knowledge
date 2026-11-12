@@ -746,3 +746,67 @@
 **Проекты:** KLIDAN
 **Первоисточник:** https://learn.microsoft.com/en-us/dotnet/core/extensions/channels, https://learn.microsoft.com/en-us/dotnet/standard/memory-and-spans/memory-t-usage-guidelines, https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-2d-graphics-and-imaging
 
+## qa-controllable-time | Controllable Clock and Deadline Replay (P1, reviewed)
+**Когда:** Тест timeout зависит от Sleep, wall-clock и скорости CI и периодически падает.
+**Решение:** Ввести TimeProvider либо минимальный clock abstraction в нужных границах; управлять FakeTimeProvider в тесте, отдельно сохранять monotonic duration и UTC timestamps.
+**Не применять:** Не подменять физический таймер аудиоустройства и не считать fake clock доказательством реального deadline; не добавлять новый пакет, если проект уже имеет проверяемый clock.
+**Проверка:** Deadline just before/after boundary, timer advance, cancellation, no real sleeps, no wall-clock dependence.
+**Проекты:** KLIDAN, Audio Probe, STAYA
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/standard/datetime/timeprovider-overview, https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.time.testing.faketimeprovider.advance?view=net-10.0-pp
+
+## qa-scheduled-interleavings | Deterministic Async Interleaving Test (P1, reviewed)
+**Когда:** Race между reconnect, Stop и поздним callback проявляется только иногда.
+**Решение:** На границе I/O/IPC/worker поставить контролируемые barriers и завершать операции в заданном порядке A→B, B→A, Cancel→late reply; проверять generation и ownership.
+**Не применять:** Не заменять управляемым тестом нагрузочные race/physical тесты; избегать задержек на случайном Thread.Sleep вместо сигнала готовности.
+**Проверка:** Late A after B, simultaneous dispose/apply, no deadlock, all tasks join, repeatable ordering across CI.
+**Проекты:** KLIDAN, Audio Probe, STAYA
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices, https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/task-cancellation
+
+## qa-io-fault-matrix | Fault Injection at Every Durable I/O Boundary (P1, reviewed)
+**Когда:** Миграция/установка или backup проходят happy path, но падают посередине commit/readback.
+**Решение:** Перечислить операции I/O, на каждой точке подставлять permission denied, short write, disk full, corrupted readback и проверять rollback/retry invariants. Отдельно проверять отказ в recovery path.
+**Не применять:** Не утверждать, что симулятор I/O точно моделирует отключение питания и порядок fsync на конкретном носителе.
+**Проверка:** Fail before/after stage, write, rename, commit, readback; no silent reset, no data loss; recovery idempotent.
+**Проекты:** KLIDAN, Audio Probe, STAYA
+**Первоисточник:** https://www.sqlite.org/testing.html, https://www.sqlite.org/atomiccommit.html
+
+## qa-process-crash-recovery | Process-Crash Boundary and Restart Verification (P0, reviewed)
+**Когда:** Приложение после аварии на стадии установки или DataRoot использует неполный журнал.
+**Решение:** Запускать тест в дочернем процессе с подготовленным workspace, убивать в контролируемой точке, потом открывать state свежим процессом и сверять persisted intent/RootId/статус.
+**Не применять:** Kill дочернего процесса не моделирует потерю питания или отказ OS; не запускать crash injection на production DataRoot.
+**Проверка:** Crash before/after canonical write, restart, check journal, match IDs, repeat safe retry, no corrupt DB.
+**Проекты:** KLIDAN, Audio Probe, STAYA
+**Первоисточник:** https://www.sqlite.org/testing.html, https://www.sqlite.org/atomiccommit.html
+
+## qa-cancel-is-not-stop | Cancellation Request Is Not Stop/Join Proof (P1, reviewed)
+**Когда:** Stop помечен PASS сразу после Cancel, хотя worker продолжает писать в память или IPC.
+**Решение:** Фиксировать отдельные состояния cancel requested, worker acknowledged, worker exited и resources released; проверять wait/join, cancellation response и поздние результаты.
+**Не применять:** Не считать Task status Canceled обязательным, если delegate нормально завершился; не освобождать интерфейсы до остановки владельца.
+**Проверка:** Cancel returns before worker, late completion, noncooperative task, bounded shutdown, dispose after join.
+**Проекты:** KLIDAN, Audio Probe, STAYA
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/task-cancellation, https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices
+
+## qa-physical-evidence-separation | Synthetic, Integration and Hardware QA Scope (P1, reviewed)
+**Когда:** Фейковые устройства и мок-сервер успешно проходят тест, а итоговый отчёт заявляет physical PASS.
+**Решение:** В результатах хранить evidenceLevel, target runtime/OS, реальные endpoint IDs в защищённых локальных отчётах, проверенную операцию и критерии; синтетические результаты маркировать отдельно от physical hardware/network.
+**Не применять:** Не выводить device stability из mocked WASAPI; не считать HTTP 200 доказательством VPN egress; не включать чувствительные идентификаторы в публичную карточку.
+**Проверка:** Fake-only shows SYNTHETIC, hardware test required for PHYSICAL, exact source and device, no false promotion.
+**Проекты:** KLIDAN, Audio Probe, STAYA
+**Первоисточник:** https://learn.microsoft.com/en-us/windows/win32/coreaudio/recovering-from-an-invalid-device-error, https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices
+
+## qa-evidence-provenance-manifest | Reproducible Evidence Manifest and Retention (P1, reviewed)
+**Когда:** Скриншоты, JSON и CI-log нельзя связать с точной сборкой или идентификатором теста.
+**Решение:** Сохранять run ID, source SHA, artifact digest, OS/runtime, test policy, timestamp, outcome, evidence paths/hashes; задавать retention и redaction; исключать secret-bearing raw logs.
+**Не применять:** Подписанный manifest не делает сфабрикованный результат реальным; отсутствие артефакта означает отсутствие доказательства, а не PASS.
+**Проверка:** Artifact mismatched hash, missing file, expired retention, wrong source SHA, sensitive canary leak.
+**Проекты:** KLIDAN, Audio Probe, STAYA
+**Первоисточник:** https://docs.github.com/en/actions/how-tos/manage-workflow-runs/remove-workflow-artifacts, https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices
+
+## qa-ci-isolation-and-concurrency | CI Concurrency Group and Isolated Test Matrix (P1, reviewed)
+**Когда:** Параллельные тесты используют общий каталог/устройство и портят друг другу состояние, новый run отменяет нужный deploy.
+**Решение:** Изолировать temp/data roots на run, определить parallel-safe группы; для GitHub Actions использовать точные concurrency groups и политику cancel-in-progress только если отмена безопасна.
+**Не применять:** Не включать cancel-in-progress для stateful deploy без восстановительного протокола; не считать green CI воспроизводимостью hardware сценария.
+**Проверка:** Two PR runs, shared resource collision, matrix OS/runtime coverage, queued/cancel semantics and cleanup.
+**Проекты:** KLIDAN, Audio Probe, STAYA
+**Первоисточник:** https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency, https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices
+

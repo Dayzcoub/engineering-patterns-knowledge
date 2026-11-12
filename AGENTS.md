@@ -17,3 +17,4 @@ This repository is an **offline knowledge skill**. The curated JSON is not a man
 13. Отличать проверку конфигурации от проверки реального network/rollback/release; status DOC_REVIEW не является PROD_PASS.
 14. Любая performance-карточка требует ограничений памяти, модели owner/lifetime и физической метрики; `DOC_REVIEW` не равен измеренному улучшению на целевом компьютере.
 15. Не переносить drop/coalescing preview кадров на audio, Program output, команды и важные записываемые события.
+16. Synthetic fault injection и fake clock не должны автоматически переводить hardware QA в PASS. Записывать evidence level и исходный SHA.
