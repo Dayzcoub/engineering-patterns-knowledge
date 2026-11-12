@@ -4,12 +4,12 @@
 
 Общая расширяемая библиотека инженерных паттернов и [Agent Skill](SKILL.md) для Codex, OpenCode и других совместимых агентов. Основная цель: **выбирать решение по симптомам и проверкам, а не вводить архитектурные абстракции ради модных названий**.
 
-**Версия:** `0.9.2-preview.1` · **Статус:** исследовательская база, не обязательный стандарт для production.
+**Версия:** `0.9.3-preview.1` · **Статус:** исследовательская база, не обязательный стандарт для production.
 
 ## Состав
 
-- **113 карточек** в [`data/patterns.json`](data/patterns.json). Каждая содержит признаки задачи, подход, ограничения, способы проверки и ссылки.
-- **131 URL первоисточников** в [`data/sources.json`](data/sources.json) со статусами глубины проверки.
+- **115 карточек** в [`data/patterns.json`](data/patterns.json). Каждая содержит признаки задачи, подход, ограничения, способы проверки и ссылки.
+- **133 URL первоисточников** в [`data/sources.json`](data/sources.json) со статусами глубины проверки.
 - **115 уникальных URL (122 вхождения)** в [`data/upstream-index.json`](data/upstream-index.json). Это очередь для исследований по оригинальному списку, **не 115 изученных паттернов**.
 - [`references/cards.md`](references/cards.md): читаемые людьми карточки; [`references/priorities.md`](references/priorities.md): приоритеты для KLIDAN, Audio Probe, STAYA.
 - [`SKILL.md`](SKILL.md): правила применения скилла; [`AGENTS.md`](AGENTS.md): правила работы в этом репозитории.
@@ -90,3 +90,7 @@ python scripts/search_patterns.py 'retry duplicate'
 ### P0: Capture packet lease and mode-specific sizing
 
 [Контракт WASAPI capture lease](references/audio-capture-buffer-contract.md) и [7 proposed QA-сценариев](data/audio-capture-scenarios.json): целый пакет, короткое владение буфером, shared/exclusive sizing. Это DOC_REVIEW, не аппаратный PASS.
+
+### P0: Capture worker stop, reset and invalidation
+
+[Capture worker lifecycle contract](references/audio-capture-worker-lifecycle-contract.md) и [10 proposed QA-сценариев](data/audio-capture-scenarios.json). API DOC_REVIEW, без физических тестов и production PASS.

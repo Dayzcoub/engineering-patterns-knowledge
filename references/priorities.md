@@ -42,3 +42,5 @@
 Три новых паттерна: `audio-capture-discontinuity-evidence`, `audio-clock-domain-reconciliation`, `audio-capture-packet-epoch`. Источники Microsoft Learn reviewed, сценарии proposed. Нет физического теста или production PASS. Следующая тема: проверка callback/ReleaseBuffer lifetime и реального профиля минимального стабильного буфера.
 
 - WASAPI capture packet ownership: API DOC_REVIEW 2026-11-12; two new P0 cards and three proposed cases. Physical lease budget, actual device periods and loss flags remain unverified. See `audio-capture-buffer-contract.md`.
+
+- WASAPI capture worker lifecycle (2026-11-12): two P0 cards for Stop/Reset barrier and invalidation classification; three new proposed QA cases; Microsoft API DOC_REVIEW, no hardware PASS. See `audio-capture-worker-lifecycle-contract.md`.

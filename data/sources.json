@@ -352,7 +352,9 @@
         "audio-capture-discontinuity-evidence",
         "audio-capture-packet-epoch",
         "audio-capture-buffer-lease",
-        "audio-capture-packet-size-mode"
+        "audio-capture-packet-size-mode",
+        "audio-capture-stop-reset-barrier",
+        "audio-capture-invalidation-recovery"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
@@ -1354,7 +1356,8 @@
       "url": "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-releasebuffer",
       "status": "reviewed",
       "patterns": [
-        "audio-capture-buffer-lease"
+        "audio-capture-buffer-lease",
+        "audio-capture-invalidation-recovery"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Microsoft Learn API contract reviewed 2026-11-12; not hardware qualification."
@@ -1376,6 +1379,26 @@
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Microsoft Learn API contract reviewed 2026-11-12; not hardware qualification."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-stop",
+      "status": "reviewed",
+      "patterns": [
+        "audio-capture-stop-reset-barrier"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft API inspected 2026-11-12; DOC_REVIEW only",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-reset",
+      "status": "reviewed",
+      "patterns": [
+        "audio-capture-stop-reset-barrier"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft API inspected 2026-11-12; DOC_REVIEW only",
+      "reviewed_on": "2026-11-12"
     }
   ]
 }

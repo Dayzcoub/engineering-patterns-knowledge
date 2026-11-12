@@ -14,7 +14,7 @@ class CaptureLeaseCatalogTests(unittest.TestCase):
         expected = {"audio-capture-buffer-lease", "audio-capture-packet-size-mode"}
         self.assertTrue(expected <= cards.keys())
         self.assertEqual(p["version"], q["version"])
-        self.assertEqual(7, len(q["items"]))
+        self.assertEqual(10, len(q["items"]))
         for cid in expected:
             c = cards[cid]
             self.assertEqual("reviewed", c["source_review"])
