@@ -4,12 +4,12 @@
 
 Общая расширяемая библиотека инженерных паттернов и [Agent Skill](SKILL.md) для Codex, OpenCode и других совместимых агентов. Основная цель: **выбирать решение по симптомам и проверкам, а не вводить архитектурные абстракции ради модных названий**.
 
-**Версия:** `0.3.0-preview.1` · **Статус:** исследовательская база, не обязательный стандарт для production.
+**Версия:** `0.4.0-preview.1` · **Статус:** исследовательская база, не обязательный стандарт для production.
 
 ## Состав
 
-- **40 карточек** в [`data/patterns.json`](data/patterns.json). Каждая содержит признаки задачи, подход, ограничения, способы проверки и ссылки.
-- **47 URL первоисточников** в [`data/sources.json`](data/sources.json) со статусами глубины проверки.
+- **48 карточек** в [`data/patterns.json`](data/patterns.json). Каждая содержит признаки задачи, подход, ограничения, способы проверки и ссылки.
+- **56 URL первоисточников** в [`data/sources.json`](data/sources.json) со статусами глубины проверки.
 - **115 уникальных URL (122 вхождения)** в [`data/upstream-index.json`](data/upstream-index.json). Это очередь для исследований по оригинальному списку, **не 115 изученных паттернов**.
 - [`references/cards.md`](references/cards.md): читаемые людьми карточки; [`references/priorities.md`](references/priorities.md): приоритеты для KLIDAN, Audio Probe, STAYA.
 - [`SKILL.md`](SKILL.md): правила применения скилла; [`AGENTS.md`](AGENTS.md): правила работы в этом репозитории.
@@ -58,3 +58,7 @@ python scripts/search_patterns.py 'retry duplicate'
 ### P0: WPF, DPI и многозадачный UI
 
 [Контракт для Full HD и DPI](references/wpf-fullhd-dpi-contract.md): адаптивная компоновка, Dispatcher, late async results, virtualized media library, focus, токены, оптимизация thumbnail. Это рекомендации на основе Microsoft Learn, **не** визуальный PASS KLIDAN.
+
+### P0: SQLite / DataRoot
+
+[Контракт crash recovery](references/sqlite-dataroot-recovery-contract.md) охватывает WAL, checkpoints, durability, online backup и fail-closed схему согласования SQLite/JSON/marker. Это справочник решений, а не аудит production DataRoot.

@@ -1,3 +1,10 @@
+## 0.4.0-preview.1 (2026-11-12)
+
+- Добавлено 8 SQLite/DataRoot карточек: cross-store intent, checkpoint control, synchronous durability, live backup, single-writer retries, FK enforcement, integrity gate, nested savepoints.
+- Добавлен контракт восстановления и fault-injection matrix, с разделением SQLite API guarantees и project design proposal.
+- Запрещены false claims о power loss durability, cross-volume atomic rename и простом .db copy при active WAL.
+- Нет изменений production KLIDAN; нет физического crash-test PASS.
+
 ## 0.3.0-preview.1 (2026-11-12)
 
 - Добавлено 9 P0/P1 карточек по responsive WPF, per-monitor DPI, layout pass budget, dispatcher, stale async results, virtualization, focus, shared resource tokens и thumbnail decode.
