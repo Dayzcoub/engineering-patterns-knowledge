@@ -21,3 +21,4 @@
 16. Update-паттерны обязаны указывать signer trust, artifact digest provenance и способ защиты от старых метаданных. MSI-specific решения нельзя автоматически применять к другому установщику.
 17. Telemetry-паттерны должны иметь ограничения cardinality и явную обработку секретов; stage journal не доказывает успешное подключение к сети.
 18. Для performance/concurrency явно фиксировать политику потери, ownership, срок жизни pooled buffer и до/после на целевом runtime/hardware. Источник по API не доказывает достигнутый бюджет latency.
+19. QA-карточки обязаны хранить уровень доказательств. Synthetic/fake/CI PASS не заменяет hardware/production PASS. Test cases должны указывать failure point, invariant и expected/observed.

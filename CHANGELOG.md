@@ -1,3 +1,10 @@
+## 0.8.0-preview.1 (2026-11-12)
+
+- 8 новых QA-карточек: fake time, deterministic ordering, I/O/crash fault injection, cancellation lifecycle, physical evidence separation, evidence manifest и CI isolation.
+- Добавлены контракт `references/qa-fault-injection-contract.md` и 6 proposed сценариев `data/qa-scenarios.json`.
+- Синхронизированы версии каталогов сценариев, расширены CI и офлайн-проверки.
+- Рабочие приложения и серверы не менялись; physical/live QA не проводилось.
+
 ## 0.7.0-preview.1 (2026-11-12)
 
 - Добавлено 13 карточек P0/P2 по System.Threading.Channels, ArrayPool, LOH/GC, Span/Memory, Pipelines, GetOrAdd, кешированию, ReaderWriterLockSlim, CancellationTokenSource и preview coalescing.

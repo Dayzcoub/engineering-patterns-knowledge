@@ -193,5 +193,30 @@ class CatalogTests(unittest.TestCase):
             content = json.loads((ROOT / 'data' / filename).read_text(encoding='utf-8'))
             self.assertEqual(content['version'], catalog['version'])
 
+    def test_qa_scenarios_have_valid_links(self):
+        catalog = json.loads((ROOT / 'data' / 'patterns.json').read_text(encoding='utf-8'))
+        cases = json.loads((ROOT / 'data' / 'qa-scenarios.json').read_text(encoding='utf-8'))
+        ids = {card['id'] for card in catalog['cards']}
+        self.assertEqual(cases['version'], catalog['version'])
+        self.assertEqual(len(cases['items']), 6)
+        for item in cases['items']:
+            self.assertEqual(item['decision_status'], 'proposed')
+            self.assertTrue(set(item['must_consider']) <= ids)
+            self.assertGreaterEqual(len(item['acceptance']), 2)
+
+    def test_qa_contract_separates_synthetic_from_hardware(self):
+        body = (ROOT / 'references' / 'qa-fault-injection-contract.md').read_text(encoding='utf-8')
+        for marker in ('SYNTHETIC', 'HARDWARE', 'LIVE_NETWORK', 'RootId',
+                       'TimeProvider', 'PASS/FAIL/UNKNOWN'):
+            self.assertIn(marker, body)
+
+    def test_all_proposed_case_versions_are_current(self):
+        catalog = json.loads((ROOT / 'data' / 'patterns.json').read_text(encoding='utf-8'))
+        for filename in ('staya-scenarios.json', 'devops-scenarios.json',
+                         'performance-scenarios.json', 'qa-scenarios.json'):
+            doc = json.loads((ROOT / 'data' / filename).read_text(encoding='utf-8'))
+            self.assertEqual(doc['version'], catalog['version'])
+
+
 if __name__ == '__main__':
     unittest.main()
