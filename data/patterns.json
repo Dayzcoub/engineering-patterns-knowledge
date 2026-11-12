@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "version": "0.9.0-preview.1",
+  "version": "0.9.1-preview.1",
   "generated_on": "2026-11-12",
   "source_root": "https://github.com/DovAmir/awesome-design-patterns",
   "source_root_commit": "9006287f27e720000cc8763ae4cd150789b8571d",
-  "scope": "curated docs, not verified KLIDAN WPF accessibility",
+  "scope": "curated primary-source API review; no physical Audio Probe/KLIDAN qualification",
   "cards": [
     {
       "id": "state-machine",
@@ -2487,6 +2487,75 @@
         "qa-physical-evidence-separation",
         "wpf-keyboard-navigation-matrix",
         "wpf-custom-automation-peer"
+      ]
+    },
+    {
+      "id": "audio-capture-discontinuity-evidence",
+      "title": "WASAPI Capture Packet Flags and Timing Evidence",
+      "domain": "audio",
+      "priority": "P0",
+      "projects": [
+        "Audio Probe",
+        "KLIDAN"
+      ],
+      "signals": "Capture packets contain DATA_DISCONTINUITY, TIMESTAMP_ERROR or SILENT; a stream appears stable despite uncertain packet timing.",
+      "approach": "Record flag bitmask, packet frame count, stream-relative device position and QPC time (100 ns) per packet. Treat discontinuity as a glitch indicator, timestamp error as invalid timing evidence and SILENT as silence rather than automatically a glitch. Distinguish BUFFER_EMPTY from successful nonempty packets. Keep GetBuffer/ReleaseBuffer ordered on one thread and release promptly.",
+      "avoid": "Do not treat SILENT as data loss, accept invalid timestamps as latency PASS, assume a missing flag proves glitch-free hardware, or delay ReleaseBuffer for expensive logging.",
+      "verification": "Proposed synthetic flag-combination and empty/error-code matrix; separate physical endpoint run with load, reconnect and raw artifact provenance. Assert timestamp-uncertain packets cannot establish timing PASS.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getbuffer"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "audio-minimum-stable-profile",
+        "qa-physical-evidence-separation"
+      ]
+    },
+    {
+      "id": "audio-clock-domain-reconciliation",
+      "title": "WASAPI Clock Domain and Correlated QPC Evidence",
+      "domain": "audio",
+      "priority": "P0",
+      "projects": [
+        "Audio Probe",
+        "KLIDAN"
+      ],
+      "signals": "Duplex capture/render clocks drift or a sample-position comparison gives impossible latency because units or rates differ.",
+      "approach": "For IAudioClock position, obtain GetFrequency and normalize position/frequency; compare each endpoint using correlated QPC in 100 ns units. For shared mode only, IAudioClock2 hardware frame position is an alternative, but endpoint sample rate can differ from client mix rate. Record mode, endpoint, frequency, epoch, clock method and confidence.",
+      "avoid": "Do not compare raw positions from distinct clocks, equate endpoint and mix sample rates, call IAudioClock2 for exclusive mode, or treat S_FALSE delayed readings as equally accurate S_OK. Do not retry S_FALSE indefinitely.",
+      "verification": "Proposed synthetic independent-clock rate and delayed-read matrix, QPC unit normalization, shared/exclusive negative cases; physical two-USB-endpoint drift evidence required before hardware claim.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclock-getposition",
+        "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclock2-getdeviceposition"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "audio-minimum-stable-profile",
+        "qa-physical-evidence-separation"
+      ]
+    },
+    {
+      "id": "audio-capture-packet-epoch",
+      "title": "Capture Stream Epoch Fence After Reset and Reconnect",
+      "domain": "audio",
+      "priority": "P0",
+      "projects": [
+        "Audio Probe",
+        "KLIDAN"
+      ],
+      "signals": "A late capture packet or clock observation from an invalidated stream updates a newly started measurement; position resets to zero.",
+      "approach": "Assign a generation to each initialized capture stream and to all packet metadata; reject late observations from previous generations. Stop freezes IAudioClock position; subsequent Start resumes; Reset while stopped sets position to zero, so begin a new analysis epoch after Reset or stream recreation. Preserve raw error/status and cleanup ordering.",
+      "avoid": "Do not require position monotonicity across Reset or device recreation, reuse old QPC correlations after invalidation, or treat generation fencing as proof of actual hardware stability.",
+      "verification": "Proposed deterministic late-packet, Stop/Start, Reset and DEVICE_INVALIDATED cases; assert no old generation contributes to new stability result. Physical reconnect evidence remains separate.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getbuffer",
+        "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclock-getposition"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "ipc-generation-fence",
+        "qa-scheduled-interleavings",
+        "audio-capture-discontinuity-evidence"
       ]
     }
   ]

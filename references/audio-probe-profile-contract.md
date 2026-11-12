@@ -54,3 +54,7 @@
 - Callback: [PortAudio callback constraints](https://files.portaudio.com/docs/v19-doxydocs/writing_a_callback.html).
 
 Эти источники подтверждают **API-контракты**. Они не доказывают, что конкретный ноутбук/драйвер пройдёт тест с 3/5/10 мс. Только физические измерения Audio Probe и KLIDAN могут подтвердить профиль.
+
+## Capture clock evidence
+
+Дополнение: [`audio-capture-clock-contract.md`](audio-capture-clock-contract.md) содержит packet flag, clock frequency, QPC units и epoch после Reset. Не использовать синтетические clock тесты вместо физического профиля.

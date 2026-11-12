@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "version": "0.9.1-preview.1",
+  "generated_on": "2026-11-12",
+  "status": "PROPOSED synthetic and physical QA; NOT EXECUTED",
+  "items": [
+    {
+      "id": "capture-flags-and-empty-packets",
+      "project": "Audio Probe",
+      "query": "WASAPI DATA_DISCONTINUITY SILENT TIMESTAMP_ERROR combinations and BUFFER_EMPTY",
+      "must_consider": [
+        "audio-capture-discontinuity-evidence"
+      ],
+      "acceptance": [
+        "Each flag retains its own meaning; SILENT alone does not imply glitch",
+        "TIMESTAMP_ERROR never establishes timing PASS; empty packet does not reuse stale timestamps"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "capture-independent-clocks",
+      "project": "Audio Probe",
+      "query": "Duplex capture and render endpoints have independent clock frequencies and QPC samples",
+      "must_consider": [
+        "audio-clock-domain-reconciliation"
+      ],
+      "acceptance": [
+        "Normalize IAudioClock position using GetFrequency and QPC to 100 ns",
+        "No raw position comparison across endpoints; shared-only IAudioClock2 respected"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "capture-reset-epoch",
+      "project": "Audio Probe",
+      "query": "Late packet after Stop Reset or endpoint invalidation races with new capture generation",
+      "must_consider": [
+        "audio-capture-packet-epoch",
+        "audio-capture-discontinuity-evidence"
+      ],
+      "acceptance": [
+        "Old generation packet cannot update current measurement",
+        "Reset begins new epoch; Stop/Start without Reset does not imply position zero"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "capture-physical-qualification",
+      "project": "Audio Probe",
+      "query": "Synthetic tests pass but no physical USB capture evidence exists",
+      "must_consider": [
+        "audio-clock-domain-reconciliation",
+        "qa-physical-evidence-separation"
+      ],
+      "acceptance": [
+        "Report DOC_REVIEW/SYNTHETIC separately from hardware PASS",
+        "Physical claim requires device identity, mode, actual period, duration, sample format, artifacts and hashes"
+      ],
+      "decision_status": "proposed"
+    }
+  ]
+}

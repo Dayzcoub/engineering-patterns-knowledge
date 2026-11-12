@@ -3,7 +3,7 @@ name: engineering-patterns
 description: Evidence-linked engineering patterns for WPF, real-time audio, SQLite, IPC, STAYA, DevOps, performance profiling, bounded queues, caching, concurrency and memory ownership. Use when designing or reviewing modules, diagnosing race/crash/retry failures, or selecting tests for KLIDAN, Audio Probe, STAYA and new projects.
 compatibility: Works offline with Python 3 standard library. External links require network only for source re-verification.
 metadata:
-  version: "0.9.0-preview.1"
+  version: "0.9.1-preview.1"
   language: "ru"
 ---
 
@@ -31,8 +31,9 @@ Use when a task has a substantial architectural choice, state machine, thread or
 12. Для QA/fault injection разделять синтетические, интеграционные и физические доказательства; тестировать fake-clock deadlines и crash at every write boundary. См. `references/qa-fault-injection-contract.md`.
 13. Для WPF accessibility раздельно проверять screenshot, AutomationPeer/UIA, keyboard navigation, Windows contrast и реальные assistive tools. См. `references/wpf-accessibility-qa-contract.md`.
 14. Для Audio Probe разделять capability discovery, requested/effective periods и физическую стабильность; не фиксировать 3/5/10 ms как универсальную цель. См. `references/audio-probe-profile-contract.md`.
-15. If primary source is `index_only` or `pending_primary_review`, say so. Verify externally before treating it as authoritative, and do not claim current implementation is compliant without code/tests.
-16. If implementing: keep change scoped; run project-defined builds, tests, and regression checks. Report PASS/FAIL with exact evidence.
+15. Для WASAPI capture проверять packet flags, QPC в 100-нс единицах, GetFrequency и stream epoch после Reset; см. `references/audio-capture-clock-contract.md` и `data/audio-capture-scenarios.json`. DOC_REVIEW не доказывает стабильность устройства.
+16. If primary source is `index_only` or `pending_primary_review`, say so. Verify externally before treating it as authoritative, and do not claim current implementation is compliant without code/tests.
+17. If implementing: keep change scoped; run project-defined builds, tests, and regression checks. Report PASS/FAIL with exact evidence.
 
 ## Answer contract for agents
 
@@ -59,6 +60,7 @@ Use when a task has a substantial architectural choice, state machine, thread or
 - `references/priorities.md`: study waves and project mapping.
 - `references/adding-patterns.md`: expansion rules.
 - `references/wpf-accessibility-qa-contract.md`: WPF AutomationPeer, keyboard/focus, contrast and localization tests.
+- `data/audio-capture-scenarios.json`: four proposed WASAPI packet/clock/epoch cases.
 - `data/wpf-accessibility-scenarios.json`: six proposed accessibility QA cases.
 - `references/qa-fault-injection-contract.md`: deterministic timing, I/O failure matrix and evidence levels.
 - `data/qa-scenarios.json`: proposed fault-injection cases, not executed tests.
