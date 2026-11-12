@@ -492,10 +492,11 @@
       "status": "reviewed",
       "patterns": [
         "sqlite-cross-store-intent",
-        "update-worker-handoff"
+        "update-worker-handoff",
+        "windows-replacefile-partial-failure-recovery"
       ],
       "from_awesome_list": "subsource_or_added",
-      "note": "Original SQLite or Windows API documentation reviewed 2026-11-12; not a physical power-loss or KLIDAN recovery test.",
+      "note": "Microsoft Win32 API primary documentation checked 2026-11-12; DOC_REVIEW only, no power-loss or production PASS.",
       "reviewed_on": "2026-11-12"
     },
     {
@@ -503,10 +504,11 @@
       "status": "reviewed",
       "patterns": [
         "sqlite-cross-store-intent",
-        "update-worker-handoff"
+        "update-worker-handoff",
+        "windows-cross-volume-publish-copy-delete-boundary"
       ],
       "from_awesome_list": "subsource_or_added",
-      "note": "Original SQLite or Windows API documentation reviewed 2026-11-12; not a physical power-loss or KLIDAN recovery test.",
+      "note": "Microsoft Win32 API primary documentation checked 2026-11-12; DOC_REVIEW only, no power-loss or production PASS.",
       "reviewed_on": "2026-11-12"
     },
     {
@@ -1416,5 +1418,5 @@
       "note": "SQLite primary API documentation checked 2026-11-12; DOC_REVIEW only."
     }
   ],
-  "version": "0.9.5-preview.1"
+  "version": "0.9.6-preview.1"
 }

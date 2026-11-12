@@ -1,4 +1,10 @@
-## 0.9.5-preview.1 (2026-11-12)
+## 0.9.6-preview.1 (2026-11-12)
+
+- Two P0 Windows DataRoot publication cards: ReplaceFileW partial failure recovery and cross-volume MoveFileExW copy/delete boundary.
+- Microsoft Win32 API DOC_REVIEW; one proposed synthetic QA matrix and offline catalog tests. No production/hardware/power-loss PASS.
+- 121 cards, 134 source URLs; scenario versions synchronized.
+
+## 0.9.6-preview.1 (2026-11-12)
 
 - Two P0 SQLite transaction-state cards: COMMIT BUSY retention and error-induced rollback classification, reviewed against official SQLite transaction documentation.
 - Proposed deterministic two-connection and fault-injection QA, contract update and catalog test.
