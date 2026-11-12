@@ -1,3 +1,9 @@
+## 0.9.5-preview.1 (2026-11-12)
+
+- Two P0 SQLite transaction-state cards: COMMIT BUSY retention and error-induced rollback classification, reviewed against official SQLite transaction documentation.
+- Proposed deterministic two-connection and fault-injection QA, contract update and catalog test.
+- 119 cards, 134 source URLs; all scenario versions aligned. DOC_REVIEW only, no KLIDAN production or hardware PASS.
+
 ## 0.9.2-preview.1 (2026-11-12)
 
 - Two P0 WASAPI cards: capture buffer lease and mode-specific packet sizing, reviewed against Microsoft Learn.
