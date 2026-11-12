@@ -191,6 +191,177 @@
       ],
       "from_awesome_list": "subsource_or_added",
       "note": ""
+    },
+    {
+      "url": "https://files.portaudio.com/docs/v19-doxydocs/writing_a_callback.html",
+      "status": "reviewed",
+      "patterns": [
+        "realtime-callback-boundary"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-initialize",
+      "status": "reviewed",
+      "patterns": [
+        "wasapi-mode-capability-discovery",
+        "wasapi-actual-buffer-readback",
+        "audio-minimum-stable-profile",
+        "wasapi-event-driven-io",
+        "wasapi-invalid-device-recovery",
+        "audio-format-channel-map"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows-hardware/drivers/audio/low-latency-audio",
+      "status": "reviewed",
+      "patterns": [
+        "wasapi-mode-capability-discovery",
+        "audio-minimum-stable-profile"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient3-getsharedmodeengineperiod",
+      "status": "reviewed",
+      "patterns": [
+        "wasapi-period-lattice",
+        "audio-minimum-stable-profile"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient3-initializesharedaudiostream",
+      "status": "reviewed",
+      "patterns": [
+        "wasapi-period-lattice"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-getdeviceperiod",
+      "status": "reviewed",
+      "patterns": [
+        "wasapi-period-lattice"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-getbuffersize",
+      "status": "reviewed",
+      "patterns": [
+        "wasapi-actual-buffer-readback",
+        "audio-minimum-stable-profile"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/coreaudio/exclusive-mode-streams",
+      "status": "reviewed",
+      "patterns": [
+        "wasapi-event-driven-io",
+        "mmcss-audio-thread-scope"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/coreaudio/rendering-a-stream",
+      "status": "reviewed",
+      "patterns": [
+        "wasapi-event-driven-io"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/coreaudio/recovering-from-an-invalid-device-error",
+      "status": "reviewed",
+      "patterns": [
+        "wasapi-invalid-device-recovery",
+        "audio-stream-shutdown-barrier"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/procthread/multimedia-class-scheduler-service",
+      "status": "reviewed",
+      "patterns": [
+        "mmcss-audio-thread-scope"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/avrt/nf-avrt-avrevertmmthreadcharacteristics",
+      "status": "reviewed",
+      "patterns": [
+        "mmcss-audio-thread-scope"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/coreaudio/capturing-a-stream",
+      "status": "reviewed",
+      "patterns": [
+        "wasapi-capture-packet-lifetime",
+        "audio-format-channel-map"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getbuffer",
+      "status": "reviewed",
+      "patterns": [
+        "wasapi-capture-packet-lifetime"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/mmreg/ns-mmreg-waveformatextensible",
+      "status": "reviewed",
+      "patterns": [
+        "audio-format-channel-map"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://portaudio.com/docs/v19-doxydocs/start_stop_abort.html",
+      "status": "reviewed",
+      "patterns": [
+        "audio-stream-shutdown-barrier"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Primary documentation inspected 2026-11-12; guidance is not device-tested.",
+      "reviewed_on": "2026-11-12"
     }
   ]
 }

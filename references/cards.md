@@ -169,3 +169,84 @@
 **Проверка:** Fuzz/invalid inputs, min/max, nested data, path traversal, fail-closed error handling.
 **Проекты:** STAYA, KLIDAN, Audio Probe
 **Первоисточник:** https://cheatsheetseries.owasp.org/cheatsheets/Secure_Product_Design_Cheat_Sheet.html
+
+## wasapi-mode-capability-discovery | WASAPI Mode and Format Capability Discovery (P0, reviewed)
+**Когда:** Устройство открывается только в части режимов, форматов, частот или схем input/output; неверный формат приводит к ложному выводу о поддержке.
+**Решение:** Для каждого направления отдельно перечислять endpoint, shared/exclusive, sample rate, sample type, channels и результаты IsFormatSupported/Initialize. Сохранять ошибки и реальные параметры, не выводить поддержку из названия модели или другого endpoint.
+**Не применять:** Не считать общий Windows mix format гарантией exclusive; не подменять поддержку формата результатом успешного открытия других каналов.
+**Проверка:** Матрица input/output x shared/exclusive x 44.1/48 kHz x PCM16/24-in-32/Float32; проверки unsupported и device-in-use, readback параметров.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-initialize, https://learn.microsoft.com/en-us/windows-hardware/drivers/audio/low-latency-audio
+
+## wasapi-period-lattice | WASAPI Supported Periods, Not Fixed Milliseconds (P0, reviewed)
+**Когда:** Сканер бесконечно тестирует 3 или 10 мс без учёта реальных периодов endpoint; запросы возвращают INVALID_DEVICE_PERIOD.
+**Решение:** Для IAudioClient3 shared читать default/fundamental/min/max в audio frames; перечислять только кратные fundamental в допустимом диапазоне. Для legacy/exclusive использовать применимые GetDevicePeriod и фактический результат Initialize; периоды могут зависеть от формата и режима.
+**Не применять:** Не переносить IAudioClient3 shared-period lattice на exclusive без оговорок; поддерживаемый period не означает устойчивую работу.
+**Проверка:** Unit tests для диапазона, кратности и крайних значений; device matrix c отдельными режимами; исключить hardcoded 3/10 ms и неверные округления frames.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient3-getsharedmodeengineperiod, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient3-initializesharedaudiostream, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-getdeviceperiod
+
+## wasapi-actual-buffer-readback | WASAPI Actual Buffer Readback and Alignment (P0, reviewed)
+**Когда:** Запрошенная длительность буфера отличается от выделенной; exclusive event mode даёт BUFFER_SIZE_NOT_ALIGNED.
+**Решение:** После успешной инициализации читать GetBufferSize в frames; логировать requested vs effective. При exclusive/event alignment error получать aligned frames, освобождать старый IAudioClient, создавать новый и повторять Initialize с выровненным периодом. Конвертацию frames/time выполнять с sample rate.
+**Не применять:** Не вызывать повторный Initialize на том же объекте после ошибки; не считать request равным итоговому буферу; не менять формат скрытно.
+**Проверка:** Fake HRESULT path для aligned retry, resource release; readback-assert frames, channels, duration, test 44.1/48 kHz.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-initialize, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-getbuffersize
+
+## audio-minimum-stable-profile | Device-Specific Minimum Stable Buffer Selection (P0, reviewed)
+**Когда:** Цель сканера — подобрать минимальную подтверждённую задержку конкретного устройства, а не сотни раз проверить один произвольный буфер.
+**Решение:** Сначала построить множество подтверждённых поддерживаемых (mode, direction, format, rate, channels, period/buffer). Затем по возрастанию эффективного периода проводить повторяемые duplex и sustained тесты, измерять glitches, overrun/underrun, worst-case jitter и shutdown/reconnect. Выбрать самый малый вариант, который проходит заданный порог надёжности; если ни один не прошёл, вернуть NO_STABLE_PROFILE с причинами, а не фиктивный PASS.
+**Не применять:** Не считать открытие stream или один короткий тест стабильностью. Не кодировать 3/5/10 ms как универсальный выбор. Не сравнивать input/output без учёта их раздельной конфигурации.
+**Проверка:** Детерминированная таблица кандидатов, тест провала меньшего буфера и выбора следующего PASS, 60/300/600 s под нагрузкой по политике проекта, physical device QA. Порог PASS и длительность должны быть явно заданы, а не объявлены измеренными здесь.
+**Проекты:** Audio Probe, KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient3-getsharedmodeengineperiod, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-initialize, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-getbuffersize, https://learn.microsoft.com/en-us/windows-hardware/drivers/audio/low-latency-audio
+
+## wasapi-event-driven-io | Event-Driven Audio Buffer Service (P0, reviewed)
+**Когда:** Сервис потока основан на таймере/sleep, получает нерегулярное расписание, underruns и плохую воспроизводимость.
+**Решение:** Когда режим и драйвер поддерживают event callback, связать stream с event handle, обслуживать пакеты после сигнала, контролировать Start/Stop и использовать GetCurrentPadding/свободные frames для render. Правила размера пакета и period зависят от shared/exclusive.
+**Не применять:** Не выдавать polling за event-driven; не применять sleep в высокоприоритетном callback; не предполагать одинаковые размер и правила в shared/exclusive.
+**Проверка:** Тест последовательности SetEventHandle/Start/Stop, правильных frames per event, no buffer overrun, timeout/shutdown и сопоставление underruns с timer mode.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/windows/win32/coreaudio/exclusive-mode-streams, https://learn.microsoft.com/en-us/windows/win32/coreaudio/rendering-a-stream, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-initialize
+
+## wasapi-invalid-device-recovery | WASAPI Invalidated Endpoint Recovery (P0, reviewed)
+**Когда:** USB-устройство отключили/поменяли формат; клиент продолжает читать старый endpoint или зависает при пересоздании.
+**Решение:** Обрабатывать AUDCLNT_E_DEVICE_INVALIDATED, остановить операции на старом поколении, отпустить интерфейсы и заново активировать default или выбранный endpoint в зависимости от политики. Асинхронные OnSessionDisconnected уведомления не должны воскресить старый stream.
+**Не применять:** Не переключать принудительно явно выбранное устройство на default без соглашения с пользователем. Не освобождать COM-ресурсы, пока рабочий поток ещё ими владеет.
+**Проверка:** Disconnect/reconnect, смена default, изменение sample rate, device-in-use, stale notification, отказ активации и cleanup без утечек.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/windows/win32/coreaudio/recovering-from-an-invalid-device-error, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-initialize
+
+## mmcss-audio-thread-scope | MMCSS Scheduling with Thread-Scoped Cleanup (P0, reviewed)
+**Когда:** Буферный поток не получает CPU своевременно; бездумно повышают приоритет всему процессу или забывают откатить MMCSS.
+**Решение:** Регистрация конкретного audio-worker через AvSetMmThreadCharacteristics с обоснованным task (Audio/Pro Audio), обработка неуспеха, AvRevertMmThreadCharacteristics на том же потоке. Сравнить реальную производительность до/после; регистрировать на время задачи.
+**Не применять:** Не считать MMCSS гарантией glitch-free; не менять registry task profile без отдельного решения; не регистрировать UI thread ради ускорения аудио.
+**Проверка:** MMCSS ON/OFF A/B under CPU load, thread identity + handle lifetime, revert on all exit paths, latency/glitch counters.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/windows/win32/procthread/multimedia-class-scheduler-service, https://learn.microsoft.com/en-us/windows/win32/api/avrt/nf-avrt-avrevertmmthreadcharacteristics, https://learn.microsoft.com/en-us/windows/win32/coreaudio/exclusive-mode-streams
+
+## wasapi-capture-packet-lifetime | WASAPI Capture Packet Ownership (P0, reviewed)
+**Когда:** Данные захвата теряются, перемешиваются, частично копируются или используются после ReleaseBuffer.
+**Решение:** Читать GetNextPacketSize/ GetBuffer, обрабатывать весь пакет или не обрабатывать, учитывать SILENT и DATA_DISCONTINUITY, копировать нужные данные в собственный ограниченный буфер до ReleaseBuffer. Вызовы GetBuffer/ReleaseBuffer выполняются парно одним потоком.
+**Не применять:** Не держать указатель на WASAPI packet после ReleaseBuffer; не трактовать число frames как bytes; не делать тяжёлую обработку между GetBuffer/ReleaseBuffer.
+**Проверка:** Тест длины пакета и same-thread pairing, silent/data-discontinuity, buffer empty, varying packet size, overflow policy.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/windows/win32/coreaudio/capturing-a-stream, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiocaptureclient-getbuffer
+
+## audio-format-channel-map | Audio Sample Container and Channel Routing Contract (P0, reviewed)
+**Когда:** На многоканальном устройстве путают mono/stereo или 24-in-32; ошибочные channel indices ведут к тишине или неверному источнику.
+**Решение:** В профиле хранить отдельно capture и render channels/rates/format; валидировать container bits, valid bits, SubFormat, channel mask и block align. Маршруты описывать явно и документировать единый 0-based индекс; реальные аппаратные подписи не выводить автоматически из speaker mask.
+**Не применять:** Не предполагать, что 7/8 всегда stereo на любом устройстве; не считать 24 valid bits 3-byte container при 32-bit упаковке; не использовать speaker mask как подтверждение физической коммутации.
+**Проверка:** PCM16, PCM24 packed, PCM24-in-32, Float32; mono input/stereo output и stereo/stereo; boundary indices, 6+2 routing и физическая проверка каналов.
+**Проекты:** Audio Probe, KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/windows/win32/api/mmreg/ns-mmreg-waveformatextensible, https://learn.microsoft.com/en-us/windows/win32/coreaudio/capturing-a-stream, https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-initialize
+
+## audio-stream-shutdown-barrier | Audio Worker Lifecycle and Shutdown Barrier (P0, reviewed)
+**Когда:** Stop/Dispose завершается до конца callback; предыдущий поток пишет после нового старта или cleanup гоняется с IPC.
+**Решение:** Явно управлять состояниями Open/Running/Stopping/Stopped/Disposed; вначале запретить новые операции, затем остановить stream и дождаться прекращения доступа worker, после этого освободить callback state/COM/IPC. Любые поздние результаты сверять с generation id.
+**Не применять:** Не считать установку cancellation flag достаточным join; не освобождать память, когда callback ещё может обращаться к ней; не делать ожидание в самом callback.
+**Проверка:** Fake callbacks blocked at stop, late completions, repeated Start/Stop, Stop while buffer active, cleanup exception, process exit + IPC shutdown sequence.
+**Проекты:** Audio Probe, KLIDAN
+**Первоисточник:** https://portaudio.com/docs/v19-doxydocs/start_stop_abort.html, https://learn.microsoft.com/en-us/windows/win32/coreaudio/recovering-from-an-invalid-device-error
+

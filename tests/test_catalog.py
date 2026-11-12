@@ -38,6 +38,30 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(len(cards), 1)
         self.assertTrue(all(card['domain'] == 'audio' for card in cards))
 
+    def test_p0_audio_primary_sources(self):
+        catalog = json.loads((ROOT / 'data' / 'patterns.json').read_text(encoding='utf-8'))
+        sources = json.loads((ROOT / 'data' / 'sources.json').read_text(encoding='utf-8'))
+        by_id = {c['id']: c for c in catalog['cards']}
+        by_url = {s['url']: s for s in sources['sources']}
+        expected = {'wasapi-period-lattice', 'wasapi-actual-buffer-readback',
+                    'audio-minimum-stable-profile', 'wasapi-invalid-device-recovery',
+                    'audio-stream-shutdown-barrier'}
+        self.assertTrue(expected <= by_id.keys())
+        for pid in expected:
+            card = by_id[pid]
+            self.assertEqual(card['source_review'], 'reviewed')
+            self.assertTrue(any(by_url[u]['status'] == 'reviewed' for u in card['source_urls']))
+
+    def test_ross_bencina_remains_pending(self):
+        sources = json.loads((ROOT / 'data' / 'sources.json').read_text(encoding='utf-8'))
+        ross = next(s for s in sources['sources'] if 'rossbencina.com' in s['url'])
+        self.assertEqual(ross['status'], 'pending_primary_review')
+
+    def test_audio_profile_contract_requires_physical_evidence(self):
+        text = (ROOT / 'references' / 'audio-probe-profile-contract.md').read_text(encoding='utf-8')
+        for marker in ('NO_STABLE_PROFILE', 'GetBufferSize', '60/300/600', 'hardwareEvidence'):
+            self.assertIn(marker, text)
+
 
 if __name__ == '__main__':
     unittest.main()
