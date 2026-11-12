@@ -468,7 +468,9 @@
       "url": "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-2d-graphics-and-imaging",
       "status": "reviewed",
       "patterns": [
-        "wpf-thumbnail-decode-budget"
+        "wpf-thumbnail-decode-budget",
+        "cache-size-revision-budget",
+        "latest-frame-coalescing"
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Official Microsoft documentation checked 2026-11-12; source review is not a KLIDAN UI QA result.",
@@ -1015,6 +1017,155 @@
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "Primary vendor/specification page checked on 2026-11-12; does not establish tested production behavior or compliance.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/core/extensions/channels",
+      "status": "reviewed",
+      "patterns": [
+        "bounded-channel-overflow-policy",
+        "latest-frame-coalescing"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft platform doc reviewed 2026-11-12; not a production benchmark or real-time guarantee.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/api/system.buffers.arraypool-1.rent",
+      "status": "reviewed",
+      "patterns": [
+        "pooled-buffer-ownership",
+        "pooled-sensitive-buffer-clearing"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft platform doc reviewed 2026-11-12; not a production benchmark or real-time guarantee.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/api/system.buffers.arraypool-1.return",
+      "status": "reviewed",
+      "patterns": [
+        "pooled-buffer-ownership",
+        "pooled-sensitive-buffer-clearing"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft platform doc reviewed 2026-11-12; not a production benchmark or real-time guarantee.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/standard/memory-and-spans/memory-t-usage-guidelines",
+      "status": "reviewed",
+      "patterns": [
+        "pooled-buffer-ownership",
+        "span-memory-lifetime",
+        "latest-frame-coalescing"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft platform doc reviewed 2026-11-12; not a production benchmark or real-time guarantee.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap",
+      "status": "reviewed",
+      "patterns": [
+        "large-object-heap-budget"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft platform doc reviewed 2026-11-12; not a production benchmark or real-time guarantee.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/performance",
+      "status": "reviewed",
+      "patterns": [
+        "large-object-heap-budget",
+        "performance-baseline-budget"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft platform doc reviewed 2026-11-12; not a production benchmark or real-time guarantee.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-counters",
+      "status": "reviewed",
+      "patterns": [
+        "large-object-heap-budget",
+        "performance-baseline-budget"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft platform doc reviewed 2026-11-12; not a production benchmark or real-time guarantee.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/standard/io/pipelines",
+      "status": "reviewed",
+      "patterns": [
+        "pipeline-backpressure-advance"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft platform doc reviewed 2026-11-12; not a production benchmark or real-time guarantee.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/api/system.collections.concurrent.concurrentdictionary-2.getoradd",
+      "status": "reviewed",
+      "patterns": [
+        "concurrent-getoradd-side-effect",
+        "cache-single-flight"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft platform doc reviewed 2026-11-12; not a production benchmark or real-time guarantee.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/aspnet/core/performance/caching/memory",
+      "status": "reviewed",
+      "patterns": [
+        "cache-single-flight",
+        "cache-size-revision-budget"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft platform doc reviewed 2026-11-12; not a production benchmark or real-time guarantee.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-threading-readerwriterlockslim",
+      "status": "reviewed",
+      "patterns": [
+        "reader-writer-critical-section"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft platform doc reviewed 2026-11-12; not a production benchmark or real-time guarantee.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/api/system.threading.cancellationtokensource",
+      "status": "reviewed",
+      "patterns": [
+        "cancellation-source-lifecycle"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft platform doc reviewed 2026-11-12; not a production benchmark or real-time guarantee.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/api/system.threading.cancellationtokensource.dispose",
+      "status": "reviewed",
+      "patterns": [
+        "cancellation-source-lifecycle"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft platform doc reviewed 2026-11-12; not a production benchmark or real-time guarantee.",
+      "reviewed_on": "2026-11-12"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-trace",
+      "status": "reviewed",
+      "patterns": [
+        "performance-baseline-budget"
+      ],
+      "from_awesome_list": "subsource_or_added",
+      "note": "Microsoft platform doc reviewed 2026-11-12; not a production benchmark or real-time guarantee.",
       "reviewed_on": "2026-11-12"
     }
   ]

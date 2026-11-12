@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "version": "0.6.0-preview.1",
+  "version": "0.7.0-preview.1",
   "generated_on": "2026-11-12",
   "source_root": "https://github.com/DovAmir/awesome-design-patterns",
   "source_root_commit": "9006287f27e720000cc8763ae4cd150789b8571d",
-  "scope": "curated engineering research: platform operations, observability, secure updates; no production QA assertions",
+  "scope": "reviewed platform guidance, not physical timing or production memory QA",
   "cards": [
     {
       "id": "state-machine",
@@ -1830,6 +1830,311 @@
         "deployment-stage-journal",
         "update-worker-handoff",
         "observability-actionable-alerts"
+      ]
+    },
+    {
+      "id": "bounded-channel-overflow-policy",
+      "title": "Bounded Channel Overflow Policy",
+      "domain": "concurrency",
+      "priority": "P2",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Preview and telemetry producers overrun slower consumers.",
+      "approach": "Bound capacity; choose Wait/DropNewest/DropOldest/DropWrite only after defining loss, order and backpressure.",
+      "avoid": "Never drop operator commands, storage commits or audio samples; Wait is not safe inside a realtime callback.",
+      "verification": "Burst, overflow, ordering, shutdown, max memory.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/core/extensions/channels"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "event-queue",
+        "bounded-upstream-work-backpressure"
+      ]
+    },
+    {
+      "id": "pooled-buffer-ownership",
+      "title": "ArrayPool Buffer Ownership",
+      "domain": "concurrency",
+      "priority": "P2",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Frequent byte buffers increase allocations or reuse races.",
+      "approach": "Rent at least required size, track valid length, Return once to same pool after last consumer completes.",
+      "avoid": "Never access returned buffer or assume its capacity equals request; pooling does not automatically make callbacks safe.",
+      "verification": "Double Return, use-after-return, exception and cancel paths.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/api/system.buffers.arraypool-1.rent",
+        "https://learn.microsoft.com/en-us/dotnet/api/system.buffers.arraypool-1.return",
+        "https://learn.microsoft.com/en-us/dotnet/standard/memory-and-spans/memory-t-usage-guidelines"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "realtime-callback-boundary",
+        "audio-stream-shutdown-barrier"
+      ]
+    },
+    {
+      "id": "pooled-sensitive-buffer-clearing",
+      "title": "Pool Secret Data Clearing",
+      "domain": "security",
+      "priority": "P2",
+      "projects": [
+        "STAYA",
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Rented buffer contains data from another user/session.",
+      "approach": "Clear sensitive bytes under defined policy, return buffers with clearArray where appropriate; ensure downstream no stale data.",
+      "avoid": "Do not assume Rent returns zeroed memory or that clearing only UI logs protects secrets.",
+      "verification": "Canary secret reuse, no stale tail, exception cleanup.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/api/system.buffers.arraypool-1.return",
+        "https://learn.microsoft.com/en-us/dotnet/api/system.buffers.arraypool-1.rent"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "pooled-buffer-ownership",
+        "security-structured-event-redaction"
+      ]
+    },
+    {
+      "id": "large-object-heap-budget",
+      "title": "Large Object Heap Pressure Budget",
+      "domain": "performance",
+      "priority": "P2",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Decoded frames and large arrays cause GC pauses.",
+      "approach": "Measure allocations, LOH, pause distribution and resident memory on actual runtime; prefer bounded reuse only with a regression baseline.",
+      "avoid": "Do not assume an LOH threshold or workaround solves every runtime; no premature pooling.",
+      "verification": "1080p frame load, LOH growth, GC pauses, long soak.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap",
+        "https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/performance",
+        "https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-counters"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "pooled-buffer-ownership",
+        "wpf-thumbnail-decode-budget"
+      ]
+    },
+    {
+      "id": "span-memory-lifetime",
+      "title": "Span/Memory Ownership and Lifetime",
+      "domain": "concurrency",
+      "priority": "P2",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Async decoder uses memory after owner or pool lease ends.",
+      "approach": "Use Span in synchronous scope; Memory across appropriate async boundaries; track lease and ownership, copy before releasing upstream packet.",
+      "avoid": "ReadOnlyMemory does not freeze backing store; never retain memory after owner disposal.",
+      "verification": "Async delay, lease return, concurrent mutation, slice limits.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/standard/memory-and-spans/memory-t-usage-guidelines"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "pooled-buffer-ownership",
+        "wasapi-capture-packet-lifetime"
+      ]
+    },
+    {
+      "id": "pipeline-backpressure-advance",
+      "title": "PipeReader Progress and Backpressure",
+      "domain": "concurrency",
+      "priority": "P2",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "Stream parser retains bytes or grows buffers without bound.",
+      "approach": "Use PipeReader consumed/examined AdvanceTo correctly; configure pause/resume thresholds, Complete both ends on shutdown.",
+      "avoid": "Not a substitute for audio ring buffer; avoid complexity for short simple strings.",
+      "verification": "Fragmented input, malformed frames, pause, cancellation, bounded memory.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/standard/io/pipelines"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "bounded-channel-overflow-policy",
+        "ipc-protocol-format-guard"
+      ]
+    },
+    {
+      "id": "concurrent-getoradd-side-effect",
+      "title": "Concurrent GetOrAdd Factory Is Not Once",
+      "domain": "concurrency",
+      "priority": "P2",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "Concurrent misses start same expensive worker more than once.",
+      "approach": "Remember GetOrAdd valueFactory can run multiple times outside dictionary locks; separate side effects from insertion.",
+      "avoid": "Dictionary entry is atomic, delegate execution is not exactly-once.",
+      "verification": "Multiple same-key tasks, factory invocations, one stored entry, cancellation.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/api/system.collections.concurrent.concurrentdictionary-2.getoradd"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "idempotent-receiver",
+        "cache-single-flight"
+      ]
+    },
+    {
+      "id": "cache-single-flight",
+      "title": "Per-Key Single-Flight Loader",
+      "domain": "performance",
+      "priority": "P2",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "Duplicate thumbnail metadata loads flood the decoder.",
+      "approach": "Use shared in-flight load per key with explicit failure eviction and independent caller cancellation rules.",
+      "avoid": "Do not let one caller cancellation silently abort all users; never apply to non-idempotent commands without contract.",
+      "verification": "Ten same-key requests, one load, failures retried, one caller cancels.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/api/system.collections.concurrent.concurrentdictionary-2.getoradd",
+        "https://learn.microsoft.com/en-us/aspnet/core/performance/caching/memory"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "concurrent-getoradd-side-effect",
+        "cache-size-revision-budget"
+      ]
+    },
+    {
+      "id": "cache-size-revision-budget",
+      "title": "Cache Size, TTL and Revision Keys",
+      "domain": "performance",
+      "priority": "P2",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "Cache consumes unbounded memory or shows stale thumbnails.",
+      "approach": "Use identity+revision key, size budget with defined unit, TTL/eviction and authoritative fallback; invalidate on media revision.",
+      "avoid": "Do not assume IMemoryCache self-limits under system memory pressure; avoid arbitrary unbounded URL keys.",
+      "verification": "10k unique entries bounded, file revision, expiry, fallback.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/aspnet/core/performance/caching/memory",
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-2d-graphics-and-imaging"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "wpf-thumbnail-decode-budget",
+        "dirty-flag"
+      ]
+    },
+    {
+      "id": "reader-writer-critical-section",
+      "title": "Reader/Writer Critical-Section Ownership",
+      "domain": "concurrency",
+      "priority": "P2",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Shared mutable model blocks readers or writer progress.",
+      "approach": "Measure contention; use short read/write scopes and correct upgrade/thread ownership where justified.",
+      "avoid": "Never await while holding ReaderWriterLockSlim; never lock realtime audio callback.",
+      "verification": "Concurrent readers/writer, upgrade tests, exception cleanup, writer progress.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-threading-readerwriterlockslim"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "realtime-callback-boundary",
+        "wpf-dispatcher-ownership"
+      ]
+    },
+    {
+      "id": "cancellation-source-lifecycle",
+      "title": "Cancel/Join/Dispose Lifetime Barrier",
+      "domain": "concurrency",
+      "priority": "P0",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe",
+        "STAYA"
+      ],
+      "signals": "CTS disposed while worker still reads token or publishes late result.",
+      "approach": "Signal cooperative cancellation, await worker/join, then dispose source; use generation guard at apply boundary.",
+      "avoid": "Dispose is not Cancel, and Cancel alone does not join running worker.",
+      "verification": "Cancel during I/O, Dispose race, late results, repeat shutdown.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/api/system.threading.cancellationtokensource",
+        "https://learn.microsoft.com/en-us/dotnet/api/system.threading.cancellationtokensource.dispose"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "audio-stream-shutdown-barrier",
+        "wpf-async-generation-guard"
+      ]
+    },
+    {
+      "id": "performance-baseline-budget",
+      "title": "Profiling Before Optimization Budget",
+      "domain": "performance",
+      "priority": "P2",
+      "projects": [
+        "KLIDAN",
+        "Audio Probe"
+      ],
+      "signals": "Memory or latency optimization made without measured baseline.",
+      "approach": "Record hardware/runtime/workload and latency percentiles, allocation, GC/LOH and memory; compare before/after under same conditions.",
+      "avoid": "Microbenchmark or CI pass is not proof of real audio/video latency or UX.",
+      "verification": "Warmup, repeated runs, regression threshold, release build hardware.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-counters",
+        "https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-trace",
+        "https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/performance"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "data-locality",
+        "wpf-layout-pass-budget",
+        "large-object-heap-budget"
+      ]
+    },
+    {
+      "id": "latest-frame-coalescing",
+      "title": "Latest-Frame Coalescing for Replaceable Preview",
+      "domain": "performance",
+      "priority": "P2",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Preview backlog grows and displayed frame lags source.",
+      "approach": "For replaceable preview only, retain latest sequence/generation and dispose superseded frames; recording and Program output require explicit separate policy.",
+      "avoid": "Never silently discard audio samples, operator TAKE or lossless evidence.",
+      "verification": "60 fps decoder/30 fps render, bounded backlog, A/V sync, disposal, stale frame.",
+      "source_urls": [
+        "https://learn.microsoft.com/en-us/dotnet/core/extensions/channels",
+        "https://learn.microsoft.com/en-us/dotnet/standard/memory-and-spans/memory-t-usage-guidelines",
+        "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-2d-graphics-and-imaging"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "bounded-channel-overflow-policy",
+        "pooled-buffer-ownership",
+        "ipc-generation-fence"
       ]
     }
   ]

@@ -642,3 +642,107 @@
 **Проекты:** STAYA, KLIDAN, Audio Probe
 **Первоисточник:** https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments, https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-10.0, https://prometheus.io/docs/practices/alerting/
 
+## bounded-channel-overflow-policy | Bounded Channel Overflow Policy (P2, reviewed)
+**Когда:** Preview and telemetry producers overrun slower consumers.
+**Решение:** Bound capacity; choose Wait/DropNewest/DropOldest/DropWrite only after defining loss, order and backpressure.
+**Не применять:** Never drop operator commands, storage commits or audio samples; Wait is not safe inside a realtime callback.
+**Проверка:** Burst, overflow, ordering, shutdown, max memory.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/core/extensions/channels
+
+## pooled-buffer-ownership | ArrayPool Buffer Ownership (P2, reviewed)
+**Когда:** Frequent byte buffers increase allocations or reuse races.
+**Решение:** Rent at least required size, track valid length, Return once to same pool after last consumer completes.
+**Не применять:** Never access returned buffer or assume its capacity equals request; pooling does not automatically make callbacks safe.
+**Проверка:** Double Return, use-after-return, exception and cancel paths.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/api/system.buffers.arraypool-1.rent, https://learn.microsoft.com/en-us/dotnet/api/system.buffers.arraypool-1.return, https://learn.microsoft.com/en-us/dotnet/standard/memory-and-spans/memory-t-usage-guidelines
+
+## pooled-sensitive-buffer-clearing | Pool Secret Data Clearing (P2, reviewed)
+**Когда:** Rented buffer contains data from another user/session.
+**Решение:** Clear sensitive bytes under defined policy, return buffers with clearArray where appropriate; ensure downstream no stale data.
+**Не применять:** Do not assume Rent returns zeroed memory or that clearing only UI logs protects secrets.
+**Проверка:** Canary secret reuse, no stale tail, exception cleanup.
+**Проекты:** STAYA, KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/api/system.buffers.arraypool-1.return, https://learn.microsoft.com/en-us/dotnet/api/system.buffers.arraypool-1.rent
+
+## large-object-heap-budget | Large Object Heap Pressure Budget (P2, reviewed)
+**Когда:** Decoded frames and large arrays cause GC pauses.
+**Решение:** Measure allocations, LOH, pause distribution and resident memory on actual runtime; prefer bounded reuse only with a regression baseline.
+**Не применять:** Do not assume an LOH threshold or workaround solves every runtime; no premature pooling.
+**Проверка:** 1080p frame load, LOH growth, GC pauses, long soak.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap, https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/performance, https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-counters
+
+## span-memory-lifetime | Span/Memory Ownership and Lifetime (P2, reviewed)
+**Когда:** Async decoder uses memory after owner or pool lease ends.
+**Решение:** Use Span in synchronous scope; Memory across appropriate async boundaries; track lease and ownership, copy before releasing upstream packet.
+**Не применять:** ReadOnlyMemory does not freeze backing store; never retain memory after owner disposal.
+**Проверка:** Async delay, lease return, concurrent mutation, slice limits.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/standard/memory-and-spans/memory-t-usage-guidelines
+
+## pipeline-backpressure-advance | PipeReader Progress and Backpressure (P2, reviewed)
+**Когда:** Stream parser retains bytes or grows buffers without bound.
+**Решение:** Use PipeReader consumed/examined AdvanceTo correctly; configure pause/resume thresholds, Complete both ends on shutdown.
+**Не применять:** Not a substitute for audio ring buffer; avoid complexity for short simple strings.
+**Проверка:** Fragmented input, malformed frames, pause, cancellation, bounded memory.
+**Проекты:** KLIDAN, Audio Probe, STAYA
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/standard/io/pipelines
+
+## concurrent-getoradd-side-effect | Concurrent GetOrAdd Factory Is Not Once (P2, reviewed)
+**Когда:** Concurrent misses start same expensive worker more than once.
+**Решение:** Remember GetOrAdd valueFactory can run multiple times outside dictionary locks; separate side effects from insertion.
+**Не применять:** Dictionary entry is atomic, delegate execution is not exactly-once.
+**Проверка:** Multiple same-key tasks, factory invocations, one stored entry, cancellation.
+**Проекты:** KLIDAN, Audio Probe, STAYA
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/api/system.collections.concurrent.concurrentdictionary-2.getoradd
+
+## cache-single-flight | Per-Key Single-Flight Loader (P2, reviewed)
+**Когда:** Duplicate thumbnail metadata loads flood the decoder.
+**Решение:** Use shared in-flight load per key with explicit failure eviction and independent caller cancellation rules.
+**Не применять:** Do not let one caller cancellation silently abort all users; never apply to non-idempotent commands without contract.
+**Проверка:** Ten same-key requests, one load, failures retried, one caller cancels.
+**Проекты:** KLIDAN, Audio Probe, STAYA
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/api/system.collections.concurrent.concurrentdictionary-2.getoradd, https://learn.microsoft.com/en-us/aspnet/core/performance/caching/memory
+
+## cache-size-revision-budget | Cache Size, TTL and Revision Keys (P2, reviewed)
+**Когда:** Cache consumes unbounded memory or shows stale thumbnails.
+**Решение:** Use identity+revision key, size budget with defined unit, TTL/eviction and authoritative fallback; invalidate on media revision.
+**Не применять:** Do not assume IMemoryCache self-limits under system memory pressure; avoid arbitrary unbounded URL keys.
+**Проверка:** 10k unique entries bounded, file revision, expiry, fallback.
+**Проекты:** KLIDAN, Audio Probe, STAYA
+**Первоисточник:** https://learn.microsoft.com/en-us/aspnet/core/performance/caching/memory, https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-2d-graphics-and-imaging
+
+## reader-writer-critical-section | Reader/Writer Critical-Section Ownership (P2, reviewed)
+**Когда:** Shared mutable model blocks readers or writer progress.
+**Решение:** Measure contention; use short read/write scopes and correct upgrade/thread ownership where justified.
+**Не применять:** Never await while holding ReaderWriterLockSlim; never lock realtime audio callback.
+**Проверка:** Concurrent readers/writer, upgrade tests, exception cleanup, writer progress.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-threading-readerwriterlockslim
+
+## cancellation-source-lifecycle | Cancel/Join/Dispose Lifetime Barrier (P0, reviewed)
+**Когда:** CTS disposed while worker still reads token or publishes late result.
+**Решение:** Signal cooperative cancellation, await worker/join, then dispose source; use generation guard at apply boundary.
+**Не применять:** Dispose is not Cancel, and Cancel alone does not join running worker.
+**Проверка:** Cancel during I/O, Dispose race, late results, repeat shutdown.
+**Проекты:** KLIDAN, Audio Probe, STAYA
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/api/system.threading.cancellationtokensource, https://learn.microsoft.com/en-us/dotnet/api/system.threading.cancellationtokensource.dispose
+
+## performance-baseline-budget | Profiling Before Optimization Budget (P2, reviewed)
+**Когда:** Memory or latency optimization made without measured baseline.
+**Решение:** Record hardware/runtime/workload and latency percentiles, allocation, GC/LOH and memory; compare before/after under same conditions.
+**Не применять:** Microbenchmark or CI pass is not proof of real audio/video latency or UX.
+**Проверка:** Warmup, repeated runs, regression threshold, release build hardware.
+**Проекты:** KLIDAN, Audio Probe
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-counters, https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-trace, https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/performance
+
+## latest-frame-coalescing | Latest-Frame Coalescing for Replaceable Preview (P2, reviewed)
+**Когда:** Preview backlog grows and displayed frame lags source.
+**Решение:** For replaceable preview only, retain latest sequence/generation and dispose superseded frames; recording and Program output require explicit separate policy.
+**Не применять:** Never silently discard audio samples, operator TAKE or lossless evidence.
+**Проверка:** 60 fps decoder/30 fps render, bounded backlog, A/V sync, disposal, stale frame.
+**Проекты:** KLIDAN
+**Первоисточник:** https://learn.microsoft.com/en-us/dotnet/core/extensions/channels, https://learn.microsoft.com/en-us/dotnet/standard/memory-and-spans/memory-t-usage-guidelines, https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-2d-graphics-and-imaging
+
