@@ -1428,5 +1428,5 @@
       "note": "Reviewed upstream C# adaptation README on 2026-11-13; source derives from kamranahmedse/design-patterns-for-humans; C#7 examples, repository tree contains no LICENSE file; original short summaries only; DOC_REVIEW, not production verification."
     }
   ],
-  "version": "0.9.6-preview.1"
+  "version": "0.9.7-preview.1"
 }
