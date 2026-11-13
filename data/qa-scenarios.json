@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "version": "0.9.6-preview.1",
-  "generated_on": "2026-11-12",
+  "version": "0.9.7-preview.1",
+  "generated_on": "2026-11-13",
   "status": "proposed deterministic QA scenarios; NOT EXECUTED",
   "items": [
     {
@@ -135,6 +135,32 @@
         "cross-volume copy succeeds but source delete fails: both verified generations remain until reconciliation",
         "restart after interrupted target copy never publishes incomplete candidate or silently initializes an empty database",
         "pending intent is retained until canonical, marker and SQLite RootId readback agree"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "klidan-factory-method-creation-seam",
+      "project": "KLIDAN",
+      "query": "Common operation must select different compatible implementation without changing its orchestration",
+      "must_consider": [
+        "factory-method-creation-seam"
+      ],
+      "acceptance": [
+        "synthetic variants share orchestration and return distinct compatible implementations",
+        "construction failure does not execute downstream operation"
+      ],
+      "decision_status": "proposed"
+    },
+    {
+      "id": "klidan-abstract-factory-family",
+      "project": "KLIDAN",
+      "query": "Two dependent adapter objects must not be mixed across incompatible families",
+      "must_consider": [
+        "abstract-factory-consistent-family"
+      ],
+      "acceptance": [
+        "synthetic family matrix rejects mismatched pairs",
+        "failed construction does not publish a partial family"
       ],
       "decision_status": "proposed"
     }
