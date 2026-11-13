@@ -1015,3 +1015,21 @@ Evidence: SQLite API DOC_REVIEW; proposed QA only, not production PASS.
 **Avoid:** Do not claim cross-volume atomicity, delete the old root before target verification, or treat MOVEFILE_WRITE_THROUGH as proof of crash-safe multi-store commit.
 **Verification:** Proposed synthetic cross-volume copy succeeds/delete fails and interrupted copy cases, with restart and duplicate-source checks; require deterministic selection of verified generation and no silent reinitialization.
 **Sources:** https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw
+
+## factory-method-creation-seam | Factory Method / Creation Seam (P1, reviewed)
+**Когда:** Общий алгоритм использует объект, реализация которого выбирается в специализированном контексте; прямой new привязывает общий код к конкретному типу.
+**Решение:** Оставить общий алгоритм в базовом контракте и вынести выбор конкретного создаваемого объекта в переопределяемый factory method; проверять совместимость возвращаемого интерфейса.
+**Не применять:** Не создавать иерархию ради одного конструктора или простой настройки; для фиксированного выбора достаточно функции, DI-фабрики или явного switch.
+**Проверка:** Synthetic unit test: две реализации factory method возвращают разные совместимые объекты при неизменном общем алгоритме; отказ создания не вызывает частичного действия.
+**Проекты:** KLIDAN
+**Первоисточник:** https://github.com/anupavanm/csharp-design-patterns-for-humans
+**Evidence:** DOC_REVIEW, proposed synthetic QA only; no production or hardware PASS.
+
+## abstract-factory-consistent-family | Abstract Factory / Compatible Object Family (P1, reviewed)
+**Когда:** Несколько связанных объектов должны принадлежать одному совместимому набору (например, адаптер ввода и его конфигурация); смешивание реализаций создаёт некорректные комбинации.
+**Решение:** Определить интерфейс фабрики, который создаёт всю совместимую группу; выбирать фабрику на границе конфигурации и передавать зависимостям только нужные интерфейсы.
+**Не применять:** Не вводить абстрактную фабрику для независимых объектов или единственного набора; не скрывать runtime-валидацию возможностей и версий за именем паттерна.
+**Проверка:** Synthetic contract matrix: каждая фабрика создаёт совместимые пары; попытка смешать элементы разных семейств отклоняется; создание второго объекта при ошибке первого не публикует частичный набор.
+**Проекты:** KLIDAN
+**Первоисточник:** https://github.com/anupavanm/csharp-design-patterns-for-humans
+**Evidence:** DOC_REVIEW, proposed synthetic QA only; no production or hardware PASS.
