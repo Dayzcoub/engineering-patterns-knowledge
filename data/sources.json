@@ -1416,6 +1416,16 @@
       ],
       "from_awesome_list": "subsource_or_added",
       "note": "SQLite primary API documentation checked 2026-11-12; DOC_REVIEW only."
+    },
+    {
+      "url": "https://github.com/anupavanm/csharp-design-patterns-for-humans",
+      "status": "reviewed",
+      "patterns": [
+        "factory-method-creation-seam",
+        "abstract-factory-consistent-family"
+      ],
+      "from_awesome_list": "direct_upstream_url",
+      "note": "Reviewed upstream C# adaptation README on 2026-11-13; source derives from kamranahmedse/design-patterns-for-humans; C#7 examples, repository tree contains no LICENSE file; original short summaries only; DOC_REVIEW, not production verification."
     }
   ],
   "version": "0.9.6-preview.1"
