@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "version": "0.9.6-preview.1",
-  "generated_on": "2026-11-12",
+  "version": "0.9.7-preview.1",
+  "generated_on": "2026-11-13",
   "source_root": "https://github.com/DovAmir/awesome-design-patterns",
   "source_root_commit": "9006287f27e720000cc8763ae4cd150789b8571d",
-  "scope": "SQLite online backup bounded lifecycle DOC_REVIEW; no physical KLIDAN recovery qualification",
+  "scope": "C# creation patterns primary README DOC_REVIEW; synthetic QA proposed, no production integration",
   "cards": [
     {
       "id": "state-machine",
@@ -2784,6 +2784,48 @@
       "related": [
         "sqlite-cross-store-intent",
         "windows-replacefile-partial-failure-recovery"
+      ]
+    },
+    {
+      "id": "factory-method-creation-seam",
+      "title": "Factory Method / Creation Seam",
+      "domain": "creation",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Общий алгоритм использует объект, реализация которого выбирается в специализированном контексте; прямой new привязывает общий код к конкретному типу.",
+      "approach": "Оставить общий алгоритм в базовом контракте и вынести выбор конкретного создаваемого объекта в переопределяемый factory method; проверять совместимость возвращаемого интерфейса.",
+      "avoid": "Не создавать иерархию ради одного конструктора или простой настройки; для фиксированного выбора достаточно функции, DI-фабрики или явного switch.",
+      "verification": "Synthetic unit test: две реализации factory method возвращают разные совместимые объекты при неизменном общем алгоритме; отказ создания не вызывает частичного действия.",
+      "source_urls": [
+        "https://github.com/anupavanm/csharp-design-patterns-for-humans"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "command",
+        "presentation-model"
+      ]
+    },
+    {
+      "id": "abstract-factory-consistent-family",
+      "title": "Abstract Factory / Compatible Object Family",
+      "domain": "creation",
+      "priority": "P1",
+      "projects": [
+        "KLIDAN"
+      ],
+      "signals": "Несколько связанных объектов должны принадлежать одному совместимому набору (например, адаптер ввода и его конфигурация); смешивание реализаций создаёт некорректные комбинации.",
+      "approach": "Определить интерфейс фабрики, который создаёт всю совместимую группу; выбирать фабрику на границе конфигурации и передавать зависимостям только нужные интерфейсы.",
+      "avoid": "Не вводить абстрактную фабрику для независимых объектов или единственного набора; не скрывать runtime-валидацию возможностей и версий за именем паттерна.",
+      "verification": "Synthetic contract matrix: каждая фабрика создаёт совместимые пары; попытка смешать элементы разных семейств отклоняется; создание второго объекта при ошибке первого не публикует частичный набор.",
+      "source_urls": [
+        "https://github.com/anupavanm/csharp-design-patterns-for-humans"
+      ],
+      "source_review": "reviewed",
+      "related": [
+        "factory-method-creation-seam",
+        "audio-format-channel-map"
       ]
     }
   ]

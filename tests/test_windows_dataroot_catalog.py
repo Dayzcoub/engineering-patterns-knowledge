@@ -29,7 +29,7 @@ class WindowsDataRootCatalogTests(unittest.TestCase):
     def test_proposed_qa_and_versions(self):
         paths = ("patterns.json", "sources.json", "qa-scenarios.json", "audio-capture-scenarios.json", "devops-scenarios.json", "performance-scenarios.json", "staya-scenarios.json", "wpf-accessibility-scenarios.json")
         catalogs = [json.loads((ROOT / "data" / p).read_text(encoding="utf-8")) for p in paths]
-        self.assertEqual({x["version"] for x in catalogs}, {"0.9.6-preview.1"})
+        self.assertEqual({x["version"] for x in catalogs}, {catalogs[0]["version"]})
         case = next(x for x in catalogs[2]["items"] if x["id"] == "windows-dataroot-publication-failure-matrix")
         self.assertEqual(case["decision_status"], "proposed")
         self.assertEqual(case["must_consider"], list(IDS))
